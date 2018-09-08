@@ -3,6 +3,14 @@
 body {
   color: rgb(28,48,92);
   font-family: 'Fira Sans', sans-serif;
+  padding: 3rem;
+}
+
+input[type=text] {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgb(28, 48, 92);
+    margin: 0 0.5rem 0 0.5rem;
 }
 
 #landing-page {

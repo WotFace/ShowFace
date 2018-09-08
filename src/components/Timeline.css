@@ -5,20 +5,22 @@
 .Timeline-Tick {
   padding: 0 0.5rem 0 0.5rem;
   border-style: solid;
-  border-color: black;
+  border-color: rgb(200, 200, 200);
   border-width: 0 1px 0 0;
-  z-index: 1;
 }
 
 .Timeline-TimeBox {
   border-style: solid;
   border-color: rgb(200, 200, 200);
   border-width: 1px;
+  background-color: rgb(250, 250, 250);
   margin: -1px 0 0 -1px;
 }
 
 .Timeline-TimeBox-selected {
-  background-color: green;
+  border-color: rgb(230, 250, 230);
+  background-color: rgb(210, 240, 220);
+  z-index: -1;
 }
 
 .TimelineDay {
@@ -27,6 +29,14 @@
 
 .date-heading {
   font-size: 1rem;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-style: solid;
+  border-color: white white rgb(200, 200, 200) white;
+  border-width: 1px;
+  margin: -1px 0 0 -1px;
+}
+
+.timeline-label {
+  background-color: rgb(240, 240, 240);
 }

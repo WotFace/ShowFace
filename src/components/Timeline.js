@@ -22,11 +22,11 @@ function moveDateTimeToDate(date, dateTime) {
 
 const Tick = ({ startTime }) => {
   const format = 'h:mm';
-  return <span className="Timeline-Tick">{startTime.format(format)}</span>;
+  return <span className="Timeline-Tick timeline-label">{startTime.format(format)}</span>;
 };
 
 const DateHeader = ({ date }) => {
-  return <h4 className="date-heading">{date.format('DD/MM')}</h4>;
+  return <span className="date-heading timeline-label">{date.format('DD/MM')}</span>;
 };
 
 class TimeBox extends Component {

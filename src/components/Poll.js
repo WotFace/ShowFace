@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, NavLink } from 'react-router-dom';
+import { Redirect } from 'react-router';
 import _ from 'lodash';
 import { withAlert } from 'react-alert';
 import ReactLoading from 'react-loading';
@@ -102,6 +103,7 @@ class Poll extends Component {
           <section id="poll">
             {poll && (
               <React.Fragment>
+                <Redirect to={match.url + '/respond'} />
                 <Route
                   path={match.url + '/respond'}
                   render={() => <PollRespond poll={poll} onPollChange={this.handlePollChange} />}

@@ -34,8 +34,8 @@ const getMomentsForDates = memoize(
   },
   (newTimes, oldTimes) =>
     _.zip(newTimes, oldTimes)
-    .map(([newTime, oldTime]) => newTime.isSame(oldTime))
-    .includes(true),
+      .map(([newTime, oldTime]) => newTime.isSame(oldTime))
+      .includes(true),
 );
 
 function moveDateTimeToDate(date, dateTime) {
@@ -172,7 +172,7 @@ class Timeline extends Component {
   render() {
     const { allowedDates, startTime, endTime, responses, name, minCount, maxCount, showAttendees } = this.props;
 
-    const allAttendees = Object.keys(responses);
+    const allAttendees = Object.keys(responses || {});
 
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
@@ -209,14 +209,14 @@ class Timeline extends Component {
     }
 
     const maxSelectable = name
-          ? 1
-          : _.reduce(
-            allResponses,
-            (maxLen, dates, name) => {
-              return Math.max(maxLen, dates.size);
-            },
-            0,
-          );
+      ? 1
+      : _.reduce(
+          allResponses,
+          (maxLen, dates, name) => {
+            return Math.max(maxLen, dates.size);
+          },
+          0,
+        );
 
     const rows = startTimes.map((time) => {
       return (

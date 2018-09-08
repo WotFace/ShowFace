@@ -12,3 +12,15 @@
   margin: 30px auto;
 }
 
+.link {
+  text-decoration: none !important;
+}
+
+.link:after {
+  background: url(../clipboard-regular.svg);
+  /* https://fontawesome.com/license */
+}
+
+.link:hover {
+  text-decoration: underline !important;
+}

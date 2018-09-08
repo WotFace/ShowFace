@@ -12,6 +12,7 @@ import PollRespond from './PollRespond';
 import PollResults from './PollResults';
 
 import logo from '../logo.png';
+import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 import './Poll.css';
 
 class Poll extends Component {
@@ -76,7 +77,7 @@ class Poll extends Component {
             <div className="Poll-header">
               <h1 className="Poll-name">{poll && poll.name}</h1>
               <button className="btn btn-link" onClick={this.copyUrlToClipboard}>
-                Copy link
+                Copy link <img src={clipboardIcon} className="font-icon" />
               </button>
             </div>
             <nav>

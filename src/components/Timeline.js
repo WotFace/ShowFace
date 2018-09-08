@@ -34,8 +34,8 @@ const getMomentsForDates = memoize(
   },
   (newTimes, oldTimes) =>
     _.zip(newTimes, oldTimes)
-    .map(([newTime, oldTime]) => newTime.isSame(oldTime))
-    .includes(true),
+      .map(([newTime, oldTime]) => newTime.isSame(oldTime))
+      .includes(true),
 );
 
 function moveDateTimeToDate(date, dateTime) {
@@ -51,46 +51,30 @@ const DateHeader = ({ date }) => {
   return <span className="date-heading timeline-label">{date.format('DD/MM')}</span>;
 };
 
-const ShowAttendees = ({ attendees, allAttendees })  => {
-  const notAttending = new Set([...allAttendees].filter(
-    x => (!new Set(attendees).has(x))
-  ));
+const ShowAttendees = ({ attendees, allAttendees }) => {
+  const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
 
   return (
     <section id="attendees">
       <section id="attending">
         <h2>Attending</h2>
         <ul>
-          {
-            _.map(
-              attendees,
-              attendee => {
-                return (
-                  <h3>hello</h3>
-                );
-              }
-            )
-          }
-    </ul>
+          {attendees.map((attendee) => {
+            return <h3>hello</h3>;
+          })}
+        </ul>
       </section>
       <section id="notAttending">
-      <h2>Not Attending</h2>
-      <ul>
-      {
-        _.each(
-          notAttending,
-          notAttendee => {
-            return (
-              <li>{notAttendee}</li>
-            );
-          }
-        )
-      }
-    </ul>
+        <h2>Not Attending</h2>
+        <ul>
+          {notAttending.map((notAttendee) => {
+            return <li>{notAttendee}</li>;
+          })}
+        </ul>
       </section>
-      </section>
+    </section>
   );
-}
+};
 
 class TimeBox extends Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -100,7 +84,7 @@ class TimeBox extends Component {
   }
 
   getLightnessValue(maxSelectable, count) {
-    return Math.floor(100 - (65 / maxSelectable) * count);
+    return Math.floor(100 - 65 / maxSelectable * count);
   }
 
   render() {
@@ -224,15 +208,15 @@ class Timeline extends Component {
       );
     }
 
-      const maxSelectable = name
-          ? 1
-          : _.reduce(
-            allResponses,
-            (maxLen, dates, name) => {
-              return Math.max(maxLen, dates.size);
-            },
-            0,
-          );
+    const maxSelectable = name
+      ? 1
+      : _.reduce(
+          allResponses,
+          (maxLen, dates, name) => {
+            return Math.max(maxLen, dates.size);
+          },
+          0,
+        );
 
     const rows = startTimes.map((time) => {
       return (
@@ -260,10 +244,10 @@ class Timeline extends Component {
                 }}
                 onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
                 onMouseEnter={() => {
-                  const attendees = self.allResponses[startTimeWithDate] || [];
-                  this.setState({attendees, });
-                  }
-                }
+                  let attendees = self.allResponses[startTimeWithDate] || [];
+                  attendees = Array.from(attendees);
+                  this.setState({ attendees });
+                }}
               />
             );
           })}
@@ -284,7 +268,7 @@ class Timeline extends Component {
           {headerCells}
           {rows}
         </div>
-        <ShowAttendees attendees={this.state.attendees} allAttendees={allAttendees}/>
+        <ShowAttendees attendees={this.state.attendees} allAttendees={allAttendees} />
       </section>
     );
   }

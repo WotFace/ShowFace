@@ -19,15 +19,15 @@ class Poll extends Component {
 
   componentDidMount() {
     const self = this;
-    const pollId = this.props.match.params['pollId'];
+    const pollId = this.props.match.params.pollId;
 
-    db.collection('polls')
+    db
+      .collection('polls')
       .doc(pollId)
       .get()
       .then((doc) => {
         if (doc.exists) {
-          self.setState({ poll: doc.data() });
-          self.setState({ isLoaded: true });
+          self.setState({ poll: doc.data(), isLoaded: true });
         } else {
           console.log('no such document');
           console.log(doc);
@@ -36,12 +36,13 @@ class Poll extends Component {
   }
 
   render() {
-    const match = this.props.match;
+    const { match } = this.props;
+    const { poll } = this.state;
 
     return (
       <section id="poll">
         <section id="header">
-          <h1>{this.state.poll.name}</h1>
+          <h1>{poll.name}</h1>
           <nav>
             <ul>
               <Link to="/poll/testpoll/respond">Respond</Link>
@@ -49,7 +50,7 @@ class Poll extends Component {
             </ul>
           </nav>
         </section>
-        <Route path={match.url + '/respond'} component={PollRespond} />
+        <Route path={match.url + '/respond'} render={() => <PollRespond poll={poll} />} />
         <Route path={match.url + '/results'} component={PollResults} />
       </section>
     );

@@ -1,7 +1,4 @@
-.link {
-  text-decoration: none !important;
-}
-
-.link:hover {
-  text-decoration: underline !important;
+.Poll-header {
+  text-align: center;
+  margin-bottom: 30px;
 }

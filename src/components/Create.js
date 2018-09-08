@@ -79,7 +79,7 @@ class Create extends Component {
     return (
       <div className="container Create-container">
         <section id="form-header">
-          <img className="logo" alt="" src={logo} />
+          <img className="content-logo" alt="" src={logo} />
           <h1 id="header">Create a new poll</h1>
         </section>
         <section id="form" className="row">

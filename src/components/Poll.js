@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { Route, Link } from 'react-router-dom';
+import { Route, NavLink } from 'react-router-dom';
 import _ from 'lodash';
+import { withAlert } from 'react-alert';
+import ReactLoading from 'react-loading';
+
+import db from '../db';
+
+import copyToClipboard from '../utils/copyToClipboard';
 
 import PollRespond from './PollRespond';
 import PollResults from './PollResults';
 
-import ReactLoading from 'react-loading';
-
-import copyToClipboard from '../utils/copyToClipboard';
-import { withAlert } from 'react-alert';
-
-import db from '../db';
-
+import logo from '../logo.png';
 import './Poll.css';
 
 class Poll extends Component {
@@ -70,34 +70,49 @@ class Poll extends Component {
       );
     } else {
       return (
-        <section id="poll">
-          <section id="header">
-            <h1>
-              {poll && poll.name}{' '}
-              <span className="link" onClick={this.copyUrlToClipboard}>
+        <div className="container">
+          <section id="form-header">
+            <img className="content-logo" alt="" src={logo} />
+            <div className="Poll-header">
+              <h1 className="Poll-name">{poll && poll.name}</h1>
+              <button className="btn btn-link" onClick={this.copyUrlToClipboard}>
                 Copy link
-              </span>
-            </h1>
+              </button>
+            </div>
             <nav>
-              <ul>
-                <Link to={`${match.url}/respond`}>Respond</Link>
-                <Link to={`${match.url}/results`}>Results</Link>
+              <ul className="nav nav-tabs nav-fill">
+                <NavLink
+                  to={`${match.url}/respond`}
+                  className="nav-item nav-link"
+                  activeClassName="active"
+                >
+                  Respond
+                </NavLink>
+                <NavLink
+                  to={`${match.url}/results`}
+                  className="nav-item nav-link"
+                  activeClassName="active"
+                >
+                  Results
+                </NavLink>
               </ul>
             </nav>
           </section>
-          {poll && (
-            <React.Fragment>
-              <Route
-                path={match.url + '/respond'}
-                render={() => <PollRespond poll={poll} onPollChange={this.handlePollChange} />}
-              />
-              <Route
-                path={match.url + '/results'}
-                render={() => <PollResults poll={poll} onPollChange={this.handlePollChange} />}
-              />
-            </React.Fragment>
-          )}
-        </section>
+          <section id="poll">
+            {poll && (
+              <React.Fragment>
+                <Route
+                  path={match.url + '/respond'}
+                  render={() => <PollRespond poll={poll} onPollChange={this.handlePollChange} />}
+                />
+                <Route
+                  path={match.url + '/results'}
+                  render={() => <PollResults poll={poll} onPollChange={this.handlePollChange} />}
+                />
+              </React.Fragment>
+            )}
+          </section>
+        </div>
       );
     }
   }

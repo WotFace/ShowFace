@@ -34,8 +34,8 @@ const getMomentsForDates = memoize(
   },
   (newTimes, oldTimes) =>
     _.zip(newTimes, oldTimes)
-      .map(([newTime, oldTime]) => newTime.isSame(oldTime))
-      .includes(true),
+    .map(([newTime, oldTime]) => newTime.isSame(oldTime))
+    .includes(true),
 );
 
 function moveDateTimeToDate(date, dateTime) {
@@ -51,9 +51,50 @@ const DateHeader = ({ date }) => {
   return <span className="date-heading timeline-label">{date.format('DD/MM')}</span>;
 };
 
+const ShowAttendees = ({ attendees, allAttendees })  => {
+  const notAttending = new Set([...allAttendees].filter(
+    x => (!new Set(attendees).has(x))
+  ));
+
+  return (
+    <section id="attendees">
+      <section id="attending">
+        <h2>Attending</h2>
+        <ul>
+          {
+            _.map(
+              attendees,
+              attendee => {
+                return (
+                  <h3>hello</h3>
+                );
+              }
+            )
+          }
+    </ul>
+      </section>
+      <section id="notAttending">
+      <h2>Not Attending</h2>
+      <ul>
+      {
+        _.each(
+          notAttending,
+          notAttendee => {
+            return (
+              <li>{notAttendee}</li>
+            );
+          }
+        )
+      }
+    </ul>
+      </section>
+      </section>
+  );
+}
+
 class TimeBox extends Component {
   shouldComponentUpdate(nextProps, nextState) {
-    const keysToOmit = ['onMouseDown', 'onMouseMove', 'onMouseUp'];
+    const keysToOmit = ['onMouseDown', 'onMouseMove', 'onMouseUp', 'onMouseEnter'];
     const shouldUpdate = !_.isEqual(_.omit(this.props, keysToOmit), _.omit(nextProps, keysToOmit));
     return shouldUpdate;
   }
@@ -70,6 +111,7 @@ class TimeBox extends Component {
       onMouseDown,
       onMouseMove,
       onMouseUp,
+      onMouseEnter,
       maxSelectable,
     } = this.props;
 
@@ -87,6 +129,7 @@ class TimeBox extends Component {
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
+        onMouseEnter={onMouseEnter}
       />
     );
   }
@@ -103,6 +146,7 @@ class Timeline extends Component {
     super(props);
     this.state = {
       dragState: DragStateEnum.none,
+      attendees: [],
     };
   }
 
@@ -144,10 +188,14 @@ class Timeline extends Component {
   render() {
     const { allowedDates, startTime, endTime, responses, name, minCount, maxCount } = this.props;
 
+    const allAttendees = Object.keys(responses);
+
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
 
     const allResponses = responsesToDict(responses || {});
+    var self = this;
+    self.allResponses = allResponses;
     this.renderableResponses = allResponses;
 
     if (minCount !== undefined) {
@@ -176,15 +224,15 @@ class Timeline extends Component {
       );
     }
 
-    const maxSelectable = name
-      ? 1
-      : _.reduce(
-          allResponses,
-          (maxLen, dates, name) => {
-            return Math.max(maxLen, dates.size);
-          },
-          0,
-        );
+      const maxSelectable = name
+          ? 1
+          : _.reduce(
+            allResponses,
+            (maxLen, dates, name) => {
+              return Math.max(maxLen, dates.size);
+            },
+            0,
+          );
 
     const rows = startTimes.map((time) => {
       return (
@@ -211,6 +259,11 @@ class Timeline extends Component {
                   this.handleMouseEvent(startTimeWithDate, false);
                 }}
                 onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
+                onMouseEnter={() => {
+                  const attendees = self.allResponses[startTimeWithDate] || [];
+                  this.setState({attendees, });
+                  }
+                }
               />
             );
           })}
@@ -221,15 +274,18 @@ class Timeline extends Component {
     const headerCells = allowedDates.map((date) => <DateHeader date={date} key={date} />);
 
     return (
-      <div
-        className="Timeline"
-        style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
-        onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
-      >
-        <span className="Timeline-filler" />
-        {headerCells}
-        {rows}
-      </div>
+      <section id="timeline">
+        <div
+          className="Timeline"
+          style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
+          onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
+        >
+          <span className="Timeline-filler" />
+          {headerCells}
+          {rows}
+        </div>
+        <ShowAttendees attendees={this.state.attendees} allAttendees={allAttendees}/>
+      </section>
     );
   }
 }

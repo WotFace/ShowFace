@@ -6,10 +6,10 @@ body {
 }
 
 input[type=text] {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgb(28, 48, 92);
-    margin: 0 0.5rem 0 0.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgb(28, 48, 92);
+  margin: 0 0.5rem 0 0.5rem;
 }
 
 #landing-page {
@@ -93,4 +93,9 @@ input[type=text] {
   color: #ccc;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.slider {
+  margin-bottom: 40px;
+  max-width: 400px;
 }

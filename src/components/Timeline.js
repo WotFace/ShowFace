@@ -59,7 +59,7 @@ class TimeBox extends Component {
   }
 
   getLightnessValue(maxSelectable, count) {
-    return Math.floor(100 - 65 / maxSelectable * count);
+    return Math.floor(100 - (65 / maxSelectable) * count);
   }
 
   render() {
@@ -142,12 +142,40 @@ class Timeline extends Component {
   }
 
   render() {
-    const { allowedDates, startTime, endTime, responses, name } = this.props;
+    const { allowedDates, startTime, endTime, responses, name, minCount, maxCount } = this.props;
 
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
 
     this.renderableResponses = responsesToDict(responses || {});
+
+    if (minCount !== null) {
+      this.renderableResponses = _.reduce(
+        this.renderableResponses,
+        (acc, v, k) => {
+          if (v.size >= minCount) {
+            acc[k] = v;
+          }
+          return acc;
+        },
+        {},
+      );
+    }
+
+    if (maxCount !== null) {
+      this.renderableResponses = _.reduce(
+        this.renderableResponses,
+        (acc, v, k) => {
+          if (v.size <= maxCount) {
+            acc[k] = v;
+          }
+          return acc;
+        },
+        {},
+      );
+    }
+
+    console.log(this.renderableResponses);
 
     const maxSelectable = name
       ? 1

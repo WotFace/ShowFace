@@ -56,7 +56,7 @@ class Poll extends Component {
     const { isLoaded, poll } = this.state;
     if (!isLoaded) {
       return (
-        <section class="full-page flex">
+        <section className="full-page flex">
           <h2>Loading</h2>
           <ReactLoading type="bubbles" color="#111"/>
         </section>

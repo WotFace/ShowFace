@@ -1,9 +1,10 @@
 import responseToDict from './response';
+import { firestore } from 'firebase';
 
 /* TODO: add proper assert */
 it('responseToDict works', () => {
   function addMinutes(date, minutes) {
-    return new Date(date.getTime() + minutes * 60000);
+    return firestore.Timestamp.fromDate(new Date(date.getTime() + minutes * 60000));
   }
 
   function generateInterval(date, minutes) {
@@ -16,11 +17,12 @@ it('responseToDict works', () => {
   }
 
   const now = new Date();
+  const later = new Date(now.getTime() + 60 * 60000);
 
   const responses = {
-    el: [...generateInterval(now, 60), ...generateInterval(addMinutes(now, 120), 120)],
-    jk: [...generateInterval(now, 15), ...generateInterval(addMinutes(now, 30), 15)],
-    ua: [...generateInterval(now, 15), ...generateInterval(addMinutes(now, 30), 120)],
+    el: [...generateInterval(now, 60), ...generateInterval(later, 120)],
+    jk: [...generateInterval(now, 15), ...generateInterval(later, 15)],
+    ua: [...generateInterval(now, 15), ...generateInterval(later, 120)],
   };
   console.log(responseToDict(responses));
 });

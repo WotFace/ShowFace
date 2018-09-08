@@ -6,17 +6,6 @@ import PollResults from './PollResults';
 
 import db from '../db';
 
-const NewPollAlert = ({ isNew }) => {
-  if (isNew) {
-    return (
-      <div class="alert alert-success" role="alert">
-        Poll successfully created! Share this link with your friends!
-      </div>
-    );
-  } else {
-    return null;
-  }
-};
 
 class Poll extends Component {
   constructor(props) {
@@ -29,10 +18,6 @@ class Poll extends Component {
   componentDidMount() {
     const self = this;
     const pollId = this.props.match.params.pollId;
-    if (this.props.location.state && this.props.location.state.isNew) {
-      this.setState({ isNew: true });
-      this.props.location.state.isNew = false;
-    }
 
     db
       .collection('polls')
@@ -54,7 +39,6 @@ class Poll extends Component {
 
     return (
       <section id="poll">
-        <NewPollAlert isNew={this.state.isNew} />
         <section id="header">
           <h1>{poll && poll.name}</h1>
           <nav>

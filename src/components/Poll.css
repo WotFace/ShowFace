@@ -9,7 +9,13 @@
 
 .Poll-slider {
   max-width: 400px;
-  margin: 30px auto;
+  margin: 5px auto;
+  margin-bottom: 70px;
+}
+
+.Poll-Slider-label {
+  margin-top: 20px;
+  text-align: center;
 }
 
 .link {

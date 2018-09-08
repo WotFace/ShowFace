@@ -7,8 +7,8 @@ import Create from './components/Create';
 
 const Routes = () => (
   <Switch>
-    <Redirect exact from="/" to="/poll" />
-    <Route exact path="/poll" component={Welcome} />
+    <Redirect exact from="/poll" to="/" />
+    <Route exact path="/" component={Welcome} />
     <Route path="/poll/:pollId" component={Poll} />
     <Route path="/create" component={Create} />
   </Switch>

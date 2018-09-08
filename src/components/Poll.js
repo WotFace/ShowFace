@@ -103,7 +103,13 @@ class Poll extends Component {
           <section id="poll">
             {poll && (
               <React.Fragment>
-                <Redirect to={match.url + '/respond'} />
+                <Route
+                  exact
+                  path={match.url}
+                  component={() => (
+                    <Redirect to={`/poll/${this.props.match.params.pollId}/respond`} />
+                  )}
+                />
                 <Route
                   path={match.url + '/respond'}
                   render={() => <PollRespond poll={poll} onPollChange={this.handlePollChange} />}

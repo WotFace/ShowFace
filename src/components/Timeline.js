@@ -149,7 +149,7 @@ class Timeline extends Component {
 
     this.renderableResponses = responsesToDict(responses || {});
 
-    if (minCount !== null) {
+    if (minCount !== undefined) {
       this.renderableResponses = _.reduce(
         this.renderableResponses,
         (acc, v, k) => {
@@ -162,7 +162,7 @@ class Timeline extends Component {
       );
     }
 
-    if (maxCount !== null) {
+    if (maxCount !== undefined) {
       this.renderableResponses = _.reduce(
         this.renderableResponses,
         (acc, v, k) => {
@@ -174,8 +174,6 @@ class Timeline extends Component {
         {},
       );
     }
-
-    console.log(this.renderableResponses);
 
     const maxSelectable = name
       ? 1

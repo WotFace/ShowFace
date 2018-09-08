@@ -43,6 +43,8 @@ class PollRespond extends Component {
     const ourResponses = poll.responses ? poll.responses[name] : {};
     const responses = ourResponses ? { [name]: ourResponses } : {};
 
+    const debouncedSetState = _.debounce((state) => this.setState(state), 100);
+
     return (
       <React.Fragment>
         <h2>Respond to {poll.name}</h2>
@@ -54,8 +56,7 @@ class PollRespond extends Component {
               name="name"
               type="text"
               placeholder="Tony Stark"
-              value={this.state.name}
-              onChange={(e) => this.setState({ name: e.target.value })}
+              onChange={(e) => debouncedSetState({ name: e.target.value })}
             />
           </div>
         </section>

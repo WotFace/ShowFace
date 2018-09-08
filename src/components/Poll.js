@@ -47,13 +47,12 @@ class Poll extends Component {
     });
   }
 
-  uploadPoll = () => {
-    console.log('DERP');
-    // this.pollDoc.update(this.state.poll);
-  };
+  uploadPoll = _.debounce(() => {
+    this.pollDoc.update(this.state.poll);
+  }, 500);
 
   handlePollChange = (newPoll) => {
-    _.debounce(this.uploadPoll);
+    this.uploadPoll();
     this.setState({ poll: newPoll }); // Optimistically update the local state
   };
 

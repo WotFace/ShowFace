@@ -97,6 +97,7 @@ class Create extends Component {
               onChange={this.handleRangeChange.bind(this, 'dateRanges')}
               moveRangeOnFirstSelection={false}
               ranges={[this.state.dateRanges.selection]}
+              minDate={new Date()}
             />
             <input type="submit" value="Submit" />
           </form>

@@ -34,8 +34,8 @@ const getMomentsForDates = memoize(
   },
   (newTimes, oldTimes) =>
     _.zip(newTimes, oldTimes)
-      .map(([newTime, oldTime]) => newTime.isSame(oldTime))
-      .includes(true),
+    .map(([newTime, oldTime]) => newTime.isSame(oldTime))
+    .includes(true),
 );
 
 function moveDateTimeToDate(date, dateTime) {
@@ -60,7 +60,7 @@ const ShowAttendees = ({ attendees, allAttendees }) => {
         <h2>Attending</h2>
         <ul>
           {attendees.map((attendee) => {
-            return <h3>hello</h3>;
+            return <li key={attendee}>{attendee}</li>;
           })}
         </ul>
       </section>
@@ -68,7 +68,7 @@ const ShowAttendees = ({ attendees, allAttendees }) => {
         <h2>Not Attending</h2>
         <ul>
           {notAttending.map((notAttendee) => {
-            return <li>{notAttendee}</li>;
+            return <li key={notAttendee}>{notAttendee}</li>;
           })}
         </ul>
       </section>
@@ -209,14 +209,14 @@ class Timeline extends Component {
     }
 
     const maxSelectable = name
-      ? 1
-      : _.reduce(
-          allResponses,
-          (maxLen, dates, name) => {
-            return Math.max(maxLen, dates.size);
-          },
-          0,
-        );
+          ? 1
+          : _.reduce(
+            allResponses,
+            (maxLen, dates, name) => {
+              return Math.max(maxLen, dates.size);
+            },
+            0,
+          );
 
     const rows = startTimes.map((time) => {
       return (

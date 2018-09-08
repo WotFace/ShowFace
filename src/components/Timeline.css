@@ -1,5 +1,6 @@
 .Timeline {
   display: inline-grid;
+  width: 100%;
 }
 
 .Timeline-Tick {

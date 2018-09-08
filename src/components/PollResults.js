@@ -68,7 +68,7 @@ class PollResults extends Component {
 
     return (
       <div>
-        <Range {...sliderConfig} className="slider" />
+        <Range {...sliderConfig} className="Poll-slider" />
         <Timeline
           allowedDates={allowedDates}
           startTime={moment().startOf('day')}

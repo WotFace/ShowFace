@@ -56,29 +56,33 @@ class PollRespond extends Component {
 
     return (
       <React.Fragment>
-        <h2>Respond to {poll.name}</h2>
-
         <section id="form">
           <div className="form-group">
             <label htmlFor="name">Your Name</label>
             <input
               name="name"
               type="text"
+              className="form-control"
               placeholder="Tony Stark"
               onChange={(e) => debouncedSetState({ name: e.target.value })}
             />
+            <small className="form-text text-muted">
+              Enter your name so that you can select your availability
+            </small>
           </div>
         </section>
 
-        <Timeline
-          allowedDates={allowedDates}
-          startTime={moment().startOf('day')}
-          endTime={moment().endOf('day')}
-          responses={responses}
-          name={this.state.name}
-          onSelect={(startTime) => this.handleSelectDeselect(startTime, true)}
-          onDeselect={(startTime) => this.handleSelectDeselect(startTime, false)}
-        />
+        {name && (
+          <Timeline
+            allowedDates={allowedDates}
+            startTime={moment().startOf('day')}
+            endTime={moment().endOf('day')}
+            responses={responses}
+            name={name}
+            onSelect={(startTime) => this.handleSelectDeselect(startTime, true)}
+            onDeselect={(startTime) => this.handleSelectDeselect(startTime, false)}
+          />
+        )}
       </React.Fragment>
     );
   }

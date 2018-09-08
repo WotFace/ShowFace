@@ -70,7 +70,7 @@ class Poll extends Component {
       );
     } else {
       return (
-        <div className="container">
+        <div className="container Poll-container">
           <section id="form-header">
             <img className="content-logo" alt="" src={logo} />
             <div className="Poll-header">

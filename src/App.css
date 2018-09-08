@@ -75,7 +75,7 @@ body {
 }
 
 .content-logo {
-  width: 260px;
+  width: 195px;
   margin-bottom: 30px;
 }
 
@@ -87,11 +87,6 @@ body {
   color: #ccc;
   text-decoration: underline;
   cursor: pointer;
-}
-
-.slider {
-  margin-bottom: 40px;
-  max-width: 400px;
 }
 
 .Create-container {

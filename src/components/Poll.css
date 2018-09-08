@@ -1,4 +1,14 @@
+.Poll-container {
+  margin-bottom: 30px;
+}
+
 .Poll-header {
   text-align: center;
   margin-bottom: 30px;
 }
+
+.Poll-slider {
+  max-width: 400px;
+  margin: 30px auto;
+}
+

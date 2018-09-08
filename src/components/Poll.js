@@ -19,9 +19,10 @@ class Poll extends Component {
 
   componentDidMount() {
     const self = this;
+    const pollId = this.props.match.params['pollId'];
 
     db.collection('polls')
-      .doc('testpoll')
+      .doc(pollId)
       .get()
       .then((doc) => {
         if (doc.exists) {

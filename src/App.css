@@ -1,3 +1,20 @@
+body {
+  color: rgb(28,48,92);
+}
+
+#root {
+  min-height: 100vh;
+  background: #ff806d fixed;
+  background: -moz-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;
+  background: -webkit-gradient(left top, right bottom, color-stop(30%, #ffb844), color-stop(100%, #ffb844)) fixed;
+  background: -webkit-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;
+  background: -o-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;
+  background: -ms-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;
+  background: linear-gradient(135deg, #ffb844 30%, #ff806d 100%) fixed;
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffb844', endColorstr='#ff806d', GradientType=1 );
+  z-index: 1;
+}
+
 .center {
   display: block;
   margin-left: auto;
@@ -5,18 +22,9 @@
   width: 50%;
 }
 
-#fullscreen {
+#full-page {
   height: 100vh;
   width: 100vw;
-  background: #ff806d;
-  background: -moz-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%);
-  background: -webkit-gradient(left top, right bottom, color-stop(30%, #ffb844), color-stop(100%, #ffb844));
-  background: -webkit-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%);
-  background: -o-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%);
-  background: -ms-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%);
-  background: linear-gradient(135deg, #ffb844 30%, #ff806d 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffb844', endColorstr='#ff806d', GradientType=1 );
-  z-index: 1;
 }
 
 .flex {
@@ -45,4 +53,35 @@
   padding: 5px 9px;
   padding-left: 16px;
   margin-bottom: 20px;
+}
+
+.btn-outline-primary {
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border-color: #ffb844;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: rgb(28,48,92);
+  border-color: rgb(28,48,92);
+
+}
+
+.btn-long {
+  width: 400px;
+}
+
+#form-header {
+  padding-top: 50px;
+}
+
+#form-header .logo {
+  width: 260px;
+  margin-bottom: 70px;
+}
+
+#form-header #header {
+  font-size: 72px;
 }

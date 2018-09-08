@@ -147,7 +147,8 @@ class Timeline extends Component {
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
 
-    this.renderableResponses = responsesToDict(responses || {});
+    const allResponses = responsesToDict(responses || {});
+    this.renderableResponses = allResponses;
 
     if (minCount !== undefined) {
       this.renderableResponses = _.reduce(
@@ -178,7 +179,7 @@ class Timeline extends Component {
     const maxSelectable = name
       ? 1
       : _.reduce(
-          this.renderableResponses,
+          allResponses,
           (maxLen, dates, name) => {
             return Math.max(maxLen, dates.size);
           },

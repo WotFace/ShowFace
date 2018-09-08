@@ -117,8 +117,14 @@ class Timeline extends Component {
                 startTime={startTimeWithDate}
                 key={`timebox ${startMomentWithDate.toISOString()}`}
                 selected={selected}
-                onMouseDown={() => this.handleMouseEvent(startTimeWithDate, true)}
-                onMouseMove={() => this.handleMouseEvent(startTimeWithDate, false)}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  this.handleMouseEvent(startTimeWithDate, true);
+                }}
+                onMouseMove={(e) => {
+                  e.preventDefault();
+                  this.handleMouseEvent(startTimeWithDate, false);
+                }}
                 onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
               />
             );

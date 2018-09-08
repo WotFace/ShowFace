@@ -19,7 +19,7 @@ class PollRespond extends Component {
     };
   }
 
-  handleSelect = (startTime) => {
+  handleSelectDeselect = (startTime, isSelect) => {
     const { name } = this.state;
     if (name.length === 0) return;
 
@@ -27,8 +27,17 @@ class PollRespond extends Component {
     let newPoll = Object.assign({ responses: {} }, this.props.poll);
     newPoll = update(newPoll, {
       responses: {
-        [name]: (currentTimes) =>
-          _.uniqBy((currentTimes || []).concat([startFirebaseTimestamp]), (date) => date.seconds),
+        [name]: (currentTimes) => {
+          if (isSelect) {
+            const newTimes = (currentTimes || []).concat([startFirebaseTimestamp]);
+            return _.uniqBy(newTimes, (date) => date.seconds);
+          } else {
+            return _.filter(
+              currentTimes || [],
+              (date) => date.seconds !== startFirebaseTimestamp.seconds,
+            );
+          }
+        },
       },
     });
     this.props.onPollChange(newPoll);
@@ -67,7 +76,8 @@ class PollRespond extends Component {
           endTime={moment().endOf('day')}
           responses={responses}
           name={this.state.name}
-          onSelect={this.handleSelect}
+          onSelect={(startTime) => this.handleSelectDeselect(startTime, true)}
+          onDeselect={(startTime) => this.handleSelectDeselect(startTime, false)}
         />
       </React.Fragment>
     );

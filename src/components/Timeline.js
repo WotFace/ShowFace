@@ -54,7 +54,7 @@ class TimeBox extends Component {
 const DragStateEnum = Object.freeze({
   none: 0,
   dragSelecting: 1,
-  dragCanceling: 2,
+  dragDeselecting: 2,
 });
 
 class Timeline extends Component {
@@ -65,6 +65,11 @@ class Timeline extends Component {
     };
   }
 
+  isSelected(startTime) {
+    const responsesForDate = this.renderableResponses[startTime] || new Set();
+    return responsesForDate.has(this.props.name);
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState);
   }
@@ -73,10 +78,8 @@ class Timeline extends Component {
     let dragState = this.state.dragState;
     const startMoment = moment(startTime);
     if (shouldStart) {
-      // TODO: Set drag state properly
-      // const isSelected = isSelected(startMoment);
-      const isSelected = false;
-      dragState = isSelected ? DragStateEnum.dragCanceling : DragStateEnum.dragSelecting;
+      const isSelected = this.isSelected(startTime);
+      dragState = isSelected ? DragStateEnum.dragDeselecting : DragStateEnum.dragSelecting;
       this.setState({ dragState });
     }
 
@@ -85,8 +88,9 @@ class Timeline extends Component {
         // console.log('Select', startMoment.toISOString());
         this.props.onSelect(startMoment);
         break;
-      case DragStateEnum.dragCanceling:
-        console.log('Cancel', startMoment.toISOString());
+      case DragStateEnum.dragDeselecting:
+        // console.log('Deselect', startMoment.toISOString());
+        this.props.onDeselect(startMoment);
         break;
     }
   }
@@ -96,7 +100,7 @@ class Timeline extends Component {
 
     const startTimes = getStartTimes(startTime, endTime);
 
-    const renderableResponses = responsesToDict(responses);
+    this.renderableResponses = responsesToDict(responses || {});
 
     const rows = startTimes.map((time) => {
       return (
@@ -106,17 +110,12 @@ class Timeline extends Component {
             const startMomentWithDate = moveDateTimeToDate(date, time);
             const startTimeWithDate = startMomentWithDate.toDate();
 
-            const responsesForDate = renderableResponses
-              ? renderableResponses[startTimeWithDate] || new Set()
-              : new Set();
-            const selected = responsesForDate.has(name);
-
             return (
               <TimeBox
                 date={date.toDate()}
                 startTime={startTimeWithDate}
                 key={`timebox ${startMomentWithDate.toISOString()}`}
-                selected={selected}
+                selected={this.isSelected(startTimeWithDate)}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   this.handleMouseEvent(startTimeWithDate, true);

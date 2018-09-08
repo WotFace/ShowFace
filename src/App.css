@@ -1,8 +1,4 @@
-body {
-  color: rgb(28,48,92);
-}
-
-#root {
+#landing-page {
   min-height: 100vh;
   background: #ff806d fixed;
   background: -moz-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;

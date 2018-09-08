@@ -26,7 +26,7 @@ const Tick = ({ startTime }) => {
 };
 
 const DateHeader = ({ date }) => {
-  return <h4>{date.format('L')}</h4>;
+  return <h4 className="date-heading">{date.format('DD/MM')}</h4>;
 };
 
 class TimeBox extends Component {

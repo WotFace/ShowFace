@@ -3,12 +3,18 @@
 }
 
 .Timeline-Tick {
-
+  padding: 0 0.5rem 0 0.5rem;
+  border-style: solid;
+  border-color: black;
+  border-width: 0 1px 0 0;
+  z-index: 1;
 }
 
 .Timeline-TimeBox {
   border-style: solid;
+  border-color: rgb(200, 200, 200);
   border-width: 1px;
+  margin: -1px 0 0 -1px;
 }
 
 .Timeline-TimeBox-selected {
@@ -17,4 +23,10 @@
 
 .TimelineDay {
 
+}
+
+.date-heading {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }

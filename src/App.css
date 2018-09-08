@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans');
+
+body {
+  color: rgb(28,48,92);
+  font-family: 'Fira Sans', sans-serif;
+}
+
 #landing-page {
   min-height: 100vh;
   background: #ff806d fixed;

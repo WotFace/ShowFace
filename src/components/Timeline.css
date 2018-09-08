@@ -1,0 +1,16 @@
+.Timeline {
+  display: inline-grid;
+}
+
+.Timeline-Tick {
+
+}
+
+.Timeline-TimeBox {
+  border-style: solid;
+  border-width: 1px;
+}
+
+.TimelineDay {
+
+}

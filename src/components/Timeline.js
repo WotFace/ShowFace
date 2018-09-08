@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
+import memoize from 'memoize-one';
 import responsesToDict from '../utils/response';
 import './Timeline.css';
 
@@ -9,12 +10,35 @@ import './Timeline.css';
 // startTime, endTime
 // responses
 
-function getStartTimes(startTime, endTime) {
-  const numMin = moment.duration(endTime.diff(startTime)).asMinutes();
-  const mins = _.range(0, _.round(numMin), 15);
-  const startTimes = mins.map((min) => startTime.clone().add(min, 'minutes'));
-  return startTimes;
-}
+const getStartTimes = memoize(
+  (startTime, endTime) => {
+    console.log('OESUNTH');
+    const numMin = moment.duration(endTime.diff(startTime)).asMinutes();
+    const mins = _.range(0, _.round(numMin), 15);
+    const startTimes = mins.map((min) => startTime.clone().add(min, 'minutes'));
+    return startTimes;
+  },
+  (newTime, oldTime) => newTime.isSame(oldTime),
+);
+
+const getMomentsForDates = memoize(
+  (startTimes, allowedDates) => {
+    console.log('SOENUTH', startTimes, allowedDates);
+    return _.zipObject(
+      startTimes,
+      startTimes.map((time) => {
+        return _.zipObject(
+          allowedDates,
+          allowedDates.map((date) => moveDateTimeToDate(date, time)),
+        );
+      }),
+    );
+  },
+  (newTimes, oldTimes) =>
+    _.zip(newTimes, oldTimes)
+      .map(([newTime, oldTime]) => newTime.isSame(oldTime))
+      .includes(true),
+);
 
 function moveDateTimeToDate(date, dateTime) {
   return dateTime.clone().set({ year: date.year(), month: date.month(), date: date.date() });
@@ -32,14 +56,12 @@ const DateHeader = ({ date }) => {
 class TimeBox extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const keysToOmit = ['onMouseDown', 'onMouseMove', 'onMouseUp'];
-    const yes = !_.isEqual(_.omit(this.props, keysToOmit), _.omit(nextProps, keysToOmit));
-    // yes && console.log('BLAH');
-    return yes;
+    const shouldUpdate = !_.isEqual(_.omit(this.props, keysToOmit), _.omit(nextProps, keysToOmit));
+    return shouldUpdate;
   }
 
   getLightnessValue(maxSelectable, count) {
-    console.log(maxSelectable, count);
-    return Math.floor(100 - (65 / maxSelectable) * count);
+    return Math.floor(100 - 65 / maxSelectable * count);
   }
 
   render() {
@@ -125,6 +147,7 @@ class Timeline extends Component {
     const { allowedDates, startTime, endTime, responses, name } = this.props;
 
     const startTimes = getStartTimes(startTime, endTime);
+    const momentsForDates = getMomentsForDates(startTimes, allowedDates);
 
     this.renderableResponses = responsesToDict(responses || {});
 
@@ -143,7 +166,7 @@ class Timeline extends Component {
         <React.Fragment key={`row ${time.toISOString()}`}>
           <Tick startTime={time} />
           {allowedDates.map((date) => {
-            const startMomentWithDate = moveDateTimeToDate(date, time);
+            const startMomentWithDate = momentsForDates[time][date];
             const startTimeWithDate = startMomentWithDate.toDate();
 
             return (

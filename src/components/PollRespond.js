@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
+import update from 'immutability-helper';
+import { firestore } from 'firebase';
 import Timeline from './Timeline';
 
 function datesFromRange({ startDate, endDate }) {
@@ -18,15 +20,27 @@ class PollRespond extends Component {
   }
 
   handleSelect = (startTime) => {
-    console.log('DINGDINGDING');
-    if (this.state.name.length === 0) return;
-    console.log('DONGDONGDOESN');
+    const { name } = this.state;
+    if (name.length === 0) return;
+
+    const startFirebaseTimestamp = firestore.Timestamp.fromDate(startTime.toDate());
+    const newPoll = update(this.props.poll, {
+      responses: {
+        [name]: (currentTimes) =>
+          _.uniqBy((currentTimes || []).concat([startFirebaseTimestamp]), (date) => date.seconds),
+      },
+    });
+    this.props.onPollChange(newPoll);
   };
 
   render() {
-    const { poll, onPollChange } = this.props;
+    const { poll } = this.props;
+    const { name } = this.state;
     const allowedDates = datesFromRange(poll.dateRange);
     // console.log('poll', poll);
+
+    const ourResponses = poll.responses[name];
+    const responses = ourResponses ? { [name]: ourResponses } : {};
 
     return (
       <React.Fragment>
@@ -49,7 +63,7 @@ class PollRespond extends Component {
           allowedDates={allowedDates}
           startTime={moment().startOf('day')}
           endTime={moment().endOf('day')}
-          responses={poll.responses || []}
+          responses={responses}
           onSelect={this.handleSelect}
         />
       </React.Fragment>

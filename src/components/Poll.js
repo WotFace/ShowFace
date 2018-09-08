@@ -31,8 +31,9 @@ class Poll extends Component {
 
   componentDidMount() {
     const self = this;
-    this.pollDoc.get().then((doc) => {
+    this.pollDoc.onSnapshot((doc) => {
       if (doc.exists) {
+        console.log('New snapshot received', doc.data());
         self.setState({ poll: doc.data() });
       } else {
         console.log('no such document');
@@ -42,8 +43,8 @@ class Poll extends Component {
   }
 
   handlePollChange = (newPoll) => {
-    console.log('UPDATING POLL', newPoll);
     this.pollDoc.update(newPoll);
+    this.setState({ poll: newPoll }); // Optimistically update the local state
   };
 
   render() {

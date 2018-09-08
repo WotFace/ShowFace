@@ -99,3 +99,24 @@ body {
   bottom: .125em;
   position: relative;
 }
+
+.flex-container {
+  display: flex;
+}
+
+.flex-item {
+  flex: 1;
+  margin-right: 30px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.flex-large {
+  flex: 1.7;
+}
+
+#notAttending {
+  margin-top: 40px;
+}

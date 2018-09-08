@@ -55,22 +55,22 @@ const ShowAttendees = ({ attendees, allAttendees }) => {
   const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
 
   return (
-    <section id="attendees">
+    <section id="attendees" className="flex-item">
       <section id="attending">
         <h2>Attending</h2>
-        <ul>
+        <ol>
           {attendees.map((attendee) => {
             return <li key={attendee}>{attendee}</li>;
           })}
-        </ul>
+        </ol>
       </section>
       <section id="notAttending">
         <h2>Not Attending</h2>
-        <ul>
+        <ol>
           {notAttending.map((notAttendee) => {
             return <li key={notAttendee}>{notAttendee}</li>;
           })}
-        </ul>
+        </ol>
       </section>
     </section>
   );
@@ -170,7 +170,7 @@ class Timeline extends Component {
   }
 
   render() {
-    const { allowedDates, startTime, endTime, responses, name, minCount, maxCount } = this.props;
+    const { allowedDates, startTime, endTime, responses, name, minCount, maxCount, showAttendees } = this.props;
 
     const allAttendees = Object.keys(responses);
 
@@ -258,9 +258,9 @@ class Timeline extends Component {
     const headerCells = allowedDates.map((date) => <DateHeader date={date} key={date} />);
 
     return (
-      <section id="timeline">
+      <section id="timeline" className="flex-container">
         <div
-          className="Timeline"
+          className="Timeline flex-item flex-large"
           style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
           onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
         >
@@ -268,7 +268,9 @@ class Timeline extends Component {
           {headerCells}
           {rows}
         </div>
-        <ShowAttendees attendees={this.state.attendees} allAttendees={allAttendees} />
+        { showAttendees ?
+          <ShowAttendees attendees={this.state.attendees} allAttendees={allAttendees} />
+          : null }
       </section>
     );
   }

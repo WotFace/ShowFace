@@ -78,6 +78,7 @@ class PollResults extends Component {
           onDeselect={() => {}}
           minCount={this.state.sliderValues[0]}
           maxCount={this.state.sliderValues[1]}
+          showAttendees={true}
         />
       </div>
     );

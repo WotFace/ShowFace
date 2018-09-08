@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.1.3",
-    "dotenv": "^6.0.0",
     "firebase": "^5.4.2",
     "immutability-helper": "^2.7.1",
     "lodash": "^4.17.10",

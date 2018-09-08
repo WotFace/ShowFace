@@ -11,6 +11,10 @@
   border-width: 1px;
 }
 
+.Timeline-TimeBox-selected {
+  background-color: green;
+}
+
 .TimelineDay {
 
 }

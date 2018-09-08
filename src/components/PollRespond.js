@@ -65,6 +65,7 @@ class PollRespond extends Component {
           startTime={moment().startOf('day')}
           endTime={moment().endOf('day')}
           responses={responses}
+          name={this.state.name}
           onSelect={this.handleSelect}
         />
       </React.Fragment>

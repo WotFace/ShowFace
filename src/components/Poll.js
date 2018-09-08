@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Link } from 'react-router-dom';
+import _ from 'lodash';
 
 import PollRespond from './PollRespond';
 import PollResults from './PollResults';
@@ -37,7 +38,7 @@ class Poll extends Component {
       if (doc.exists) {
         self.setState({
           poll: doc.data(),
-          isLoaded: true
+          isLoaded: true,
         });
       } else {
         console.log('no such document');
@@ -46,8 +47,13 @@ class Poll extends Component {
     });
   }
 
+  uploadPoll = () => {
+    console.log('DERP');
+    // this.pollDoc.update(this.state.poll);
+  };
+
   handlePollChange = (newPoll) => {
-    this.pollDoc.update(newPoll);
+    _.debounce(this.uploadPoll);
     this.setState({ poll: newPoll }); // Optimistically update the local state
   };
 
@@ -58,7 +64,7 @@ class Poll extends Component {
       return (
         <section className="full-page flex">
           <h2>Loading</h2>
-          <ReactLoading type="bubbles" color="#111"/>
+          <ReactLoading type="bubbles" color="#111" />
         </section>
       );
     } else {
@@ -84,10 +90,10 @@ class Poll extends Component {
                 path={match.url + '/respond'}
                 render={() => <PollRespond poll={poll} onPollChange={this.handlePollChange} />}
               />
-                <Route
-                  path={match.url + '/results'}
-                  render={() => <PollResults poll={poll} onPollChange={this.handlePollChange} />}
-                />
+              <Route
+                path={match.url + '/results'}
+                render={() => <PollResults poll={poll} onPollChange={this.handlePollChange} />}
+              />
             </React.Fragment>
           )}
         </section>

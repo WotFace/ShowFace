@@ -84,7 +84,7 @@ class TimeBox extends Component {
   }
 
   getLightnessValue(maxSelectable, count) {
-    return Math.floor(100 - 65 / maxSelectable * count);
+    return Math.floor(100 - (65 / maxSelectable) * count);
   }
 
   render() {
@@ -170,7 +170,16 @@ class Timeline extends Component {
   }
 
   render() {
-    const { allowedDates, startTime, endTime, responses, name, minCount, maxCount, showAttendees } = this.props;
+    const {
+      allowedDates,
+      startTime,
+      endTime,
+      responses,
+      name,
+      minCount,
+      maxCount,
+      showAttendees,
+    } = this.props;
 
     const allAttendees = Object.keys(responses || {});
 
@@ -268,9 +277,9 @@ class Timeline extends Component {
           {headerCells}
           {rows}
         </div>
-        { showAttendees ?
+        {showAttendees ? (
           <ShowAttendees attendees={this.state.attendees} allAttendees={allAttendees} />
-          : null }
+        ) : null}
       </section>
     );
   }

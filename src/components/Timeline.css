@@ -17,12 +17,6 @@
   margin: -1px 0 0 -1px;
 }
 
-.Timeline-TimeBox-selected {
-  border-color: rgb(230, 250, 230);
-  background-color: rgb(210, 240, 220);
-  z-index: -1;
-}
-
 .TimelineDay {
 
 }

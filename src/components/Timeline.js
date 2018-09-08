@@ -37,12 +37,33 @@ class TimeBox extends Component {
     return yes;
   }
 
+  getLightnessValue(maxSelectable, count) {
+    console.log(maxSelectable, count);
+    return Math.floor(100 - (65 / maxSelectable) * count);
+  }
+
   render() {
-    const { date, selected, responseCount, onMouseDown, onMouseMove, onMouseUp } = this.props;
+    const {
+      date,
+      selected,
+      responseCount,
+      onMouseDown,
+      onMouseMove,
+      onMouseUp,
+      maxSelectable,
+    } = this.props;
+
+    const divStyle = {
+      backgroundColor: `hsla(107, 60%, ${this.getLightnessValue(
+        maxSelectable,
+        responseCount,
+      )}%, 1)`,
+    };
 
     return (
       <div
-        className={`Timeline-TimeBox${selected ? ' Timeline-TimeBox-selected' : ''}`}
+        className="Timeline-TimeBox"
+        style={divStyle}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
@@ -68,6 +89,11 @@ class Timeline extends Component {
   isSelected(startTime) {
     const responsesForDate = this.renderableResponses[startTime] || new Set();
     return responsesForDate.has(this.props.name);
+  }
+
+  getResponseCount(startTime) {
+    const responsesForDate = this.renderableResponses[startTime] || new Set();
+    return responsesForDate.size;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -102,6 +128,16 @@ class Timeline extends Component {
 
     this.renderableResponses = responsesToDict(responses || {});
 
+    const maxSelectable = name
+      ? 1
+      : _.reduce(
+          this.renderableResponses,
+          (maxLen, dates, name) => {
+            return Math.max(maxLen, dates.size);
+          },
+          0,
+        );
+
     const rows = startTimes.map((time) => {
       return (
         <React.Fragment key={`row ${time.toISOString()}`}>
@@ -116,6 +152,8 @@ class Timeline extends Component {
                 startTime={startTimeWithDate}
                 key={`timebox ${startMomentWithDate.toISOString()}`}
                 selected={this.isSelected(startTimeWithDate)}
+                maxSelectable={maxSelectable}
+                responseCount={this.getResponseCount(startTimeWithDate)}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   this.handleMouseEvent(startTimeWithDate, true);

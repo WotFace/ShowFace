@@ -8,41 +8,35 @@ import './Timeline.css';
 // startTime, endTime
 // responses
 
-function getTimeRanges(startTime, endTime) {
+function getStartTimes(startTime, endTime) {
   const numMin = moment.duration(endTime.diff(startTime)).asMinutes();
   const mins = _.range(0, _.round(numMin), 15);
   const startTimes = mins.map((min) => startTime.clone().add(min, 'minutes'));
-  const endTimes = startTimes.slice(1);
-  endTimes.push(endTime);
-  const ranges = _.zipWith(startTimes, endTimes, (startTime, endTime) => ({ startTime, endTime }));
-  return ranges;
+  return startTimes;
 }
 
-function moveTimeRangeToDate(date, range) {
-  const { startTime, endTime } = range;
-  return {
-    startTime: startTime.clone().dayOfYear(date.dayOfYear()),
-    endTime: endTime.clone().dayOfYear(date.dayOfYear()),
-  };
+function moveDateTimeToDate(date, dateTime) {
+  return dateTime.clone().dayOfYear(date.dayOfYear());
 }
 
-const Tick = ({ range }) => {
-  const { startTime, endTime } = range;
+const Tick = ({ startTime }) => {
   const format = 'h:mm';
-  return (
-    <span className="Timeline-Tick">
-      {startTime.format(format)} - {endTime.format(format)}
-    </span>
-  );
+  return <span className="Timeline-Tick">{startTime.format(format)}</span>;
 };
 
 const DateHeader = ({ date }) => {
   return <h4>{date.format('L')}</h4>;
 };
 
-const TimeBox = ({ date, range, selected, responseCount, onMouseDown, onMouseMove, onMouseUp }) => {
-  const { startTime, endTime } = range;
-  // {startTime.format('lll')} - {endTime.format('h:mm')}
+const TimeBox = ({
+  date,
+  startTime,
+  selected,
+  responseCount,
+  onMouseDown,
+  onMouseMove,
+  onMouseUp,
+}) => {
   return (
     <div
       className={`Timeline-TimeBox${selected ? ' Timeline-TimeBox-selected' : ''}`}
@@ -71,11 +65,11 @@ class Timeline extends Component {
     return !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState);
   }
 
-  handleMouseEvent(range, shouldStart) {
+  handleMouseEvent(startTime, shouldStart) {
     let dragState = this.state.dragState;
     if (shouldStart) {
       // TODO: Set drag state properly
-      // const isSelected = isSelected(range);
+      // const isSelected = isSelected(startTime);
       const isSelected = false;
       dragState = isSelected ? DragStateEnum.dragCanceling : DragStateEnum.dragSelecting;
       this.setState({ dragState });
@@ -83,11 +77,11 @@ class Timeline extends Component {
 
     switch (dragState) {
       case DragStateEnum.dragSelecting:
-        console.log('Select', range.startTime.toISOString());
-        this.props.onSelect(range.startTime);
+        console.log('Select', startTime.toISOString());
+        setTimeout(() => this.props.onSelect(startTime), 0);
         break;
       case DragStateEnum.dragCanceling:
-        console.log('Cancel', range.startTime.toISOString());
+        console.log('Cancel', startTime.toISOString());
         break;
     }
   }
@@ -95,21 +89,21 @@ class Timeline extends Component {
   render() {
     const { allowedDates, startTime, endTime, responses } = this.props;
 
-    const timeRanges = getTimeRanges(startTime, endTime);
+    const startTimes = getStartTimes(startTime, endTime);
 
-    const rows = timeRanges.map((range) => {
+    const rows = startTimes.map((time) => {
       return (
-        <React.Fragment key={range.startTime.toISOString() + range.endTime.toISOString()}>
-          <Tick range={range} />
+        <React.Fragment key={`row ${time.toISOString()}`}>
+          <Tick startTime={time} />
           {allowedDates.map((date) => {
-            const dateRange = moveTimeRangeToDate(date, range);
+            const startTimeWithDate = moveDateTimeToDate(date, time);
             return (
               <TimeBox
                 date={date}
-                range={dateRange}
-                key={dateRange.startTime.toISOString() + dateRange.endTime.toISOString()}
-                onMouseDown={() => this.handleMouseEvent(dateRange, true)}
-                onMouseMove={() => this.handleMouseEvent(dateRange, false)}
+                startTime={startTimeWithDate}
+                key={`timebox ${startTimeWithDate.toISOString()}`}
+                onMouseDown={() => this.handleMouseEvent(startTimeWithDate, true)}
+                onMouseMove={() => this.handleMouseEvent(startTimeWithDate, false)}
                 onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
               />
             );

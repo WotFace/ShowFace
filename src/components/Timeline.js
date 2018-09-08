@@ -8,29 +8,6 @@ import './Timeline.css';
 // startTime, endTime
 // responses
 
-const Tick = ({ range }) => {
-  const { startTime, endTime } = range;
-  const format = 'h:mm';
-  return (
-    <span className="Timeline-Tick">
-      {startTime.format(format)} - {endTime.format(format)}
-    </span>
-  );
-};
-
-const DateHeader = ({ date }) => {
-  return <h4>{date.format('L')}</h4>;
-};
-
-const TimeBox = ({ date, range, responses }) => {
-  const { startTime, endTime } = range;
-  return (
-    <div className="Timeline-TimeBox">
-      {startTime.format('lll')} - {endTime.format('h:mm')}
-    </div>
-  );
-};
-
 function getTimeRanges(startTime, endTime) {
   const numMin = moment.duration(endTime.diff(startTime)).asMinutes();
   const mins = _.range(0, _.round(numMin), 15);
@@ -49,7 +26,67 @@ function moveTimeRangeToDate(date, range) {
   };
 }
 
+const Tick = ({ range }) => {
+  const { startTime, endTime } = range;
+  const format = 'h:mm';
+  return (
+    <span className="Timeline-Tick">
+      {startTime.format(format)} - {endTime.format(format)}
+    </span>
+  );
+};
+
+const DateHeader = ({ date }) => {
+  return <h4>{date.format('L')}</h4>;
+};
+
+const TimeBox = ({ date, range, selected, responseCount, onMouseDown, onMouseMove, onMouseUp }) => {
+  const { startTime, endTime } = range;
+  // {startTime.format('lll')} - {endTime.format('h:mm')}
+  return (
+    <div
+      className={`Timeline-TimeBox${selected ? ' Timeline-TimeBox-selected' : ''}`}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+    />
+  );
+};
+
+const DragStateEnum = Object.freeze({
+  none: 0,
+  dragSelecting: 1,
+  dragCanceling: 2,
+});
+
 class Timeline extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dragState: DragStateEnum.none,
+    };
+  }
+
+  handleMouseEvent(range, shouldStart) {
+    let dragState = this.state.dragState;
+    if (shouldStart) {
+      // TODO: Set drag state properly
+      // const isSelected = isSelected(range);
+      const isSelected = false;
+      dragState = isSelected ? DragStateEnum.dragCanceling : DragStateEnum.dragSelecting;
+      this.setState({ dragState });
+    }
+
+    switch (dragState) {
+      case DragStateEnum.dragSelecting:
+        console.log('Select', range.startTime.toISOString());
+        break;
+      case DragStateEnum.dragCanceling:
+        console.log('Cancel', range.startTime.toISOString());
+        break;
+    }
+  }
+
   render() {
     const { allowedDates, startTime, endTime, responses } = this.props;
 
@@ -59,13 +96,19 @@ class Timeline extends Component {
       return (
         <React.Fragment key={range.startTime.toISOString() + range.endTime.toISOString()}>
           <Tick range={range} />
-          {allowedDates.map((date) => (
-            <TimeBox
-              date={date}
-              range={moveTimeRangeToDate(date, range)}
-              key={date.toISOString() + range.startTime.toISOString() + range.endTime.toISOString()}
-            />
-          ))}
+          {allowedDates.map((date) => {
+            const dateRange = moveTimeRangeToDate(date, range);
+            return (
+              <TimeBox
+                date={date}
+                range={dateRange}
+                key={dateRange.startTime.toISOString() + dateRange.endTime.toISOString()}
+                onMouseDown={() => this.handleMouseEvent(dateRange, true)}
+                onMouseMove={() => this.handleMouseEvent(dateRange, false)}
+                onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
+              />
+            );
+          })}
         </React.Fragment>
       );
     });
@@ -76,6 +119,7 @@ class Timeline extends Component {
       <div
         className="Timeline"
         style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
+        onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
       >
         <span className="Timeline-filler" />
         {headerCells}

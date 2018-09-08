@@ -85,3 +85,9 @@ body {
 #form-header #header {
   font-size: 72px;
 }
+
+.link {
+  color: #ccc;
+  text-decoration: underline;
+  cursor: pointer;
+}

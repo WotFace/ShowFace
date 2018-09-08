@@ -7,7 +7,6 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
 
 import generateName from '../utils/generateName';
-import copyToClipboard from '../utils/copyToClipboard';
 
 import { withAlert } from 'react-alert';
 
@@ -48,9 +47,9 @@ class Create extends Component {
       .set(data)
       .then((doc) => {
         const path = `/poll/${pollId}`;
-        const url = `${window.location.origin}/${path}`;
-        copyToClipboard(url);
-        this.props.alert.show('Poll successfully created! Link copied to clipboard.');
+        this.props.alert.show('Poll successfully created!', {
+          type: 'success',
+        });
         const location = {
           pathname: path,
         };

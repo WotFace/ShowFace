@@ -4,8 +4,10 @@ import { Route, Link } from 'react-router-dom';
 import PollRespond from './PollRespond';
 import PollResults from './PollResults';
 
-import db from '../db';
+import copyToClipboard from '../utils/copyToClipboard';
+import { withAlert } from 'react-alert';
 
+import db from '../db';
 
 class Poll extends Component {
   constructor(props) {
@@ -13,14 +15,22 @@ class Poll extends Component {
     this.state = {
       isNew: false,
     };
+
+    this.copyUrlToClipboard = this.copyUrlToClipboard.bind(this);
+  }
+
+  copyUrlToClipboard() {
+    copyToClipboard(window.location.href);
+    this.props.alert.show('Url copied to clipboard.', {
+      type: 'success',
+    });
   }
 
   componentDidMount() {
     const self = this;
     const pollId = this.props.match.params.pollId;
 
-    db
-      .collection('polls')
+    db.collection('polls')
       .doc(pollId)
       .get()
       .then((doc) => {
@@ -40,7 +50,12 @@ class Poll extends Component {
     return (
       <section id="poll">
         <section id="header">
-          <h1>{poll && poll.name}</h1>
+          <h1>
+            {poll && poll.name}{' '}
+            <span class="link" onClick={this.copyUrlToClipboard}>
+              Copy to Clipboard
+            </span>
+          </h1>
           <nav>
             <ul>
               <Link to={`${match.url}/respond`}>Respond</Link>
@@ -59,4 +74,4 @@ class Poll extends Component {
   }
 }
 
-export default Poll;
+export default withAlert(Poll);

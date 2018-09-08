@@ -16,6 +16,9 @@ class Poll extends Component {
       isNew: false,
     };
 
+    const pollId = this.props.match.params.pollId;
+    this.pollDoc = db.collection('polls').doc(pollId);
+
     this.copyUrlToClipboard = this.copyUrlToClipboard.bind(this);
   }
 
@@ -28,20 +31,20 @@ class Poll extends Component {
 
   componentDidMount() {
     const self = this;
-    const pollId = this.props.match.params.pollId;
-
-    db.collection('polls')
-      .doc(pollId)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          self.setState({ poll: doc.data() });
-        } else {
-          console.log('no such document');
-          console.log(doc);
-        }
-      });
+    this.pollDoc.get().then((doc) => {
+      if (doc.exists) {
+        self.setState({ poll: doc.data() });
+      } else {
+        console.log('no such document');
+        console.log(doc);
+      }
+    });
   }
+
+  handlePollChange = (newPoll) => {
+    console.log('UPDATING POLL', newPoll);
+    this.pollDoc.update(newPoll);
+  };
 
   render() {
     const { match } = this.props;
@@ -65,8 +68,14 @@ class Poll extends Component {
         </section>
         {poll && (
           <React.Fragment>
-            <Route path={match.url + '/respond'} render={() => <PollRespond poll={poll} />} />
-            <Route path={match.url + '/results'} render={() => <PollResults poll={poll} />} />
+            <Route
+              path={match.url + '/respond'}
+              render={() => <PollRespond poll={poll} onPollChange={this.handlePollChange} />}
+            />
+            <Route
+              path={match.url + '/results'}
+              render={() => <PollResults poll={poll} onPollChange={this.handlePollChange} />}
+            />
           </React.Fragment>
         )}
       </section>

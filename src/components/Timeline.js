@@ -67,6 +67,10 @@ class Timeline extends Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState);
+  }
+
   handleMouseEvent(range, shouldStart) {
     let dragState = this.state.dragState;
     if (shouldStart) {
@@ -80,6 +84,7 @@ class Timeline extends Component {
     switch (dragState) {
       case DragStateEnum.dragSelecting:
         console.log('Select', range.startTime.toISOString());
+        this.props.onSelect(range.startTime);
         break;
       case DragStateEnum.dragCanceling:
         console.log('Cancel', range.startTime.toISOString());

@@ -1,28 +1,48 @@
-.App {
-  text-align: center;
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+#fullscreen {
+  height: 100vh;
+  width: 100vw;
+  background: #ff806d;
+  background: -moz-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%);
+  background: -webkit-gradient(left top, right bottom, color-stop(30%, #ffb844), color-stop(100%, #ffb844));
+  background: -webkit-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%);
+  background: -o-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%);
+  background: -ms-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%);
+  background: linear-gradient(135deg, #ffb844 30%, #ff806d 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffb844', endColorstr='#ff806d', GradientType=1 );
+  z-index: 1;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.App-title {
-  font-size: 1.5em;
+#logo {
+  width: 484px;
+  margin: 30px 0;
 }
 
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.poll-input {
+  box-sizing: border-box;
+  outline: none;
+  background-color: #fff;
+  height: 60px;
+  vertical-align: top;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  width: 484px;
+  padding: 5px 9px;
+  padding-left: 16px;
+  margin-bottom: 20px;
 }

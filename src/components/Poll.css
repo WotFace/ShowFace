@@ -18,15 +18,10 @@
   text-align: center;
 }
 
-.link {
-  text-decoration: none !important;
+.content-logo {
+  margin-bottom: 15px !important;
 }
 
-.link:after {
-  background: url(../clipboard-regular.svg);
-  /* https://fontawesome.com/license */
-}
-
-.link:hover {
-  text-decoration: underline !important;
+.rc-slider {
+  margin-bottom: 45px;
 }

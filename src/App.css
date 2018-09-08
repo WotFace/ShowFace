@@ -3,7 +3,6 @@
 body {
   color: rgb(28,48,92);
   font-family: 'Fira Sans', sans-serif;
-  padding: 3rem;
 }
 
 input[type=text] {
@@ -46,8 +45,8 @@ input[type=text] {
 }
 
 #logo {
-  width: 484px;
-  margin: 30px 0;
+  width: 100%;
+  margin: 30px auto;
 }
 
 .poll-input {
@@ -77,11 +76,10 @@ input[type=text] {
   color: #fff;
   background-color: rgb(28,48,92);
   border-color: rgb(28,48,92);
-
 }
 
-.btn-long {
-  width: 400px;
+.Welcome-content {
+  width: 500px;
 }
 
 #form-header {

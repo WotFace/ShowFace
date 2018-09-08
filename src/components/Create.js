@@ -82,25 +82,29 @@ class Create extends Component {
           <img className="logo" alt="" src={logo} />
           <h1 id="header">Create a new poll</h1>
         </section>
-        <section id="form">
-          <form onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">Poll Name</label>
-              <input
-                name="name"
-                type="text"
-                placeholder="Poll Name"
-                onChange={this.handleInputChange}
-              />
-            </div>
-            <DateRange
-              onChange={this.handleRangeChange.bind(this, 'dateRanges')}
-              moveRangeOnFirstSelection={false}
-              ranges={[this.state.dateRanges.selection]}
-              minDate={new Date()}
-            />
-            <input type="submit" value="Submit" />
-          </form>
+        <section id="form" className="row">
+          <div className="col">
+            <form onSubmit={this.handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="name">Poll Name</label>
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="Poll Name"
+                  onChange={this.handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <DateRange
+                  onChange={this.handleRangeChange.bind(this, 'dateRanges')}
+                  moveRangeOnFirstSelection={false}
+                  ranges={[this.state.dateRanges.selection]}
+                  minDate={new Date()}
+                />
+              </div>
+              <input type="submit" className="btn btn-primary" value="Submit" />
+            </form>
+          </div>
         </section>
       </div>
     );

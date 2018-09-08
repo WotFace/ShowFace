@@ -31,6 +31,7 @@ class Create extends Component {
   handleSubmit(event) {
     const pollId = generateName();
     const docRef = db.collection('polls').doc(pollId);
+    const self = this;
 
     const data = {
       name: this.state.name,
@@ -43,8 +44,13 @@ class Create extends Component {
     docRef
       .set(data)
       .then((doc) => {
-        this.props.history.push(`/poll/${pollId}?new=True`);
-        console.log(doc);
+        const location = {
+          pathname: `/poll/${pollId}`,
+          state: {
+            isNew: true,
+          },
+        };
+        self.props.history.push(location);
       })
       .catch((error) => {
         console.log(error);

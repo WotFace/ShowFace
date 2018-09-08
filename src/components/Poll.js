@@ -4,6 +4,8 @@ import { Route, Link } from 'react-router-dom';
 import PollRespond from './PollRespond';
 import PollResults from './PollResults';
 
+import ReactLoading from 'react-loading';
+
 import copyToClipboard from '../utils/copyToClipboard';
 import { withAlert } from 'react-alert';
 
@@ -13,7 +15,7 @@ class Poll extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isNew: false,
+      isLoaded: false,
     };
 
     const pollId = this.props.match.params.pollId;
@@ -33,8 +35,10 @@ class Poll extends Component {
     const self = this;
     this.pollDoc.onSnapshot((doc) => {
       if (doc.exists) {
-        console.log('New snapshot received', doc.data());
-        self.setState({ poll: doc.data() });
+        self.setState({
+          poll: doc.data(),
+          isLoaded: true
+        });
       } else {
         console.log('no such document');
         console.log(doc);
@@ -49,38 +53,46 @@ class Poll extends Component {
 
   render() {
     const { match } = this.props;
-    const { poll } = this.state;
-
-    return (
-      <section id="poll">
-        <section id="header">
-          <h1>
-            {poll && poll.name}{' '}
-            <span className="link" onClick={this.copyUrlToClipboard}>
-              Copy to Clipboard
-            </span>
-          </h1>
-          <nav>
-            <ul>
-              <Link to={`${match.url}/respond`}>Respond</Link>
-              <Link to={`${match.url}/results`}>Results</Link>
-            </ul>
-          </nav>
+    const { isLoaded, poll } = this.state;
+    if (!isLoaded) {
+      return (
+        <section class="full-page flex">
+          <h2>Loading</h2>
+          <ReactLoading type="bubbles" color="#111"/>
         </section>
-        {poll && (
-          <React.Fragment>
-            <Route
-              path={match.url + '/respond'}
-              render={() => <PollRespond poll={poll} onPollChange={this.handlePollChange} />}
-            />
-            <Route
-              path={match.url + '/results'}
-              render={() => <PollResults poll={poll} onPollChange={this.handlePollChange} />}
-            />
-          </React.Fragment>
-        )}
-      </section>
-    );
+      );
+    } else {
+      return (
+        <section id="poll">
+          <section id="header">
+            <h1>
+              {poll && poll.name}{' '}
+              <span className="link" onClick={this.copyUrlToClipboard}>
+                Copy to Clipboard
+              </span>
+            </h1>
+            <nav>
+              <ul>
+                <Link to={`${match.url}/respond`}>Respond</Link>
+                <Link to={`${match.url}/results`}>Results</Link>
+              </ul>
+            </nav>
+          </section>
+          {poll && (
+            <React.Fragment>
+              <Route
+                path={match.url + '/respond'}
+                render={() => <PollRespond poll={poll} onPollChange={this.handlePollChange} />}
+              />
+                <Route
+                  path={match.url + '/results'}
+                  render={() => <PollResults poll={poll} onPollChange={this.handlePollChange} />}
+                />
+            </React.Fragment>
+          )}
+        </section>
+      );
+    }
   }
 }
 

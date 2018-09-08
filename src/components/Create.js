@@ -77,7 +77,7 @@ class Create extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container Create-container">
         <section id="form-header">
           <img className="logo" alt="" src={logo} />
           <h1 id="header">Create a new poll</h1>
@@ -86,9 +86,9 @@ class Create extends Component {
           <div className="col">
             <form onSubmit={this.handleSubmit}>
               <div className="form-group">
-                <label htmlFor="name">Poll Name</label>
                 <input
                   name="name"
+                  className="form-control"
                   type="text"
                   placeholder="Poll Name"
                   onChange={this.handleInputChange}

@@ -5,17 +5,10 @@ body {
   font-family: 'Fira Sans', sans-serif;
 }
 
-input[type=text] {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgb(28, 48, 92);
-  margin: 0 0.5rem 0 0.5rem;
-}
-
 #landing-page {
   min-height: 100vh;
   background: url(bg.svg);
-  background-size: 100% auto;
+  background-size: 100% 100%;
   z-index: 1;
 }
 
@@ -78,15 +71,16 @@ input[type=text] {
 
 #form-header {
   padding-top: 50px;
+  padding-bottom: 20px;
 }
 
 #form-header .logo {
   width: 260px;
-  margin-bottom: 70px;
+  margin-bottom: 30px;
 }
 
 #form-header #header {
-  font-size: 72px;
+  font-size: 64px;
 }
 
 .link {
@@ -98,4 +92,8 @@ input[type=text] {
 .slider {
   margin-bottom: 40px;
   max-width: 400px;
+}
+
+.Create-container {
+  margin-bottom: 30px;
 }

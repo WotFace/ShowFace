@@ -3,19 +3,20 @@ import _ from 'lodash';
 
 const responseToDict = (responses) => {
   responses = _.mapValues(responses, (v) => _.map(v, (dt) => dt.toDate()));
-  const m = {};
-  for (var name in responses) {
-    const timings = responses[name];
-    for (var i in timings) {
-      const mtiming = timings[i];
-      if (!m[mtiming]) {
-        m[mtiming] = [name];
-      } else {
-        m[mtiming].push(name);
-      }
-    }
-  }
-  return m;
+  return _.reduce(
+    responses,
+    (hm, dates, name) => {
+      _.forEach(dates, (date) => {
+        if (hm[date]) {
+          hm[date].add(name);
+        } else {
+          hm[date] = new Set([name]);
+        }
+      });
+      return hm;
+    },
+    {},
+  );
 };
 
 export default responseToDict;

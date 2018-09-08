@@ -16,7 +16,7 @@ function getStartTimes(startTime, endTime) {
 }
 
 function moveDateTimeToDate(date, dateTime) {
-  return dateTime.clone().dayOfYear(date.dayOfYear());
+  return dateTime.dayOfYear(date.dayOfYear());
 }
 
 const Tick = ({ startTime }) => {
@@ -28,24 +28,27 @@ const DateHeader = ({ date }) => {
   return <h4>{date.format('L')}</h4>;
 };
 
-const TimeBox = ({
-  date,
-  startTime,
-  selected,
-  responseCount,
-  onMouseDown,
-  onMouseMove,
-  onMouseUp,
-}) => {
-  return (
-    <div
-      className={`Timeline-TimeBox${selected ? ' Timeline-TimeBox-selected' : ''}`}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-    />
-  );
-};
+class TimeBox extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    const keysToOmit = ['onMouseDown', 'onMouseMove', 'onMouseUp'];
+    const yes = !_.isEqual(_.omit(this.props, keysToOmit), _.omit(nextProps, keysToOmit));
+    yes && console.log('BLAH');
+    return yes;
+  }
+
+  render() {
+    const { date, selected, responseCount, onMouseDown, onMouseMove, onMouseUp } = this.props;
+
+    return (
+      <div
+        className={`Timeline-TimeBox${selected ? ' Timeline-TimeBox-selected' : ''}`}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+      />
+    );
+  }
+}
 
 const DragStateEnum = Object.freeze({
   none: 0,
@@ -67,9 +70,10 @@ class Timeline extends Component {
 
   handleMouseEvent(startTime, shouldStart) {
     let dragState = this.state.dragState;
+    const startMoment = moment(startTime);
     if (shouldStart) {
       // TODO: Set drag state properly
-      // const isSelected = isSelected(startTime);
+      // const isSelected = isSelected(startMoment);
       const isSelected = false;
       dragState = isSelected ? DragStateEnum.dragCanceling : DragStateEnum.dragSelecting;
       this.setState({ dragState });
@@ -77,11 +81,11 @@ class Timeline extends Component {
 
     switch (dragState) {
       case DragStateEnum.dragSelecting:
-        console.log('Select', startTime.toISOString());
-        setTimeout(() => this.props.onSelect(startTime), 0);
+        console.log('Select', startMoment.toISOString());
+        this.props.onSelect(startMoment);
         break;
       case DragStateEnum.dragCanceling:
-        console.log('Cancel', startTime.toISOString());
+        console.log('Cancel', startMoment.toISOString());
         break;
     }
   }
@@ -99,11 +103,11 @@ class Timeline extends Component {
             const startTimeWithDate = moveDateTimeToDate(date, time);
             return (
               <TimeBox
-                date={date}
-                startTime={startTimeWithDate}
+                date={date.toDate()}
+                startTime={startTimeWithDate.toDate()}
                 key={`timebox ${startTimeWithDate.toISOString()}`}
-                onMouseDown={() => this.handleMouseEvent(startTimeWithDate, true)}
-                onMouseMove={() => this.handleMouseEvent(startTimeWithDate, false)}
+                onMouseDown={() => this.handleMouseEvent(startTimeWithDate.toDate(), true)}
+                onMouseMove={() => this.handleMouseEvent(startTimeWithDate.toDate(), false)}
                 onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
               />
             );

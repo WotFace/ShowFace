@@ -22,17 +22,13 @@ class Poll extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      poll: {
-        name: '',
-      },
-      isLoaded: false,
       isNew: false,
     };
   }
 
   componentDidMount() {
     const self = this;
-    const pollId = this.props.match.params['pollId'];
+    const pollId = this.props.match.params.pollId;
     if (this.props.location.state && this.props.location.state.isNew) {
       this.setState({ isNew: true });
       this.props.location.state.isNew = false;
@@ -44,7 +40,7 @@ class Poll extends Component {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          self.setState({ poll: doc.data(), isLoaded: true });
+          self.setState({ poll: doc.data() });
         } else {
           console.log('no such document');
           console.log(doc);
@@ -60,7 +56,7 @@ class Poll extends Component {
       <section id="poll">
         <NewPollAlert isNew={this.state.isNew} />
         <section id="header">
-          <h1>{poll.name}</h1>
+          <h1>{poll && poll.name}</h1>
           <nav>
             <ul>
               <Link to={`${match.url}/respond`}>Respond</Link>
@@ -68,8 +64,12 @@ class Poll extends Component {
             </ul>
           </nav>
         </section>
-        <Route path={match.url + '/respond'} render={() => <PollRespond poll={poll} />} />
-        <Route path={match.url + '/results'} component={PollResults} />
+        {poll && (
+          <React.Fragment>
+            <Route path={match.url + '/respond'} render={() => <PollRespond poll={poll} />} />
+            <Route path={match.url + '/results'} render={() => <PollResults poll={poll} />} />
+          </React.Fragment>
+        )}
       </section>
     );
   }

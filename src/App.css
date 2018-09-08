@@ -14,14 +14,8 @@ input[type=text] {
 
 #landing-page {
   min-height: 100vh;
-  background: #ff806d fixed;
-  background: -moz-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;
-  background: -webkit-gradient(left top, right bottom, color-stop(30%, #ffb844), color-stop(100%, #ffb844)) fixed;
-  background: -webkit-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;
-  background: -o-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;
-  background: -ms-linear-gradient(-45deg, #ffb844 30%, #ff806d 100%) fixed;
-  background: linear-gradient(135deg, #ffb844 30%, #ff806d 100%) fixed;
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffb844', endColorstr='#ff806d', GradientType=1 );
+  background: url(bg.svg);
+  background-size: 100% auto;
   z-index: 1;
 }
 

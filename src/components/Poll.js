@@ -12,6 +12,8 @@ import { withAlert } from 'react-alert';
 
 import db from '../db';
 
+import './Poll.css';
+
 class Poll extends Component {
   constructor(props) {
     super(props);
@@ -73,7 +75,7 @@ class Poll extends Component {
             <h1>
               {poll && poll.name}{' '}
               <span className="link" onClick={this.copyUrlToClipboard}>
-                Copy to Clipboard
+                Copy link
               </span>
             </h1>
             <nav>

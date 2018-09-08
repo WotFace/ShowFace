@@ -12,7 +12,6 @@ import './Timeline.css';
 
 const getStartTimes = memoize(
   (startTime, endTime) => {
-    console.log('OESUNTH');
     const numMin = moment.duration(endTime.diff(startTime)).asMinutes();
     const mins = _.range(0, _.round(numMin), 15);
     const startTimes = mins.map((min) => startTime.clone().add(min, 'minutes'));
@@ -23,7 +22,6 @@ const getStartTimes = memoize(
 
 const getMomentsForDates = memoize(
   (startTimes, allowedDates) => {
-    console.log('SOENUTH', startTimes, allowedDates);
     return _.zipObject(
       startTimes,
       startTimes.map((time) => {

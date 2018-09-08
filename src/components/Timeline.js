@@ -17,7 +17,7 @@ function getStartTimes(startTime, endTime) {
 }
 
 function moveDateTimeToDate(date, dateTime) {
-  return dateTime.dayOfYear(date.dayOfYear());
+  return dateTime.clone().set({ year: date.year(), month: date.month(), date: date.date() });
 }
 
 const Tick = ({ startTime }) => {

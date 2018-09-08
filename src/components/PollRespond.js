@@ -24,7 +24,8 @@ class PollRespond extends Component {
     if (name.length === 0) return;
 
     const startFirebaseTimestamp = firestore.Timestamp.fromDate(startTime.toDate());
-    const newPoll = update(this.props.poll, {
+    let newPoll = Object.assign({ responses: {} }, this.props.poll);
+    newPoll = update(newPoll, {
       responses: {
         [name]: (currentTimes) =>
           _.uniqBy((currentTimes || []).concat([startFirebaseTimestamp]), (date) => date.seconds),
@@ -39,7 +40,7 @@ class PollRespond extends Component {
     const allowedDates = datesFromRange(poll.dateRange);
     // console.log('poll', poll);
 
-    const ourResponses = poll.responses[name];
+    const ourResponses = poll.responses ? poll.responses[name] : {};
     const responses = ourResponses ? { [name]: ourResponses } : {};
 
     return (

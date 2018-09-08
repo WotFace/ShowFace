@@ -56,7 +56,7 @@ class Poll extends Component {
         <section id="header">
           <h1>
             {poll && poll.name}{' '}
-            <span class="link" onClick={this.copyUrlToClipboard}>
+            <span className="link" onClick={this.copyUrlToClipboard}>
               Copy to Clipboard
             </span>
           </h1>

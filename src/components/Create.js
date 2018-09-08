@@ -77,15 +77,15 @@ class Create extends Component {
 
   render() {
     return (
-      <div class="container">
+      <div className="container">
         <section id="form-header">
-          <img class="logo" alt="" src={logo} />
+          <img className="logo" alt="" src={logo} />
           <h1 id="header">Create a new poll</h1>
         </section>
         <section id="form">
           <form onSubmit={this.handleSubmit}>
-            <div class="form-group">
-              <label for="name">Poll Name</label>
+            <div className="form-group">
+              <label htmlFor="name">Poll Name</label>
               <input
                 name="name"
                 type="text"

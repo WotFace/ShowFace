@@ -82,7 +82,7 @@ class PollResults extends Component {
 
     return (
       <div>
-        <p className="Poll-Slider-label">Number of People Available:</p>
+        <p className="Poll-Slider-label">Filter by attendance:</p>
         <Range {...sliderConfig} className="Poll-slider" />
         <Timeline
           allowedDates={allowedDates}

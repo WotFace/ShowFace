@@ -52,6 +52,10 @@
   position: sticky;
 }
 
+#poll-time {
+  margin-bottom: 1em;
+}
+
 ol {
   margin: -0.5em;
 }

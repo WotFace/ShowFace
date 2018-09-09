@@ -57,26 +57,26 @@ const ShowAttendees = ({ responses, allAttendees, time }) => {
   const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
 
   return (
-    <div>
-    <section id="attendees" className="flex-item">
-      {time ? <h2 id="poll-time">{moment(time).format('Do MMM YYYY hh:mma')}</h2> : null}
-      <section id="attending">
-        <h3>Attending</h3>
-        <ol>
-          {attendees.map((attendee) => {
-            return <li key={attendee}>{attendee}</li>;
-          })}
-        </ol>
+    <div className="col-4">
+      <section id="attendees" className="flex-item">
+        {time ? <h2 id="poll-time">{moment(time).format('Do MMM YYYY hh:mma')}</h2> : null}
+        <section id="attending">
+          <h3>Attending</h3>
+          <ol>
+            {attendees.map((attendee) => {
+              return <li key={attendee}>{attendee}</li>;
+            })}
+          </ol>
+        </section>
+        <section id="notAttending">
+          <h3>Not Attending</h3>
+          <ol>
+            {notAttending.map((notAttendee) => {
+              return <li key={notAttendee}>{notAttendee}</li>;
+            })}
+          </ol>
+        </section>
       </section>
-      <section id="notAttending">
-        <h3>Not Attending</h3>
-        <ol>
-          {notAttending.map((notAttendee) => {
-            return <li key={notAttendee}>{notAttendee}</li>;
-          })}
-        </ol>
-      </section>
-    </section>
     </div>
   );
 };
@@ -89,7 +89,7 @@ class TimeBox extends Component {
   }
 
   getLightnessValue(maxSelectable, count) {
-    return Math.floor(100 - (65 / maxSelectable) * count);
+    return Math.floor(100 - 65 / maxSelectable * count);
   }
 
   render() {
@@ -270,22 +270,24 @@ class Timeline extends Component {
 
     return (
       <section id="timeline" className="flex-container">
-        <div
-          className="Timeline flex-item flex-large"
-          style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
-          onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
-        >
-          <span className="Timeline-filler" />
-          {headerCells}
-          {rows}
+        <div className="row">
+          <div
+            className={`Timeline col-${showAttendees ? 8 : 12}`}
+            style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
+            onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
+          >
+            <span className="Timeline-filler" />
+            {headerCells}
+            {rows}
+          </div>
+          {showAttendees ? (
+            <ShowAttendees
+              responses={self.allResponses}
+              allAttendees={allAttendees}
+              time={this.state.selectedTime}
+            />
+          ) : null}
         </div>
-        {showAttendees ? (
-          <ShowAttendees
-            responses={self.allResponses}
-            allAttendees={allAttendees}
-            time={this.state.selectedTime}
-          />
-        ) : null}
       </section>
     );
   }

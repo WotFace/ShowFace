@@ -51,13 +51,16 @@ const DateHeader = ({ date }) => {
   return <span className="date-heading timeline-label">{date.format('DD/MM')}</span>;
 };
 
-const ShowAttendees = ({ attendees, allAttendees }) => {
+const ShowAttendees = ({ responses, allAttendees, time }) => {
+  let attendees = responses[time] || [];
+  attendees = Array.from(attendees);
   const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
 
   return (
     <section id="attendees" className="flex-item">
+      {time ? <h2 id="poll-time">{moment(time).format('Do MMM YYYY hh:mma')}</h2> : null}
       <section id="attending">
-        <h2>Attending</h2>
+        <h3>Attending</h3>
         <ol>
           {attendees.map((attendee) => {
             return <li key={attendee}>{attendee}</li>;
@@ -65,7 +68,7 @@ const ShowAttendees = ({ attendees, allAttendees }) => {
         </ol>
       </section>
       <section id="notAttending">
-        <h2>Not Attending</h2>
+        <h3>Not Attending</h3>
         <ol>
           {notAttending.map((notAttendee) => {
             return <li key={notAttendee}>{notAttendee}</li>;
@@ -130,7 +133,6 @@ class Timeline extends Component {
     super(props);
     this.state = {
       dragState: DragStateEnum.none,
-      attendees: [],
     };
   }
 
@@ -253,9 +255,7 @@ class Timeline extends Component {
                 }}
                 onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
                 onMouseEnter={() => {
-                  let attendees = self.allResponses[startTimeWithDate] || [];
-                  attendees = Array.from(attendees);
-                  this.setState({ attendees });
+                  this.setState({ selectedTime: startTimeWithDate });
                 }}
               />
             );
@@ -278,7 +278,11 @@ class Timeline extends Component {
           {rows}
         </div>
         {showAttendees ? (
-          <ShowAttendees attendees={this.state.attendees} allAttendees={allAttendees} />
+          <ShowAttendees
+            responses={self.allResponses}
+            allAttendees={allAttendees}
+            time={this.state.selectedTime}
+          />
         ) : null}
       </section>
     );

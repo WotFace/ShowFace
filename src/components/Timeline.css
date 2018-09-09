@@ -45,3 +45,13 @@
 .timeline-label {
   background-color: rgb(240, 240, 240);
 }
+
+#attendees {
+  top: 1em;
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+ol {
+  margin: -0.5em;
+}

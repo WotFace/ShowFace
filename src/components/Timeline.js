@@ -57,6 +57,7 @@ const ShowAttendees = ({ responses, allAttendees, time }) => {
   const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
 
   return (
+    <div>
     <section id="attendees" className="flex-item">
       {time ? <h2 id="poll-time">{moment(time).format('Do MMM YYYY hh:mma')}</h2> : null}
       <section id="attending">
@@ -76,6 +77,7 @@ const ShowAttendees = ({ responses, allAttendees, time }) => {
         </ol>
       </section>
     </section>
+    </div>
   );
 };
 

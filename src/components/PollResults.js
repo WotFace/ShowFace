@@ -18,13 +18,14 @@ class PollResults extends Component {
     this.state = {
       maxSelectable: 0,
       sliderValues: [0, 0],
+      slided: false,
     };
 
     this.onSliderChange = this.onSliderChange.bind(this);
   }
 
-  componentDidMount() {
-    const responses = this.props.poll.responses || {};
+  static getDerivedStateFromProps(props, state) {
+    const responses = props.poll.responses || {};
     const renderableResponses = responsesToDict(responses || {});
     const maxSelectable = _.reduce(
       renderableResponses,
@@ -33,16 +34,29 @@ class PollResults extends Component {
       },
       0,
     );
-    this.setState({
-      renderableResponses,
-      maxSelectable,
-      sliderValues: [0, maxSelectable],
-    });
+
+    if (maxSelectable === state.maxSelectable) {
+      return {
+        renderableResponses,
+      };
+    } else if (state.slided) {
+      return {
+        renderableResponses,
+        maxSelectable,
+      };
+    } else {
+      return {
+        renderableResponses,
+        maxSelectable,
+        sliderValues: [0, maxSelectable],
+      };
+    }
   }
 
   onSliderChange(sliderValues) {
     this.setState({
       sliderValues: sliderValues,
+      slided: true,
     });
   }
 

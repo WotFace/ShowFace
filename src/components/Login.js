@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from '../logo.png';
 import { withAlert } from 'react-alert';
-import { db, provider, auth } from '../db';
+import { db, facebookAuthProvider, auth } from '../db';
 const loginStyles = {
   width: '90%',
   maxWidth: '315px',
@@ -21,7 +21,7 @@ class Login extends Component {
 
   authWithFacebook() {
     auth()
-      .signInWithPopup(provider)
+      .signInWithPopup(facebookAuthProvider)
       .then((result) => {
         console.log('Credentials', result);
         this.setState({ user: result });

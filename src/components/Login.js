@@ -33,7 +33,18 @@ class Login extends Component {
   }
 
   authWithEmailPassword(event) {
+    const email = this.emailInput.value;
+    const password = this.passwordInput.value;
     event.preventDefault();
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((result) => {
+        console.log('Credentials', result);
+        this.setState({ user: result });
+      })
+      .catch((error) => {
+        console.log('Error', error);
+      });
     console.log('Authenticating with Firebase');
     console.table([
       {

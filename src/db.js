@@ -8,10 +8,11 @@ firebase.initializeApp({
 
 const db = firebase.firestore();
 const facebookAuthProvider = new firebase.auth.FacebookAuthProvider();
+const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth;
 
 db.settings({
   timestampsInSnapshots: true,
 });
 
-export { db, facebookAuthProvider, auth };
+export { db, facebookAuthProvider, googleAuthProvider, auth };

@@ -10,7 +10,7 @@ import generateName from '../utils/generateName';
 
 import { withAlert } from 'react-alert';
 
-import db from '../db';
+import { db } from '../db';
 
 class Create extends Component {
   constructor(props) {

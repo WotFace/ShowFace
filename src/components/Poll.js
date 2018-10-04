@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { withAlert } from 'react-alert';
 import ReactLoading from 'react-loading';
 
-import db from '../db';
+import { db } from '../db';
 
 import copyToClipboard from '../utils/copyToClipboard';
 

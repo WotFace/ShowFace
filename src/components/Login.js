@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from '../logo.png';
 import { withAlert } from 'react-alert';
-import { db, provider, auth } from '../db';
+import { db, facebookAuthProvider, auth } from '../db';
 const loginStyles = {
   width: '90%',
   maxWidth: '315px',
@@ -21,7 +21,7 @@ class Login extends Component {
 
   authWithFacebook() {
     auth()
-      .signInWithPopup(provider)
+      .signInWithPopup(facebookAuthProvider)
       .then((result) => {
         console.log('Credentials', result);
         this.setState({ user: result });
@@ -33,7 +33,18 @@ class Login extends Component {
   }
 
   authWithEmailPassword(event) {
+    const email = this.emailInput.value;
+    const password = this.passwordInput.value;
     event.preventDefault();
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((result) => {
+        console.log('Credentials', result);
+        this.setState({ user: result });
+      })
+      .catch((error) => {
+        console.log('Error', error);
+      });
     console.log('Authenticating with Firebase');
     console.table([
       {

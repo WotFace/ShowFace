@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import logo from '../logo.png';
 import { withAlert } from 'react-alert';
-import { db, facebookAuthProvider, googleAuthProvider, auth } from '../db';
+import { auth } from '../db';
+import SocialLogin from './SocialLogin';
+
 const loginStyles = {
   width: '90%',
   maxWidth: '315px',
@@ -15,21 +17,7 @@ class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = { user: null };
-    this.socialAuth = this.socialAuth.bind(this);
     this.createUserWithEmailAndPassword = this.createUserWithEmailAndPassword.bind(this);
-  }
-
-  socialAuth(provider) {
-    auth()
-      .signInWithPopup(provider)
-      .then((result) => {
-        console.log('Credentials', result);
-        this.setState({ user: result });
-      })
-      .catch((error) => {
-        console.log('Error', error);
-      });
-    console.log('Authenticating with Zuckerberg', this.state.user);
   }
 
   createUserWithEmailAndPassword(event) {
@@ -57,22 +45,7 @@ class Signup extends Component {
   render() {
     return (
       <div style={loginStyles}>
-        <button
-          style={{ width: '100%' }}
-          className="pt-button pt-intent-primary"
-          onClick={() => this.socialAuth(googleAuthProvider)}
-        >
-          Log in with Google
-        </button>
-        <hr style={{ marginTop: '10px', marginBottom: '10px' }} />
-        <button
-          style={{ width: '100%' }}
-          className="pt-button pt-intent-primary"
-          onClick={() => this.socialAuth(facebookAuthProvider)}
-        >
-          Log in with Facebook
-        </button>
-        <hr style={{ marginTop: '10px', marginBottom: '10px' }} />
+        <SocialLogin />
         <div
           ref={(form) => {
             this.signupForm = form;

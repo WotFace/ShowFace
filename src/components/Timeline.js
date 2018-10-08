@@ -89,7 +89,7 @@ class TimeBox extends Component {
   }
 
   getLightnessValue(maxSelectable, count) {
-    return Math.floor(100 - 65 / maxSelectable * count);
+    return Math.floor(100 - (65 / maxSelectable) * count);
   }
 
   render() {

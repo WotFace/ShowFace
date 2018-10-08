@@ -44,50 +44,54 @@ class Signup extends Component {
 
   render() {
     return (
-      <div style={loginStyles}>
-        <SocialLogin />
-        <div
-          ref={(form) => {
-            this.signupForm = form;
-          }}
-        >
-          <label className="pt-label">
-            Email
-            <input
-              style={{ width: '100%' }}
-              className="pt-input"
-              name="email"
-              type="email"
-              ref={(input) => {
-                this.emailInput = input;
-              }}
-              placeholder="Email"
-            />
-          </label>
-          <label className="pt-label">
-            Password
-            <input
-              style={{ width: '100%' }}
-              className="pt-input"
-              name="password"
-              type="password"
-              ref={(input) => {
-                this.passwordInput = input;
-              }}
-              placeholder="Password"
-            />
-          </label>
-          <button
-            style={{ width: '100%' }}
-            className="pt-button pt-intent-primary"
-            value="Log in"
-            onClick={(event) => {
-              this.createUserWithEmailAndPassword(event);
-            }}
-          >
-            Sign up
-          </button>
-        </div>
+      <div className="container Welcome-content">
+        <section id="form-header">
+          <img className="content-logo" alt="" src={logo} />
+          <h1 id="header">Sign up</h1>
+        </section>
+        <section id="form" className="row">
+          <div className="col">
+            <div>
+              <SocialLogin />
+              <div
+                ref={(form) => {
+                  this.signupForm = form;
+                }}
+              >
+                <input
+                  style={{ width: '100%', margin: '10px auto' }}
+                  className="form-control"
+                  name="email"
+                  type="email"
+                  ref={(input) => {
+                    this.emailInput = input;
+                  }}
+                  placeholder="Email"
+                />
+                <input
+                  style={{ width: '100%', margin: '10px auto' }}
+                  className="form-control"
+                  name="password"
+                  type="password"
+                  ref={(input) => {
+                    this.passwordInput = input;
+                  }}
+                  placeholder="Password"
+                />
+                <button
+                  style={{ width: '100%' }}
+                  className="btn btn-outline-primary btn-lg btn-block"
+                  value="Sign up"
+                  onClick={(event) => {
+                    this.createUserWithEmailAndPassword(event);
+                  }}
+                >
+                  Sign up
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     );
   }

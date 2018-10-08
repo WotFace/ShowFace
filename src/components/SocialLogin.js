@@ -27,14 +27,14 @@ class SocialLogin extends Component {
       <div>
         <button
           style={{ width: '100%', marginBottom: '10px' }}
-          className="pt-button pt-intent-primary"
+          className="btn btn-outline-primary btn-lg btn-block"
           onClick={() => this.socialAuth(googleAuthProvider)}
         >
           Log in with Google
         </button>
         <button
           style={{ width: '100%' }}
-          className="pt-button pt-intent-primary"
+          className="btn btn-outline-primary btn-lg btn-block"
           onClick={() => this.socialAuth(facebookAuthProvider)}
         >
           Log in with Facebook

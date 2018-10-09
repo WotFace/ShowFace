@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Card from '@material/react-card';
+import '@material/react-card/dist/card.css';
 
 import { Link } from 'react-router-dom';
 
@@ -47,7 +49,7 @@ class WelcomePage extends Component {
     return (
       <div>
         <div id="landing-page" className="full-page flex">
-          <div className="container WelcomePage-content">
+          <Card className="container WelcomePage-content">
             <img id="logo" src={logo} alt="logo" className="center" />
             <div>
               {dashboardButton}
@@ -56,7 +58,7 @@ class WelcomePage extends Component {
               </Link>
               {authButtons}
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     );

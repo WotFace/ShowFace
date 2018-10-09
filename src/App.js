@@ -2,6 +2,8 @@ import React from 'react';
 import Routes from './Routes.js';
 
 import './App.css';
+import '@material/react-card/dist/card.min.css';
+import '@material/react-button/dist/button.min.css';
 
 import { Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';

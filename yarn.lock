@@ -962,6 +962,17 @@
   resolved "https://registry.yarnpkg.com/@material/base/-/base-0.39.0.tgz#ca451531cf438f51bf999ad7b96b5e8f3929e19a"
   integrity sha512-B+vMqnOR2JU2dzv/5UPKQUAZAj739pMkJkt3Zy7sJaQnw3j8wTKxiUMUhd9ZHaPx1FBlUNMn2PwOq8YZIn0svA==
 
+"@material/button@^0.39.0":
+  version "0.39.3"
+  resolved "https://registry.yarnpkg.com/@material/button/-/button-0.39.3.tgz#f2aaaac96932deeb692379a2379eca6eced918ac"
+  integrity sha512-O4QcglZ9kgixhHbUk+vLZYm5LKgImqd8VUeClBXL3sDrqNSQX047D17fLk6Fy3n3WKroZ1WkVbM9T9gQTBmaxA==
+  dependencies:
+    "@material/elevation" "^0.39.1"
+    "@material/ripple" "^0.39.3"
+    "@material/rtl" "^0.39.1"
+    "@material/theme" "^0.39.1"
+    "@material/typography" "^0.39.0"
+
 "@material/card@^0.39.0":
   version "0.39.3"
   resolved "https://registry.yarnpkg.com/@material/card/-/card-0.39.3.tgz#bd66454ce3560adb9554b15a9e4d2284f17b9af5"
@@ -979,6 +990,17 @@
   dependencies:
     "@material/animation" "^0.39.0"
     "@material/theme" "^0.39.1"
+
+"@material/react-button@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@material/react-button/-/react-button-0.5.0.tgz#030a0f0c7924573240cb6b85bf4467f623202645"
+  integrity sha512-+VOMVGwBCMsyGY3xv+RyOpYTcrTqQyar8WyHMlo75kDBRPYT/rT8wemNljDZBs2J+nM1bSeqNFYaiiR19tjz/Q==
+  dependencies:
+    "@material/button" "^0.39.0"
+    "@material/react-ripple" "^0.5.0"
+    classnames "^2.2.5"
+    prop-types "^15.6.1"
+    react "^16.4.2"
 
 "@material/react-card@^0.5.0":
   version "0.5.0"
@@ -1019,6 +1041,11 @@
   version "0.39.1"
   resolved "https://registry.yarnpkg.com/@material/theme/-/theme-0.39.1.tgz#5fb160222e2b213628b285af26ca65c6f4327fe5"
   integrity sha512-c7xjzzHdF4kBl66VJfATBAV9cwD/6TOyVPOWiK5rPxmu9g7uEAe1HmupqJRR1pMFCPX2w85gfvIsxh79EU6YJA==
+
+"@material/typography@^0.39.0":
+  version "0.39.0"
+  resolved "https://registry.yarnpkg.com/@material/typography/-/typography-0.39.0.tgz#7d7468673e104609d926528ffe5571cfd44d8c3c"
+  integrity sha512-S7YTR2mXuAaPvsgX6jyT1YvWQhH2xHWi+SKJvlunoF/Dw6vq6Ud+APmqigHVRPNCcFt4zkbM7C64IxYjjkIApQ==
 
 "@svgr/core@^2.4.1":
   version "2.4.1"

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Card from '@material/react-card';
-import '@material/react-card/dist/card.css';
 
 import { Link } from 'react-router-dom';
 
@@ -53,7 +52,7 @@ class WelcomePage extends Component {
             <img id="logo" src={logo} alt="logo" className="center" />
             <div>
               {dashboardButton}
-              <Link to="/create" className="btn btn-outline-primary btn-lg btn-block">
+              <Link to="/create" className="mdc-button mdc-button--raised">
                 Create Show
               </Link>
               {authButtons}

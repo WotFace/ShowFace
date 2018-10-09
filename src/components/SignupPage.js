@@ -4,9 +4,6 @@ import { withAlert } from 'react-alert';
 import { auth } from '../db';
 import SocialLogin from './SocialLogin';
 
-// TODO: Restyle page with Material
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 const loginStyles = {
   width: '90%',
   maxWidth: '315px',

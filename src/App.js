@@ -1,7 +1,7 @@
 import React from 'react';
 import Routes from './Routes.js';
 
-import './App.css';
+import './App.scss';
 
 import { Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';

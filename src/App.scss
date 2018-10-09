@@ -1,15 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans');
+@import './mdc';
 
 body {
   color: rgb(28,48,92);
   font-family: 'Fira Sans', sans-serif;
-}
-
-#landing-page {
-  min-height: 100vh;
-  background: url(bg.svg);
-  background-size: 100% 100%;
-  z-index: 1;
 }
 
 .center {
@@ -29,11 +23,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-#logo {
-  width: 100%;
-  margin: 30px auto;
 }
 
 .poll-input {
@@ -63,10 +52,6 @@ body {
   color: #fff;
   background-color: rgb(28,48,92);
   border-color: rgb(28,48,92);
-}
-
-.WelcomePage-content {
-  width: 500px;
 }
 
 #form-header {

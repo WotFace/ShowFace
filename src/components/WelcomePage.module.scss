@@ -1,0 +1,46 @@
+@import "~@material/theme/variables";
+
+.landingPage {
+  min-height: 100vh;
+  background: url(../bg.svg);
+  background-size: 100% 100%;
+  overflow: hidden;
+
+  // Prevent oversized content from allowing background to scroll
+  z-index: 1;
+}
+
+.content {
+  max-width: 500px;
+  width: 75%;
+  min-width: 270px;
+  padding: 20px;
+}
+
+.logo {
+  width: 80%;
+  margin: 10px auto 20px auto;
+}
+
+.createButton {
+  width: 100%;
+}
+
+.authButtons {
+	display: flex;
+	justify-content: center;
+
+  a {
+    flex: 1;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.divider {
+  border: 0;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}

@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import Card from '@material/react-card';
-
+import Button from '@material/react-button';
 import { Link } from 'react-router-dom';
-
-import logo from '../logo.png';
+import classnames from 'classnames';
 import { auth } from '../db';
+
+import styles from './WelcomePage.module.scss';
+import logo from '../logo.png';
+
+function Divider() {
+  return <hr className={styles.divider} />;
+}
 
 class WelcomePage extends Component {
   constructor(props) {
@@ -28,37 +34,38 @@ class WelcomePage extends Component {
     const dashboardButton = user && (
       <>
         <h1 id="header">Welcome, {this.state.user.displayName}!</h1>
-        <Link to="/dashboard" className="btn btn-outline-primary btn-lg btn-block">
-          Dashboard
+        <Link to="/dashboard">
+          <Button raised>Dashboard</Button>
         </Link>
       </>
     );
 
     const authButtons = user || (
-      <>
-        <Link to="/login" className="btn btn-outline-primary btn-lg btn-block">
-          Log in
+      <div className={styles.authButtons}>
+        <Link to="/login">
+          <Button>Log in</Button>
         </Link>
-        <Link to="/signup" className="btn btn-outline-primary btn-lg btn-block">
-          Sign up
+        <Link to="/signup">
+          <Button raised>Sign up</Button>
         </Link>
-      </>
+      </div>
     );
 
     return (
-      <div>
-        <div id="landing-page" className="full-page flex">
-          <Card className="container WelcomePage-content">
-            <img id="logo" src={logo} alt="logo" className="center" />
-            <div>
-              {dashboardButton}
-              <Link to="/create" className="mdc-button mdc-button--raised">
+      <div className={classnames(styles.landingPage, 'full-page flex')}>
+        <Card className={classnames(styles.content, 'container')}>
+          <img src={logo} alt="logo" className={styles.logo} />
+          <div>
+            {dashboardButton}
+            <Link to="/create">
+              <Button outlined className={styles.createButton}>
                 Create Show
-              </Link>
-              {authButtons}
-            </div>
-          </Card>
-        </div>
+              </Button>
+            </Link>
+            <Divider />
+            {authButtons}
+          </div>
+        </Card>
       </div>
     );
   }

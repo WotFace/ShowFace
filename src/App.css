@@ -65,7 +65,7 @@ body {
   border-color: rgb(28,48,92);
 }
 
-.Welcome-content {
+.WelcomePage-content {
   width: 500px;
 }
 
@@ -89,7 +89,7 @@ body {
   cursor: pointer;
 }
 
-.Create-container {
+.CreatePage-container {
   margin-bottom: 30px;
 }
 

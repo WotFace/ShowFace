@@ -13,19 +13,19 @@ const loginStyles = {
   padding: '10px',
 };
 
-class Login extends Component {
+class SignupPage extends Component {
   constructor(props) {
     super(props);
     this.state = { user: null };
-    this.authWithEmailPassword = this.authWithEmailPassword.bind(this);
+    this.createUserWithEmailAndPassword = this.createUserWithEmailAndPassword.bind(this);
   }
 
-  authWithEmailPassword(event) {
+  createUserWithEmailAndPassword(event) {
     const email = this.emailInput.value;
     const password = this.passwordInput.value;
     event.preventDefault();
     auth()
-      .signInWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, password)
       .then((result) => {
         console.log('Credentials', result);
         this.setState({ user: result });
@@ -33,11 +33,11 @@ class Login extends Component {
       .catch((error) => {
         console.log('Error', error);
       });
-    console.log('Authenticating with Firebase');
+    console.log('Creating user in Firebase');
     console.table([
       {
-        email: this.emailInput.value,
-        password: this.passwordInput.value,
+        email: email,
+        password: password,
       },
     ]);
   }
@@ -47,7 +47,7 @@ class Login extends Component {
       <div className="container Welcome-content">
         <section id="form-header">
           <img className="content-logo" alt="" src={logo} />
-          <h1 id="header">Log in</h1>
+          <h1 id="header">Sign up</h1>
         </section>
         <section id="form" className="row">
           <div className="col">
@@ -55,7 +55,7 @@ class Login extends Component {
               <SocialLogin />
               <div
                 ref={(form) => {
-                  this.loginForm = form;
+                  this.signupForm = form;
                 }}
               >
                 <input
@@ -81,12 +81,12 @@ class Login extends Component {
                 <button
                   style={{ width: '100%' }}
                   className="btn btn-outline-primary btn-lg btn-block"
-                  value="Log in"
+                  value="Sign up"
                   onClick={(event) => {
-                    this.authWithEmailPassword(event);
+                    this.createUserWithEmailAndPassword(event);
                   }}
                 >
-                  Log in
+                  Sign up
                 </button>
               </div>
             </div>
@@ -97,4 +97,4 @@ class Login extends Component {
   }
 }
 
-export default withAlert(Login);
+export default withAlert(SignupPage);

@@ -12,7 +12,7 @@ import { withAlert } from 'react-alert';
 
 import { db } from '../db';
 
-class Create extends Component {
+class CreatePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -77,7 +77,7 @@ class Create extends Component {
 
   render() {
     return (
-      <div className="container Create-container">
+      <div className="container CreatePage-container">
         <section id="form-header">
           <img className="content-logo" alt="" src={logo} />
           <h1 id="header">Create a new poll</h1>
@@ -111,4 +111,4 @@ class Create extends Component {
   }
 }
 
-export default withAlert(Create);
+export default withAlert(CreatePage);

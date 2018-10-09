@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import logo from '../logo.png';
 import { auth } from '../db';
 
-class Welcome extends Component {
+class WelcomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +45,7 @@ class Welcome extends Component {
     return (
       <div>
         <div id="landing-page" className="full-page flex">
-          <div className="container Welcome-content">
+          <div className="container WelcomePage-content">
             <img id="logo" src={logo} alt="logo" className="center" />
             {splashScreenButtons}
           </div>
@@ -55,4 +55,4 @@ class Welcome extends Component {
   }
 }
 
-export default Welcome;
+export default WelcomePage;

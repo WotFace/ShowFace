@@ -1,4 +1,4 @@
-@import "~@material/theme/variables";
+@import '~@material/theme/variables';
 
 .landingPage {
   min-height: 100vh;
@@ -27,8 +27,8 @@
 }
 
 .authButtons {
-	display: flex;
-	justify-content: center;
+  display: flex;
+  justify-content: center;
 
   a {
     flex: 1;

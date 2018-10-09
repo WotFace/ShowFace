@@ -12,9 +12,6 @@ import { withAlert } from 'react-alert';
 
 import { db } from '../db';
 
-// TODO: Restyle page with Material
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 class CreatePage extends Component {
   constructor(props) {
     super(props);

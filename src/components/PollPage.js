@@ -16,6 +16,9 @@ import logo from '../logo.png';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 import './PollPage.css';
 
+// TODO: Restyle page with Material
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 class PollPage extends Component {
   constructor(props) {
     super(props);

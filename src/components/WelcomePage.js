@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom';
 import logo from '../logo.png';
 import { auth } from '../db';
 
+// TODO: Restyle page with Material
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 class WelcomePage extends Component {
   constructor(props) {
     super(props);

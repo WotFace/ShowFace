@@ -1,7 +1,6 @@
 import React from 'react';
 import Routes from './Routes.js';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import { Provider as AlertProvider } from 'react-alert';

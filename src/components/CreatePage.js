@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import logo from '../logo.png';
+import { withAlert } from 'react-alert';
+import { DateRange } from 'react-date-range';
+import Button from '@material/react-button';
+import classnames from 'classnames';
+import generateName from '../utils/generateName';
+import { db } from '../db';
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+import styles from './CreatePage.module.scss';
 
-import { DateRange } from 'react-date-range';
-
-import generateName from '../utils/generateName';
-
-import { withAlert } from 'react-alert';
-
-import { db } from '../db';
+import logo from '../logo.png';
 
 class CreatePage extends Component {
   constructor(props) {
@@ -77,7 +77,7 @@ class CreatePage extends Component {
 
   render() {
     return (
-      <div className="container CreatePage-container">
+      <div className={classnames(styles.container, 'container')}>
         <section id="form-header">
           <img className="content-logo" alt="" src={logo} />
           <h1 id="header">Create a new poll</h1>
@@ -102,7 +102,7 @@ class CreatePage extends Component {
                   minDate={new Date()}
                 />
               </div>
-              <input type="submit" className="btn btn-primary" value="Submit" />
+              <Button raised>Submit</Button>
             </form>
           </div>
         </section>

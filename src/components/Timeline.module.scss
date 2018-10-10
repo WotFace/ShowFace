@@ -1,38 +1,28 @@
-.Timeline {
+.timeline {
   display: inline-grid;
   width: 100%;
 }
 
-.Timeline-Tick {
+.tick {
   padding: 0 0.5rem 0 0.5rem;
   border-style: solid;
   border-color: rgb(200, 200, 200);
   border-width: 0 1px 0 0;
 }
 
-.Timeline-TimeBox {
+.timeBox {
   border-style: solid;
   border-color: rgb(200, 200, 200);
   border-width: 1px;
   background-color: rgb(250, 250, 250);
   margin: -1px 0 0 -1px;
+
+  &:hover {
+    border-width: 2px;
+  }
 }
 
-.Timeline-TimeBox:hover {
-  background-color: rgb(250, 250, 250);
-  border-width: 2px;
-}
-
-.Timeline-TimeBox-selected {
-  border-color: rgb(230, 250, 230);
-  background-color: rgb(210, 240, 220);
-}
-
-.TimelineDay {
-
-}
-
-.date-heading {
+.dateHeading {
   font-size: 1rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -42,17 +32,17 @@
   margin: -1px 0 0 -1px;
 }
 
-.timeline-label {
+.timelineLabel {
   background-color: rgb(240, 240, 240);
 }
 
-#attendees {
+.attendees {
   top: 1em;
   position: -webkit-sticky;
   position: sticky;
 }
 
-#poll-time {
+.pollTime {
   margin-bottom: 1em;
 }
 

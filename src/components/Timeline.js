@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import moment from 'moment';
 import _ from 'lodash';
 import memoize from 'memoize-one';
 import responsesToDict from '../utils/response';
-import './Timeline.css';
+import styles from './Timeline.module.scss';
 
 // Props
 // allowedDates
@@ -44,11 +45,19 @@ function moveDateTimeToDate(date, dateTime) {
 
 const Tick = ({ startTime }) => {
   const format = 'h:mm';
-  return <span className="Timeline-Tick timeline-label">{startTime.format(format)}</span>;
+  return (
+    <span className={classnames(styles.tick, styles.timelineLabel)}>
+      {startTime.format(format)}
+    </span>
+  );
 };
 
 const DateHeader = ({ date }) => {
-  return <span className="date-heading timeline-label">{date.format('DD/MM')}</span>;
+  return (
+    <span className={classnames(styles.dateHeading, styles.timelineLabel)}>
+      {date.format('DD/MM')}
+    </span>
+  );
 };
 
 const ShowAttendees = ({ responses, allAttendees, time }) => {
@@ -58,8 +67,10 @@ const ShowAttendees = ({ responses, allAttendees, time }) => {
 
   return (
     <div className="col-4">
-      <section id="attendees" className="flex-item">
-        {time ? <h2 id="poll-time">{moment(time).format('Do MMM YYYY hh:mma')}</h2> : null}
+      <section className={classnames(styles.attendees, 'flex-item')}>
+        {time ? (
+          <h2 className={styles.pollTime}>{moment(time).format('Do MMM YYYY hh:mma')}</h2>
+        ) : null}
         <section id="attending">
           <h3>Attending</h3>
           <ol>
@@ -113,7 +124,7 @@ class TimeBox extends Component {
 
     return (
       <div
-        className="Timeline-TimeBox"
+        className={styles.timeBox}
         style={divStyle}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
@@ -272,7 +283,7 @@ class Timeline extends Component {
       <section id="timeline" className="flex-container">
         <div className="row">
           <div
-            className={`Timeline col-${showAttendees ? 8 : 12}`}
+            className={classnames(styles.timeline, `col-${showAttendees ? 8 : 12}`)}
             style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
             onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
           >

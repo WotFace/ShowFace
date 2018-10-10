@@ -4,6 +4,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import memoize from 'memoize-one';
 import responsesToDict from '../utils/response';
+import DateMap from '../utils/DateMap';
 import styles from './Timeline.module.scss';
 
 // Props
@@ -23,14 +24,15 @@ const getStartTimes = memoize(
 
 const getMomentsForDates = memoize(
   (startTimes, allowedDates) => {
-    return _.zipObject(
-      startTimes,
-      startTimes.map((time) => {
-        return _.zipObject(
-          allowedDates,
-          allowedDates.map((date) => moveDateTimeToDate(date, time)),
-        );
-      }),
+    return new DateMap(
+      _.zip(
+        startTimes,
+        startTimes.map((time) => {
+          return new DateMap(
+            _.zip(allowedDates, allowedDates.map((date) => moveDateTimeToDate(date, time))),
+          );
+        }),
+      ),
     );
   },
   (newTimes, oldTimes) =>
@@ -61,7 +63,7 @@ const DateHeader = ({ date }) => {
 };
 
 const ShowAttendees = ({ responses, allAttendees, time }) => {
-  let attendees = responses[time] || [];
+  let attendees = time ? responses.get(time) || [] : [];
   attendees = Array.from(attendees);
   const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
 
@@ -92,47 +94,32 @@ const ShowAttendees = ({ responses, allAttendees, time }) => {
   );
 };
 
-class TimeBox extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    const keysToOmit = ['onMouseDown', 'onMouseMove', 'onMouseUp', 'onMouseEnter'];
-    const shouldUpdate = !_.isEqual(_.omit(this.props, keysToOmit), _.omit(nextProps, keysToOmit));
-    return shouldUpdate;
-  }
-
-  getLightnessValue(maxSelectable, count) {
+function TimeBox({
+  responseCount,
+  onMouseDown,
+  onMouseMove,
+  onMouseUp,
+  onMouseEnter,
+  maxSelectable,
+}) {
+  function getLightnessValue(maxSelectable, count) {
     return Math.floor(100 - (65 / maxSelectable) * count);
   }
 
-  render() {
-    const {
-      date,
-      selected,
-      responseCount,
-      onMouseDown,
-      onMouseMove,
-      onMouseUp,
-      onMouseEnter,
-      maxSelectable,
-    } = this.props;
+  const divStyle = {
+    backgroundColor: `hsla(107, 60%, ${getLightnessValue(maxSelectable, responseCount)}%, 1)`,
+  };
 
-    const divStyle = {
-      backgroundColor: `hsla(107, 60%, ${this.getLightnessValue(
-        maxSelectable,
-        responseCount,
-      )}%, 1)`,
-    };
-
-    return (
-      <div
-        className={styles.timeBox}
-        style={divStyle}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseEnter={onMouseEnter}
-      />
-    );
-  }
+  return (
+    <div
+      className={styles.timeBox}
+      style={divStyle}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseEnter={onMouseEnter}
+    />
+  );
 }
 
 const DragStateEnum = Object.freeze({
@@ -150,12 +137,12 @@ class Timeline extends Component {
   }
 
   isSelected(startTime) {
-    const responsesForDate = this.renderableResponses[startTime] || new Set();
+    const responsesForDate = this.renderableResponses.get(startTime) || new Set();
     return responsesForDate.has(this.props.name);
   }
 
   getResponseCount(startTime) {
-    const responsesForDate = this.renderableResponses[startTime] || new Set();
+    const responsesForDate = this.renderableResponses.get(startTime) || new Set();
     return responsesForDate.size;
   }
 
@@ -181,6 +168,8 @@ class Timeline extends Component {
         // console.log('Deselect', startMoment.toISOString());
         this.props.onDeselect(startMoment);
         break;
+      default:
+        break;
     }
   }
 
@@ -200,62 +189,47 @@ class Timeline extends Component {
 
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
-
     const allResponses = responsesToDict(responses || {});
-    var self = this;
-    self.allResponses = allResponses;
     this.renderableResponses = allResponses;
 
     if (minCount !== undefined) {
-      this.renderableResponses = _.reduce(
-        this.renderableResponses,
-        (acc, v, k) => {
-          if (v.size >= minCount) {
-            acc[k] = v;
-          }
-          return acc;
-        },
-        {},
-      );
+      for (let [k, v] of this.renderableResponses) {
+        if (v.size < minCount) {
+          this.renderableResponses.delete(k);
+        }
+      }
     }
 
     if (maxCount !== undefined) {
-      this.renderableResponses = _.reduce(
-        this.renderableResponses,
-        (acc, v, k) => {
-          if (v.size <= maxCount) {
-            acc[k] = v;
-          }
-          return acc;
-        },
-        {},
-      );
+      for (let [k, v] of this.renderableResponses) {
+        if (v.size > maxCount) {
+          this.renderableResponses.delete(k);
+        }
+      }
     }
 
-    const maxSelectable = name
-      ? 1
-      : _.reduce(
-          allResponses,
-          (maxLen, dates, name) => {
-            return Math.max(maxLen, dates.size);
-          },
-          0,
-        );
+    const calcMaxSelectable = () => {
+      if (name) return 1;
+      let max = 0;
+      for (let r of allResponses.values()) {
+        if (r.size > max) max = r.size;
+      }
+      return max;
+    };
+    const maxSelectable = calcMaxSelectable();
 
     const rows = startTimes.map((time) => {
       return (
-        <React.Fragment key={`row ${time.toISOString()}`}>
+        <React.Fragment key={`row ${time.valueOf()}`}>
           <Tick startTime={time} />
           {allowedDates.map((date) => {
-            const startMomentWithDate = momentsForDates[time][date];
+            const startMomentWithDate = momentsForDates.get(time).get(date);
             const startTimeWithDate = startMomentWithDate.toDate();
 
             return (
               <TimeBox
-                date={date.toDate()}
                 startTime={startTimeWithDate}
-                key={`timebox ${startMomentWithDate.toISOString()}`}
-                selected={this.isSelected(startTimeWithDate)}
+                key={`timebox ${startMomentWithDate.valueOf()}`}
                 maxSelectable={maxSelectable}
                 responseCount={this.getResponseCount(startTimeWithDate)}
                 onMouseDown={(e) => {
@@ -293,7 +267,7 @@ class Timeline extends Component {
           </div>
           {showAttendees ? (
             <ShowAttendees
-              responses={self.allResponses}
+              responses={allResponses}
               allAttendees={allAttendees}
               time={this.state.selectedTime}
             />

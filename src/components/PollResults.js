@@ -27,13 +27,15 @@ class PollResults extends Component {
   static getDerivedStateFromProps(props, state) {
     const responses = props.poll.responses || {};
     const renderableResponses = responsesToDict(responses || {});
-    const maxSelectable = _.reduce(
-      renderableResponses,
-      (maxLen, dates, name) => {
-        return Math.max(maxLen, dates.size);
-      },
-      0,
-    );
+
+    const calcMaxSelectable = () => {
+      let max = 0;
+      for (let r of renderableResponses.values()) {
+        if (r.size > max) max = r.size;
+      }
+      return max;
+    };
+    const maxSelectable = calcMaxSelectable();
 
     if (maxSelectable === state.maxSelectable) {
       return {

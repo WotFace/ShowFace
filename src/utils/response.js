@@ -1,21 +1,19 @@
 import _ from 'lodash';
+import DateMap from './DateMap';
 
-const responseToDict = (responses) => {
+const responsesToDict = (responses) => {
   responses = _.mapValues(responses, (v) => _.map(v, (dt) => dt.toDate()));
-  return _.reduce(
-    responses,
-    (hm, dates, name) => {
-      _.forEach(dates, (date) => {
-        if (hm[date]) {
-          hm[date].add(name);
-        } else {
-          hm[date] = new Set([name]);
-        }
-      });
-      return hm;
-    },
-    {},
-  );
+  const hm = new DateMap();
+  Object.entries(responses).forEach(([name, dates]) => {
+    dates.forEach((date) => {
+      if (hm.has(date)) {
+        hm.get(date).add(name);
+      } else {
+        hm.set(date, new Set([name]));
+      }
+    });
+  });
+  return hm;
 };
 
-export default responseToDict;
+export default responsesToDict;

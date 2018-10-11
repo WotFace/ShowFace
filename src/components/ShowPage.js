@@ -16,15 +16,15 @@ import logo from '../logo.png';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 import './PollPage.css';
 
-class PollPage extends Component {
+class ShowPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoaded: false,
     };
 
-    const pollId = this.props.match.params.pollId;
-    this.pollDoc = db.collection('polls').doc(pollId);
+    const showId = this.props.match.params.showId;
+    this.pollDoc = db.collection('polls').doc(showId);
 
     this.copyUrlToClipboard = this.copyUrlToClipboard.bind(this);
   }
@@ -107,7 +107,7 @@ class PollPage extends Component {
                   exact
                   path={match.url}
                   component={() => (
-                    <Redirect to={`/poll/${this.props.match.params.pollId}/respond`} />
+                    <Redirect to={`/poll/${this.props.match.params.showId}/respond`} />
                   )}
                 />
                 <Route
@@ -127,4 +127,4 @@ class PollPage extends Component {
   }
 }
 
-export default withAlert(PollPage);
+export default withAlert(ShowPage);

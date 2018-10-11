@@ -1,0 +1,27 @@
+.ShowPage-container {
+  margin-bottom: 30px;
+}
+
+.ShowPage-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.ShowPage-slider {
+  max-width: 400px;
+  margin: 5px auto;
+  margin-bottom: 70px;
+}
+
+.ShowPage-Slider-label {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.content-logo {
+  margin-bottom: 15px !important;
+}
+
+.rc-slider {
+  margin-bottom: 45px;
+}

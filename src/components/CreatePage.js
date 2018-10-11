@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { withAlert } from 'react-alert';
 import { DateRange } from 'react-date-range';
 import Button from '@material/react-button';
 import classnames from 'classnames';
-import generateName from '../utils/generateName';
-import { db } from '../db';
+import { Mutation } from 'react-apollo';
+import gql from 'graphql-tag';
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -31,34 +32,11 @@ class CreatePage extends Component {
   }
 
   handleSubmit(event) {
-    const pollId = generateName();
-    const docRef = db.collection('polls').doc(pollId);
-    const self = this;
-
-    const data = {
-      name: this.state.name,
-      dateRange: {
-        startDate: this.state.dateRanges.selection.startDate,
-        endDate: this.state.dateRanges.selection.endDate,
-      },
-    };
-
-    docRef
-      .set(data)
-      .then((doc) => {
-        const path = `/poll/${pollId}`;
-        this.props.alert.show('Poll successfully created!', {
-          type: 'success',
-        });
-        const location = {
-          pathname: path,
-        };
-        self.props.history.push(location);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
+    // TODO: Add interval option and retrieve from state
+    const interval = 15;
+    const { name, dateRanges } = this.state;
+    const { startDate, endDate } = dateRanges.selection;
+    this.props.createShow(name, startDate, endDate, interval);
     event.preventDefault();
   }
 
@@ -75,40 +53,89 @@ class CreatePage extends Component {
     });
   }
 
+  renderContent() {
+    const {
+      createShowResult: { loading, data, error },
+    } = this.props;
+
+    if (loading) {
+      // TODO: Beautify
+      return <span>Creating...</span>;
+    } else if (data) {
+      return <Redirect to={`/show/${data.createNewShow.slug}`} />;
+    } else {
+      // Not loading. Render form
+      // TODO: Display error if it exists
+      if (error) {
+        console.log('Show creation got error', error);
+      }
+
+      // TODO: Validate input and disable submit button if necessary
+      return (
+        <form onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <input
+              name="name"
+              className="form-control"
+              type="text"
+              placeholder="Show Name"
+              onChange={this.handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <DateRange
+              onChange={this.handleRangeChange.bind(this, 'dateRanges')}
+              moveRangeOnFirstSelection={false}
+              ranges={[this.state.dateRanges.selection]}
+              minDate={new Date()}
+            />
+          </div>
+          <Button raised>Submit</Button>
+        </form>
+      );
+    }
+  }
+
   render() {
     return (
       <div className={classnames(styles.container, 'container')}>
         <section id="form-header">
           <img className="content-logo" alt="" src={logo} />
-          <h1 id="header">Create a new poll</h1>
+          <h1 id="header">Create a new Show</h1>
         </section>
         <section id="form" className="row">
-          <div className="col">
-            <form onSubmit={this.handleSubmit}>
-              <div className="form-group">
-                <input
-                  name="name"
-                  className="form-control"
-                  type="text"
-                  placeholder="Poll Name"
-                  onChange={this.handleInputChange}
-                />
-              </div>
-              <div className="form-group">
-                <DateRange
-                  onChange={this.handleRangeChange.bind(this, 'dateRanges')}
-                  moveRangeOnFirstSelection={false}
-                  ranges={[this.state.dateRanges.selection]}
-                  minDate={new Date()}
-                />
-              </div>
-              <Button raised>Submit</Button>
-            </form>
-          </div>
+          <div className="col">{this.renderContent()}</div>
         </section>
       </div>
     );
   }
 }
 
-export default withAlert(CreatePage);
+const CREATE_NEW_SHOW_MUTATION = gql`
+  mutation CreateNewShow(
+    $name: String!
+    $startDate: DateTime!
+    $endDate: DateTime!
+    $interval: Int!
+  ) {
+    createNewShow(
+      data: { name: $name, startDate: $startDate, endDate: $endDate, interval: $interval }
+    ) {
+      slug
+    }
+  }
+`;
+
+export default withAlert((props) => (
+  <Mutation mutation={CREATE_NEW_SHOW_MUTATION}>
+    {(createNewShow, result) => (
+      <CreatePage
+        {...props}
+        createShow={(name, startDate, endDate, interval) =>
+          createNewShow({ variables: { name, startDate, endDate, interval } })
+        }
+        createShowResult={result}
+      />
+    )}
+  </Mutation>
+));

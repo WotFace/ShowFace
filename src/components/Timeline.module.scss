@@ -4,7 +4,9 @@
 }
 
 .tick {
-  padding: 0 0.5rem 0 0.5rem;
+  // padding: 0 0.5rem 0 0.5rem;
+  position: sticky;
+  left: 0;
   border-style: solid;
   border-color: rgb(200, 200, 200);
   border-width: 0 1px 0 0;
@@ -34,16 +36,6 @@
 
 .timelineLabel {
   background-color: rgb(240, 240, 240);
-}
-
-.attendees {
-  top: 1em;
-  position: -webkit-sticky;
-  position: sticky;
-}
-
-.pollTime {
-  margin-bottom: 1em;
 }
 
 ol {

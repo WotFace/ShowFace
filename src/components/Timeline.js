@@ -62,38 +62,6 @@ const DateHeader = ({ date }) => {
   );
 };
 
-const ShowAttendees = ({ responses, allAttendees, time }) => {
-  let attendees = time ? responses.get(time) || [] : [];
-  attendees = Array.from(attendees);
-  const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
-
-  return (
-    <div className="col-4">
-      <section className={classnames(styles.attendees, 'flex-item')}>
-        {time ? (
-          <h2 className={styles.pollTime}>{moment(time).format('Do MMM YYYY hh:mma')}</h2>
-        ) : null}
-        <section id="attending">
-          <h3>Attending</h3>
-          <ol>
-            {attendees.map((attendee) => {
-              return <li key={attendee}>{attendee}</li>;
-            })}
-          </ol>
-        </section>
-        <section id="notAttending">
-          <h3>Not Attending</h3>
-          <ol>
-            {notAttending.map((notAttendee) => {
-              return <li key={notAttendee}>{notAttendee}</li>;
-            })}
-          </ol>
-        </section>
-      </section>
-    </div>
-  );
-};
-
 function TimeBox({
   responseCount,
   onMouseDown,
@@ -182,10 +150,8 @@ class Timeline extends Component {
       name,
       minCount,
       maxCount,
-      showAttendees,
+      onCellHover,
     } = this.props;
-
-    const allAttendees = Object.keys(responses || {});
 
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
@@ -242,7 +208,7 @@ class Timeline extends Component {
                 }}
                 onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
                 onMouseEnter={() => {
-                  this.setState({ selectedTime: startTimeWithDate });
+                  onCellHover && onCellHover(startTimeWithDate);
                 }}
               />
             );
@@ -255,23 +221,14 @@ class Timeline extends Component {
 
     return (
       <section id="timeline" className="flex-container">
-        <div className="row">
-          <div
-            className={classnames(styles.timeline, `col-${showAttendees ? 8 : 12}`)}
-            style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
-            onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
-          >
-            <span className="Timeline-filler" />
-            {headerCells}
-            {rows}
-          </div>
-          {showAttendees ? (
-            <ShowAttendees
-              responses={allResponses}
-              allAttendees={allAttendees}
-              time={this.state.selectedTime}
-            />
-          ) : null}
+        <div
+          className={classnames(styles.timeline)}
+          style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
+          onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
+        >
+          <span className="Timeline-filler" />
+          {headerCells}
+          {rows}
         </div>
       </section>
     );

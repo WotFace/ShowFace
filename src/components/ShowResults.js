@@ -10,6 +10,38 @@ import { datesFromRange } from '../utils/datetime';
 import 'rc-slider/assets/index.css';
 import styles from './ShowResults.module.scss';
 
+function ShowAttendees({ responses, allAttendees, time }) {
+  let attendees = time ? responses.get(time) || [] : [];
+  attendees = Array.from(attendees);
+  const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
+
+  return (
+    <div className="col-4">
+      <section className={classnames(styles.attendees, 'flex-item')}>
+        {time ? (
+          <h2 className={styles.pollTime}>{moment(time).format('Do MMM YYYY hh:mma')}</h2>
+        ) : null}
+        <section id="attending">
+          <h3>Attending</h3>
+          <ol>
+            {attendees.map((attendee) => {
+              return <li key={attendee}>{attendee}</li>;
+            })}
+          </ol>
+        </section>
+        <section id="notAttending">
+          <h3>Not Attending</h3>
+          <ol>
+            {notAttending.map((notAttendee) => {
+              return <li key={notAttendee}>{notAttendee}</li>;
+            })}
+          </ol>
+        </section>
+      </section>
+    </div>
+  );
+}
+
 class ShowResults extends Component {
   constructor(props) {
     super(props);
@@ -80,21 +112,30 @@ class ShowResults extends Component {
       onChange: this.onSliderChange,
     };
 
+    const allAttendees = Object.keys(show.responses || {});
+
     return (
       <div>
         <p className={styles.sliderLabel}>Filter by attendance:</p>
         <Range {...sliderConfig} className={styles.slider} />
-        <Timeline
-          allowedDates={allowedDates}
-          startTime={moment().startOf('day')}
-          endTime={moment().endOf('day')}
-          responses={show.responses}
-          onSelect={() => {}}
-          onDeselect={() => {}}
-          minCount={this.state.sliderValues[0]}
-          maxCount={this.state.sliderValues[1]}
-          showAttendees={true}
-        />
+        <div>
+          <Timeline
+            allowedDates={allowedDates}
+            startTime={moment().startOf('day')}
+            endTime={moment().endOf('day')}
+            responses={show.responses}
+            onSelect={() => {}}
+            onDeselect={() => {}}
+            minCount={this.state.sliderValues[0]}
+            maxCount={this.state.sliderValues[1]}
+            onCellHover={(selectedTime) => this.setState({ selectedTime })}
+          />
+          <ShowAttendees
+            responses={this.state.renderableResponses}
+            allAttendees={allAttendees}
+            time={this.state.selectedTime}
+          />
+        </div>
       </div>
     );
   }

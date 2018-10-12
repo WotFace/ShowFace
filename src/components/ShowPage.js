@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 import { withAlert } from 'react-alert';
 import ReactLoading from 'react-loading';
 import { Query, Mutation } from 'react-apollo';
+import classnames from 'classnames';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 
@@ -11,7 +12,7 @@ import copyToClipboard from '../utils/copyToClipboard';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 
-import './ShowPage.css';
+import styles from './ShowPage.module.scss';
 import logo from '../logo.png';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
@@ -56,13 +57,13 @@ class ShowPage extends Component {
     const { show } = data;
 
     return (
-      <div className="container ShowPage-container">
+      <div className={classnames(styles.container, 'container')}>
         <section id="form-header">
-          <img className="content-logo" alt="" src={logo} />
-          <div className="ShowPage-header">
+          <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} />
+          <div className={styles.header}>
             <h1 className="ShowPage-name">{show && show.name}</h1>
             <button className="btn btn-link" onClick={this.copyUrlToClipboard}>
-              Copy link <img src={clipboardIcon} className="font-icon" />
+              Copy link <img src={clipboardIcon} className="font-icon" alt="Clipboard icon" />
             </button>
           </div>
           <nav>
@@ -98,10 +99,7 @@ class ShowPage extends Component {
                 path={match.url + '/respond'}
                 render={() => <ShowRespond show={show} onShowChange={this.handleShowChange} />}
               />
-              <Route
-                path={match.url + '/results'}
-                render={() => <ShowResults show={show} onShowChange={this.handleShowChange} />}
-              />
+              <Route path={match.url + '/results'} render={() => <ShowResults show={show} />} />
             </React.Fragment>
           )}
         </section>

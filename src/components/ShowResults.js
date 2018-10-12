@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
+import classnames from 'classnames';
 import Timeline from './Timeline';
 import { Range } from 'rc-slider';
-import 'rc-slider/assets/index.css';
 import responsesToDict from '../utils/response';
 import { datesFromRange } from '../utils/datetime';
+
+import 'rc-slider/assets/index.css';
+import styles from './ShowResults.module.scss';
 
 class ShowResults extends Component {
   constructor(props) {
@@ -79,8 +82,8 @@ class ShowResults extends Component {
 
     return (
       <div>
-        <p className="Show-Slider-label">Filter by attendance:</p>
-        <Range {...sliderConfig} className="Show-slider" />
+        <p className={styles.sliderLabel}>Filter by attendance:</p>
+        <Range {...sliderConfig} className={styles.slider} />
         <Timeline
           allowedDates={allowedDates}
           startTime={moment().startOf('day')}

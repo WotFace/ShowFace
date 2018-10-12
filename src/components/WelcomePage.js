@@ -30,8 +30,9 @@ class WelcomePage extends Component {
 
   render() {
     const user = this.state.user;
+    const isLoggedIn = !!user;
 
-    const dashboardButton = user && (
+    const dashboardButton = isLoggedIn && (
       <>
         <h1 id="header">Welcome, {this.state.user.displayName}!</h1>
         <Link to="/dashboard">
@@ -40,7 +41,7 @@ class WelcomePage extends Component {
       </>
     );
 
-    const authButtons = user || (
+    const authButtons = isLoggedIn || (
       <div className={styles.authButtons}>
         <Link to="/login">
           <Button>Log in</Button>

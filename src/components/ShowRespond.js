@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 import update from 'immutability-helper';
-import { firestore } from 'firebase';
 import Timeline from './Timeline';
 import { datesFromRange } from '../utils/datetime';
 
@@ -18,24 +17,24 @@ class ShowRespond extends Component {
     const { name } = this.state;
     if (name.length === 0) return;
 
-    const startFirebaseTimestamp = firestore.Timestamp.fromDate(startTime.toDate());
-    let newShow = Object.assign({ responses: {} }, this.props.show);
-    newShow = update(newShow, {
-      responses: {
-        [name]: (currentTimes) => {
-          if (isSelect) {
-            const newTimes = (currentTimes || []).concat([startFirebaseTimestamp]);
-            return _.uniqBy(newTimes, (date) => date.seconds);
-          } else {
-            return _.filter(
-              currentTimes || [],
-              (date) => date.seconds !== startFirebaseTimestamp.seconds,
-            );
-          }
-        },
-      },
-    });
-    this.props.onShowChange(newShow);
+    // const startFirebaseTimestamp = firestore.Timestamp.fromDate(startTime.toDate());
+    // let newShow = Object.assign({ responses: {} }, this.props.show);
+    // newShow = update(newShow, {
+    // responses: {
+    // [name]: (currentTimes) => {
+    // if (isSelect) {
+    // const newTimes = (currentTimes || []).concat([startFirebaseTimestamp]);
+    // return _.uniqBy(newTimes, (date) => date.seconds);
+    // } else {
+    // return _.filter(
+    // currentTimes || [],
+    // (date) => date.seconds !== startFirebaseTimestamp.seconds,
+    // );
+    // }
+    // },
+    // },
+    // });
+    this.props.onShowChange(null);
   };
 
   render() {

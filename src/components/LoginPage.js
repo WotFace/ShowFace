@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from '../logo.png';
 import { withAlert } from 'react-alert';
-import { auth } from '../db';
+import { auth } from '../firebase';
 import SocialLogin from './SocialLogin';
 
 const loginStyles = {

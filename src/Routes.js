@@ -7,10 +7,6 @@ import CreatePage from './components/CreatePage';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 
-// TODO: Remove after completing transition to GraphQL
-import CreatePageFirebase from './components/CreatePageFirebase';
-import PollPageFirebase from './components/PollPageFirebase';
-
 const Routes = () => (
   <Switch>
     <Redirect exact from="/poll" to="/" />
@@ -19,9 +15,6 @@ const Routes = () => (
     <Route path="/new" component={CreatePage} />
     <Route path="/login" component={LoginPage} />
     <Route path="/signup" component={SignupPage} />
-
-    <Route path="/create" component={CreatePageFirebase} />
-    <Route path="/poll/:pollId" component={PollPageFirebase} />
   </Switch>
 );
 

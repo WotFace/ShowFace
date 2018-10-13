@@ -3,7 +3,7 @@ import Card from '@material/react-card';
 import Button from '@material/react-button';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import { auth } from '../db';
+import { auth } from '../firebase';
 
 import styles from './WelcomePage.module.scss';
 import logo from '../logo.png';
@@ -58,7 +58,7 @@ class WelcomePage extends Component {
           <img src={logo} alt="logo" className={styles.logo} />
           <div>
             {dashboardButton}
-            <Link to="/create">
+            <Link to="/new">
               <Button outlined className={styles.createButton}>
                 Create Show
               </Button>

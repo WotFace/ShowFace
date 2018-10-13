@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withAlert } from 'react-alert';
-import { facebookAuthProvider, googleAuthProvider, auth } from '../db';
+import { facebookAuthProvider, googleAuthProvider, auth } from '../firebase';
 
 class SocialLogin extends Component {
   constructor(props) {

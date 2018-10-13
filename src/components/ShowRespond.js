@@ -71,6 +71,7 @@ class ShowRespond extends Component {
             startTime={moment().startOf('day')}
             endTime={moment().endOf('day')}
             responses={responses}
+            maxSelectable={1}
             name={name}
             onSelect={(startTime) => this.handleSelectDeselect(startTime, true)}
             onDeselect={(startTime) => this.handleSelectDeselect(startTime, false)}

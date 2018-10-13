@@ -51,6 +51,15 @@ class ShowResults extends Component {
     const allAttendees = Object.keys(responses);
     const renderableResponses = responsesToDict(responses);
 
+    const calcMaxSelectable = () => {
+      let max = 0;
+      for (let r of renderableResponses.values()) {
+        if (r.size > max) max = r.size;
+      }
+      return max;
+    };
+    const maxSelectable = calcMaxSelectable();
+
     return (
       <div>
         <Timeline
@@ -58,6 +67,7 @@ class ShowResults extends Component {
           startTime={moment().startOf('day')}
           endTime={moment().endOf('day')}
           responses={show.responses}
+          maxSelectable={maxSelectable}
           onSelect={() => {}}
           onDeselect={() => {}}
           onCellHover={(selectedTime) => this.setState({ selectedTime })}

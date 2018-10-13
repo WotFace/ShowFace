@@ -45,22 +45,22 @@ function moveDateTimeToDate(date, dateTime) {
   return dateTime.clone().set({ year: date.year(), month: date.month(), date: date.date() });
 }
 
-const Tick = ({ startTime }) => {
+function Tick({ startTime }) {
   const format = 'h:mm';
   return (
     <span className={classnames(styles.tick, styles.timelineLabel)}>
       {startTime.format(format)}
     </span>
   );
-};
+}
 
-const DateHeader = ({ date }) => {
+function DateHeader({ date }) {
   return (
     <span className={classnames(styles.dateHeading, styles.timelineLabel)}>
       {date.format('DD/MM')}
     </span>
   );
-};
+}
 
 function TimeBox({
   responseCount,
@@ -142,22 +142,19 @@ class Timeline extends Component {
   }
 
   render() {
-    const { allowedDates, startTime, endTime, responses, name, onCellHover } = this.props;
+    const {
+      allowedDates,
+      startTime,
+      endTime,
+      responses,
+      maxSelectable,
+      name,
+      onCellHover,
+    } = this.props;
 
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
-    const allResponses = responsesToDict(responses || {});
-    this.renderableResponses = allResponses;
-
-    const calcMaxSelectable = () => {
-      if (name) return 1;
-      let max = 0;
-      for (let r of allResponses.values()) {
-        if (r.size > max) max = r.size;
-      }
-      return max;
-    };
-    const maxSelectable = calcMaxSelectable();
+    this.renderableResponses = responsesToDict(responses || {});
 
     const rows = startTimes.map((time) => {
       return (

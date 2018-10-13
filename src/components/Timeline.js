@@ -130,6 +130,10 @@ class Timeline extends Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState);
+  }
+
   isSelected(startTime) {
     const responsesForDate = this.renderableResponses.get(startTime) || new Set();
     return responsesForDate.has(this.props.name);

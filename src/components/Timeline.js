@@ -127,14 +127,15 @@ class Timeline extends Component {
       this.setState({ dragState });
     }
 
+    const { onSelect, onDeselect } = this.props;
     switch (dragState) {
       case DragStateEnum.dragSelecting:
         // console.log('Select', startMoment.toISOString());
-        this.props.onSelect(startMoment);
+        onSelect && onSelect(startMoment);
         break;
       case DragStateEnum.dragDeselecting:
         // console.log('Deselect', startMoment.toISOString());
-        this.props.onDeselect(startMoment);
+        onDeselect && onDeselect(startMoment);
         break;
       default:
         break;

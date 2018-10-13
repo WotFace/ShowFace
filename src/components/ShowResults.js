@@ -41,6 +41,7 @@ function ShowAttendees({ responses, allAttendees, time }) {
 
 class ShowResults extends Component {
   state = {};
+  handleCellHover = (selectedTime) => this.setState({ selectedTime });
 
   render() {
     const { show } = this.props;
@@ -68,9 +69,7 @@ class ShowResults extends Component {
           endTime={moment().endOf('day')}
           responses={show.responses}
           maxSelectable={maxSelectable}
-          onSelect={() => {}}
-          onDeselect={() => {}}
-          onCellHover={(selectedTime) => this.setState({ selectedTime })}
+          onCellHover={this.handleCellHover}
         />
         <ShowAttendees
           responses={renderableResponses}

@@ -22,6 +22,14 @@
   &:hover {
     border-width: 2px;
   }
+
+  &.selecting {
+    background-color: hsla(107, 60%, 35%, 1) !important;
+  }
+
+  &.deselecting {
+    background-color: white !important;
+  }
 }
 
 .dateHeading {

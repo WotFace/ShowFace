@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import moment from 'moment';
+import { isWithinRange } from 'date-fns';
 import _ from 'lodash';
 import memoize from 'memoize-one';
 import responsesToDict from '../utils/response';
 import DateMap from '../utils/DateMap';
 import styles from './Timeline.module.scss';
 
+// Return start times between 2 times
 const getStartTimes = memoize(
   (startTime, endTime) => {
     const numMin = moment.duration(endTime.diff(startTime)).asMinutes();
@@ -17,14 +19,18 @@ const getStartTimes = memoize(
   (newTime, oldTime) => newTime.isSame(oldTime),
 );
 
-const getMomentsForDates = memoize(
+// All start times on all allowedDates
+const getAllStartTimes = memoize(
   (startTimes, allowedDates) => {
     return new DateMap(
       _.zip(
         startTimes,
         startTimes.map((time) => {
           return new DateMap(
-            _.zip(allowedDates, allowedDates.map((date) => moveDateTimeToDate(date, time))),
+            _.zip(
+              allowedDates,
+              allowedDates.map((date) => moveDateTimeToDate(date, time).toDate()),
+            ),
           );
         }),
       ),
@@ -82,7 +88,7 @@ class TimeBox extends Component {
   handleMouseEnter = this.handleMouseEvent(this.props.onMouseEnter);
 
   render() {
-    const { responseCount, maxSelectable } = this.props;
+    const { responseCount, maxSelectable, isSelecting, isDeselecting } = this.props;
 
     const lightness = this.getLightnessValue(maxSelectable, responseCount);
     const divStyle = {
@@ -91,7 +97,11 @@ class TimeBox extends Component {
 
     return (
       <div
-        className={styles.timeBox}
+        className={classnames(
+          styles.timeBox,
+          isSelecting && styles.selecting,
+          isDeselecting && styles.deselecting,
+        )}
         style={divStyle}
         onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
@@ -130,8 +140,46 @@ class Timeline extends Component {
     return responsesForDate.size;
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState);
+  selectingDates(allStartTimes) {
+    const { dragState, dragStartTime, dragCurrentTime } = this.state;
+    if (dragState === DragStateEnum.none || !dragStartTime || !dragCurrentTime) return [];
+
+    // To check if start time's *date* is between dragStartTime and dragCurrentTime
+    let date1;
+    let date2;
+    const nullifyTime = (date) => new Date(date).setHours(0, 0, 0, 0);
+    date1 = nullifyTime(dragStartTime);
+    date2 = nullifyTime(dragCurrentTime);
+    if (date1 > date2) {
+      const tmp = date2;
+      date2 = date1;
+      date1 = tmp;
+    }
+
+    // To check if start time's *time* is between dragStartTime and dragCurrentTime
+    let time1;
+    let time2;
+    const nullifyDate = (date) => new Date(date).setFullYear(0, 0, 1);
+    time1 = nullifyDate(dragStartTime);
+    time2 = nullifyDate(dragCurrentTime);
+    if (time1 > time2) {
+      const tmp = time2;
+      time2 = time1;
+      time1 = tmp;
+    }
+
+    const selectings = [];
+    for (let dates of allStartTimes.values()) {
+      for (let date of dates.values()) {
+        const thisDate = nullifyTime(date);
+        const thisTime = nullifyDate(date);
+        if (isWithinRange(thisDate, date1, date2) && isWithinRange(thisTime, time1, time2)) {
+          selectings.push(date);
+        }
+      }
+    }
+
+    return selectings;
   }
 
   handleMouseEvent(startTime, shouldStart) {
@@ -140,11 +188,11 @@ class Timeline extends Component {
     if (shouldStart && this.state.dragState === DragStateEnum.none) {
       const isSelected = this.isSelected(startTime);
       dragState = isSelected ? DragStateEnum.dragDeselecting : DragStateEnum.dragSelecting;
-      this.setState({ dragState, selectStartTime: startTime });
+      this.setState({ dragState, dragStartTime: startTime, dragCurrentTime: startTime });
     }
 
     if (this.state.dragState !== DragStateEnum.none) {
-      this.setState({ currentSelectedTime: startTime });
+      this.setState({ dragCurrentTime: startTime });
     }
 
     // const { onSelect, onDeselect } = this.props;
@@ -178,30 +226,38 @@ class Timeline extends Component {
   };
 
   handleMouseEnd = () => {
-    this.setState({ dragState: DragStateEnum.none });
+    this.setState({
+      dragState: DragStateEnum.none,
+      dragStartTime: null,
+      dragCurrentTime: null,
+    });
+
+    // TODO: Calculate selected times and call callbacks
   };
 
   render() {
     const { allowedDates, startTime, endTime, responses, maxSelectable } = this.props;
 
     const startTimes = getStartTimes(startTime, endTime);
-    const momentsForDates = getMomentsForDates(startTimes, allowedDates);
+    const allStartTimes = getAllStartTimes(startTimes, allowedDates);
     this.renderableResponses = responsesToDict(responses || {});
+    const selectingDates = this.selectingDates(allStartTimes);
 
     const rows = startTimes.map((time) => {
       return (
         <React.Fragment key={`row ${time.valueOf()}`}>
           <Tick startTime={time} />
           {allowedDates.map((date) => {
-            const startMomentWithDate = momentsForDates.get(time).get(date);
-            const startTimeWithDate = startMomentWithDate.toDate();
-
+            const startTimeWithDate = allStartTimes.get(time).get(date);
+            const isSelecting = selectingDates.includes(startTimeWithDate);
             return (
               <TimeBox
                 startTimeWithDate={startTimeWithDate}
-                key={`timebox ${startMomentWithDate.valueOf()}`}
+                key={`timebox ${startTimeWithDate.getTime()}`}
                 maxSelectable={maxSelectable}
-                responseCount={this.getResponseCount}
+                isSelecting={isSelecting}
+                isDeselecting={!isSelecting}
+                responseCount={this.getResponseCount(startTimeWithDate)}
                 onMouseDown={this.handleMouseDown}
                 onMouseMove={this.handleMouseMove}
                 onMouseUp={this.handleMouseEnd}

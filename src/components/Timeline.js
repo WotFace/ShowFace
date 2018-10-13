@@ -7,11 +7,6 @@ import responsesToDict from '../utils/response';
 import DateMap from '../utils/DateMap';
 import styles from './Timeline.module.scss';
 
-// Props
-// allowedDates
-// startTime, endTime
-// responses
-
 const getStartTimes = memoize(
   (startTime, endTime) => {
     const numMin = moment.duration(endTime.diff(startTime)).asMinutes();
@@ -62,32 +57,49 @@ function DateHeader({ date }) {
   );
 }
 
-function TimeBox({
-  responseCount,
-  onMouseDown,
-  onMouseMove,
-  onMouseUp,
-  onMouseEnter,
-  maxSelectable,
-}) {
-  function getLightnessValue(maxSelectable, count) {
+class TimeBox extends Component {
+  // Dates can't be compared correctly by React.PureComponent. We subclass
+  // React.Component instead and diff the props ourselves to prevent
+  // unnecessary renders.
+  shouldComponentUpdate(nextProps) {
+    const keysToOmit = ['startTimeWithDate'];
+    const shouldUpdate =
+      // Update if any non-date prop changes
+      !_.isEqual(_.omit(this.props, keysToOmit), _.omit(nextProps, keysToOmit)) ||
+      // Update if date changes. Dates are assumed to be native Date objects.
+      +this.props.startTimeWithDate !== +nextProps.startTimeWithDate;
+    return shouldUpdate;
+  }
+
+  getLightnessValue(maxSelectable, count) {
     return Math.floor(100 - (65 / maxSelectable) * count);
   }
 
-  const divStyle = {
-    backgroundColor: `hsla(107, 60%, ${getLightnessValue(maxSelectable, responseCount)}%, 1)`,
-  };
+  handleMouseEvent = (callbackFn) => (e) => callbackFn(this.props.startTimeWithDate, e);
+  handleMouseDown = this.handleMouseEvent(this.props.onMouseDown);
+  handleMouseMove = this.handleMouseEvent(this.props.onMouseMove);
+  handleMouseUp = this.handleMouseEvent(this.props.onMouseUp);
+  handleMouseEnter = this.handleMouseEvent(this.props.onMouseEnter);
 
-  return (
-    <div
-      className={styles.timeBox}
-      style={divStyle}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      onMouseEnter={onMouseEnter}
-    />
-  );
+  render() {
+    const { responseCount, maxSelectable } = this.props;
+
+    const lightness = this.getLightnessValue(maxSelectable, responseCount);
+    const divStyle = {
+      backgroundColor: `hsla(107, 60%, ${lightness}%, 1)`,
+    };
+
+    return (
+      <div
+        className={styles.timeBox}
+        style={divStyle}
+        onMouseDown={this.handleMouseDown}
+        onMouseMove={this.handleMouseMove}
+        onMouseUp={this.handleMouseUp}
+        onMouseEnter={this.handleMouseEnter}
+      />
+    );
+  }
 }
 
 const DragStateEnum = Object.freeze({
@@ -96,6 +108,10 @@ const DragStateEnum = Object.freeze({
   dragDeselecting: 2,
 });
 
+// Props
+// allowedDates
+// startTime, endTime
+// responses
 class Timeline extends Component {
   constructor(props) {
     super(props);
@@ -120,39 +136,43 @@ class Timeline extends Component {
 
   handleMouseEvent(startTime, shouldStart) {
     let dragState = this.state.dragState;
-    const startMoment = moment(startTime);
-    if (shouldStart) {
+    // const startMoment = moment(startTime);
+    if (shouldStart && this.state.dragState === DragStateEnum.none) {
       const isSelected = this.isSelected(startTime);
       dragState = isSelected ? DragStateEnum.dragDeselecting : DragStateEnum.dragSelecting;
-      this.setState({ dragState });
+      this.setState({ dragState, selectStartTime: startTime });
     }
 
-    const { onSelect, onDeselect } = this.props;
-    switch (dragState) {
-      case DragStateEnum.dragSelecting:
-        // console.log('Select', startMoment.toISOString());
-        onSelect && onSelect(startMoment);
-        break;
-      case DragStateEnum.dragDeselecting:
-        // console.log('Deselect', startMoment.toISOString());
-        onDeselect && onDeselect(startMoment);
-        break;
-      default:
-        break;
+    if (this.state.dragState !== DragStateEnum.none) {
+      this.setState({ currentSelectedTime: startTime });
     }
+
+    // const { onSelect, onDeselect } = this.props;
+    // switch (dragState) {
+    // case DragStateEnum.dragSelecting:
+    // // console.log('Select', startMoment.toISOString());
+    // onSelect && onSelect(startMoment);
+    // break;
+    // case DragStateEnum.dragDeselecting:
+    // // console.log('Deselect', startMoment.toISOString());
+    // onDeselect && onDeselect(startMoment);
+    // break;
+    // default:
+    // break;
+    // }
   }
 
-  handleMouseDown = (startTimeWithDate) => (e) => {
+  handleMouseDown = (startTimeWithDate, e) => {
     e.preventDefault();
     this.handleMouseEvent(startTimeWithDate, true);
   };
 
-  handleMouseMove = (startTimeWithDate) => (e) => {
+  handleMouseMove = (startTimeWithDate, e) => {
     e.preventDefault();
     this.handleMouseEvent(startTimeWithDate, false);
   };
 
-  handleMouseEnter = (startTimeWithDate) => () => {
+  handleMouseEnter = (startTimeWithDate) => {
     const { onCellHover } = this.props;
     onCellHover && onCellHover(startTimeWithDate);
   };
@@ -178,14 +198,14 @@ class Timeline extends Component {
 
             return (
               <TimeBox
-                startTime={startTimeWithDate}
+                startTimeWithDate={startTimeWithDate}
                 key={`timebox ${startMomentWithDate.valueOf()}`}
                 maxSelectable={maxSelectable}
-                responseCount={this.getResponseCount(startTimeWithDate)}
-                onMouseDown={this.handleMouseDown(startTimeWithDate)}
-                onMouseMove={this.handleMouseMove(startTimeWithDate)}
+                responseCount={this.getResponseCount}
+                onMouseDown={this.handleMouseDown}
+                onMouseMove={this.handleMouseMove}
                 onMouseUp={this.handleMouseEnd}
-                onMouseEnter={this.handleMouseEnter(startTimeWithDate)}
+                onMouseEnter={this.handleMouseEnter}
               />
             );
           })}

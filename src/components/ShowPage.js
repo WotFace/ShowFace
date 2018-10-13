@@ -24,14 +24,12 @@ class ShowPage extends Component {
     });
   };
 
-  uploadShow = _.debounce(() => {
-    console.log('Update show');
-    // this.pollDoc.update(this.state.show);
-  }, 500);
+  handleSelectTimes = (startTimes) => {
+    // TODO: Fire mutation
+  };
 
-  handleShowChange = (newShow) => {
-    this.uploadShow();
-    this.setState({ show: newShow }); // Optimistically update the local state
+  handleDeselectTimes = (startTimes) => {
+    // TODO: Fire mutation
   };
 
   render() {
@@ -97,7 +95,13 @@ class ShowPage extends Component {
               />
               <Route
                 path={match.url + '/respond'}
-                render={() => <ShowRespond show={show} onShowChange={this.handleShowChange} />}
+                render={() => (
+                  <ShowRespond
+                    show={show}
+                    onSelectTimes={this.handleSelectTimes}
+                    onDeselectTimes={this.handleDeselectTimes}
+                  />
+                )}
               />
               <Route path={match.url + '/results'} render={() => <ShowResults show={show} />} />
             </React.Fragment>

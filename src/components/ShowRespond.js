@@ -13,32 +13,9 @@ class ShowRespond extends Component {
     };
   }
 
-  handleSelect = (startTime) => this.handleSelectDeselect(startTime, true);
-  handleDeselect = (startTime) => this.handleSelectDeselect(startTime, false);
-
-  handleSelectDeselect(startTime, isSelect) {
-    const { name } = this.state;
-    if (name.length === 0) return;
-
-    // const startFirebaseTimestamp = firestore.Timestamp.fromDate(startTime.toDate());
-    // let newShow = Object.assign({ responses: {} }, this.props.show);
-    // newShow = update(newShow, {
-    // responses: {
-    // [name]: (currentTimes) => {
-    // if (isSelect) {
-    // const newTimes = (currentTimes || []).concat([startFirebaseTimestamp]);
-    // return _.uniqBy(newTimes, (date) => date.seconds);
-    // } else {
-    // return _.filter(
-    // currentTimes || [],
-    // (date) => date.seconds !== startFirebaseTimestamp.seconds,
-    // );
-    // }
-    // },
-    // },
-    // });
-    this.props.onShowChange(null);
-  }
+  handleSelect = (startTimes) => this.state.name.length > 0 && this.props.onSelectTimes(startTimes);
+  handleDeselect = (startTimes) =>
+    this.state.name.length > 0 && this.props.onDeselectTimes(startTimes);
 
   render() {
     const { show } = this.props;

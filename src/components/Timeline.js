@@ -185,7 +185,7 @@ class Timeline extends Component {
   handleMouseEvent(startTime, shouldStart) {
     let dragState = this.state.dragState;
     // const startMoment = moment(startTime);
-    if (shouldStart && this.state.dragState === DragStateEnum.none) {
+    if (shouldStart && this.props.name && this.state.dragState === DragStateEnum.none) {
       const isSelected = this.isSelected(startTime);
       dragState = isSelected ? DragStateEnum.dragDeselecting : DragStateEnum.dragSelecting;
       this.setState({ dragState, dragStartTime: startTime, dragCurrentTime: startTime });
@@ -194,20 +194,6 @@ class Timeline extends Component {
     if (this.state.dragState !== DragStateEnum.none) {
       this.setState({ dragCurrentTime: startTime });
     }
-
-    // const { onSelect, onDeselect } = this.props;
-    // switch (dragState) {
-    // case DragStateEnum.dragSelecting:
-    // // console.log('Select', startMoment.toISOString());
-    // onSelect && onSelect(startMoment);
-    // break;
-    // case DragStateEnum.dragDeselecting:
-    // // console.log('Deselect', startMoment.toISOString());
-    // onDeselect && onDeselect(startMoment);
-    // break;
-    // default:
-    // break;
-    // }
   }
 
   handleMouseDown = (startTimeWithDate, e) => {
@@ -226,13 +212,27 @@ class Timeline extends Component {
   };
 
   handleMouseEnd = () => {
+    // Calculate selected times and call callbacks
+    const { onSelect, onDeselect, startTime, endTime, allowedDates } = this.props;
+    const startTimes = getStartTimes(startTime, endTime);
+    const allStartTimes = getAllStartTimes(startTimes, allowedDates);
+    const selectingDates = this.selectingDates(allStartTimes);
+    switch (this.state.dragState) {
+      case DragStateEnum.dragSelecting:
+        onSelect && onSelect(selectingDates);
+        break;
+      case DragStateEnum.dragDeselecting:
+        onDeselect && onDeselect(selectingDates);
+        break;
+      default:
+        break;
+    }
+
     this.setState({
       dragState: DragStateEnum.none,
       dragStartTime: null,
       dragCurrentTime: null,
     });
-
-    // TODO: Calculate selected times and call callbacks
   };
 
   render() {

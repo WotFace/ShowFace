@@ -13,7 +13,10 @@ class ShowRespond extends Component {
     };
   }
 
-  handleSelectDeselect = (startTime, isSelect) => {
+  handleSelect = (startTime) => this.handleSelectDeselect(startTime, true);
+  handleDeselect = (startTime) => this.handleSelectDeselect(startTime, false);
+
+  handleSelectDeselect(startTime, isSelect) {
     const { name } = this.state;
     if (name.length === 0) return;
 
@@ -35,7 +38,7 @@ class ShowRespond extends Component {
     // },
     // });
     this.props.onShowChange(null);
-  };
+  }
 
   render() {
     const { show } = this.props;
@@ -73,8 +76,8 @@ class ShowRespond extends Component {
             responses={responses}
             maxSelectable={1}
             name={name}
-            onSelect={(startTime) => this.handleSelectDeselect(startTime, true)}
-            onDeselect={(startTime) => this.handleSelectDeselect(startTime, false)}
+            onSelect={this.handleSelect}
+            onDeselect={this.handleDeselect}
           />
         )}
       </React.Fragment>

@@ -142,16 +142,27 @@ class Timeline extends Component {
     }
   }
 
+  handleMouseDown = (startTimeWithDate) => (e) => {
+    e.preventDefault();
+    this.handleMouseEvent(startTimeWithDate, true);
+  };
+
+  handleMouseMove = (startTimeWithDate) => (e) => {
+    e.preventDefault();
+    this.handleMouseEvent(startTimeWithDate, false);
+  };
+
+  handleMouseEnter = (startTimeWithDate) => () => {
+    const { onCellHover } = this.props;
+    onCellHover && onCellHover(startTimeWithDate);
+  };
+
+  handleMouseEnd = () => {
+    this.setState({ dragState: DragStateEnum.none });
+  };
+
   render() {
-    const {
-      allowedDates,
-      startTime,
-      endTime,
-      responses,
-      maxSelectable,
-      name,
-      onCellHover,
-    } = this.props;
+    const { allowedDates, startTime, endTime, responses, maxSelectable } = this.props;
 
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
@@ -171,18 +182,10 @@ class Timeline extends Component {
                 key={`timebox ${startMomentWithDate.valueOf()}`}
                 maxSelectable={maxSelectable}
                 responseCount={this.getResponseCount(startTimeWithDate)}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  this.handleMouseEvent(startTimeWithDate, true);
-                }}
-                onMouseMove={(e) => {
-                  e.preventDefault();
-                  this.handleMouseEvent(startTimeWithDate, false);
-                }}
-                onMouseUp={() => this.setState({ dragState: DragStateEnum.none })}
-                onMouseEnter={() => {
-                  onCellHover && onCellHover(startTimeWithDate);
-                }}
+                onMouseDown={this.handleMouseDown(startTimeWithDate)}
+                onMouseMove={this.handleMouseMove(startTimeWithDate)}
+                onMouseUp={this.handleMouseEnd}
+                onMouseEnter={this.handleMouseEnter(startTimeWithDate)}
               />
             );
           })}
@@ -197,7 +200,7 @@ class Timeline extends Component {
         <div
           className={classnames(styles.timeline)}
           style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
-          onMouseLeave={() => this.setState({ dragState: DragStateEnum.none })}
+          onMouseLeave={this.handleMouseEnd}
         >
           <span className="Timeline-filler" />
           {headerCells}

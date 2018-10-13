@@ -20,7 +20,6 @@
     "memoize-one": "^4.0.2",
     "moment": "^2.22.2",
     "quickselect": "^2.0.0",
-    "rc-slider": "^8.6.3",
     "react": "^16.5.2",
     "react-alert": "^4.0.4",
     "react-alert-template-basic": "^1.0.0",

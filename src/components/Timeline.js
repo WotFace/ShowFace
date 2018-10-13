@@ -142,37 +142,12 @@ class Timeline extends Component {
   }
 
   render() {
-    const {
-      allowedDates,
-      startTime,
-      endTime,
-      responses,
-      name,
-      minCount,
-      maxCount,
-      onCellHover,
-    } = this.props;
+    const { allowedDates, startTime, endTime, responses, name, onCellHover } = this.props;
 
     const startTimes = getStartTimes(startTime, endTime);
     const momentsForDates = getMomentsForDates(startTimes, allowedDates);
     const allResponses = responsesToDict(responses || {});
     this.renderableResponses = allResponses;
-
-    if (minCount !== undefined) {
-      for (let [k, v] of this.renderableResponses) {
-        if (v.size < minCount) {
-          this.renderableResponses.delete(k);
-        }
-      }
-    }
-
-    if (maxCount !== undefined) {
-      for (let [k, v] of this.renderableResponses) {
-        if (v.size > maxCount) {
-          this.renderableResponses.delete(k);
-        }
-      }
-    }
 
     const calcMaxSelectable = () => {
       if (name) return 1;

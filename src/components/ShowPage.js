@@ -114,9 +114,8 @@ ShowPage.fragments = {
       slug
       name
       isPrivate
-      isAnonymous
       isReadOnly
-      isCreatedAnonymously
+      areResponsesHidden
       startDate
       endDate
       interval

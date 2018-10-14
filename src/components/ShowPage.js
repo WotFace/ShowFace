@@ -163,7 +163,6 @@ ShowPage.fragments = {
         }
         role
         response
-        updatedAt
       }
     }
   `,
@@ -198,7 +197,9 @@ function getOptimisticResponseForUpsertResponses(name, responses, getShowResult)
       ...respondents,
       {
         __typename: 'Respondent',
+        id: 'optimisticRespondent',
         anonymousName: name,
+        user: null, // TODO: Use logged in user
         role: 'Member',
         response: responses,
       },
@@ -234,7 +235,6 @@ export default withAlert((props) => {
               upsertResponses={(slug, name, responses) =>
                 upsertResponses({
                   variables: { slug, name, responses },
-                  // TODO: Figure out why the optimistic response isn't used
                   optimisticResponse: getOptimisticResponseForUpsertResponses(
                     name,
                     responses,

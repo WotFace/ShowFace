@@ -21,15 +21,18 @@ class ShowRespond extends Component {
     name.length > 0 && this.props.onDeselectTimes(startTimes, name);
   };
 
+  debouncedSetState = _.debounce((state) => this.setState(state), 100);
+
+  handleNameChange = (e) => this.debouncedSetState({ name: e.target.value });
+
   render() {
     const { show } = this.props;
     const { name } = this.state;
     const allowedDates = datesFromRange(show.startDate, show.endDate);
 
-    const ourResponses = show.responses ? show.responses[name] : {};
-    const responses = ourResponses ? { [name]: ourResponses } : {};
-
-    const debouncedSetState = _.debounce((state) => this.setState(state), 100);
+    const respondents = show.respondents || [];
+    // TODO: Filter by logged-in user if present
+    const ourRespondents = respondents.filter((r) => r.anonymousName === name);
 
     return (
       <React.Fragment>
@@ -41,7 +44,7 @@ class ShowRespond extends Component {
               type="text"
               className="form-control"
               placeholder="Tony Stark"
-              onChange={(e) => debouncedSetState({ name: e.target.value })}
+              onChange={this.handleNameChange}
             />
             <small className="form-text text-muted">
               Enter your name so that you can select your availability
@@ -54,7 +57,7 @@ class ShowRespond extends Component {
             allowedDates={allowedDates}
             startTime={moment().startOf('day')}
             endTime={moment().endOf('day')}
-            responses={responses}
+            respondents={ourRespondents}
             maxSelectable={1}
             name={name}
             onSelect={this.handleSelect}

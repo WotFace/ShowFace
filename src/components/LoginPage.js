@@ -4,15 +4,6 @@ import { withAlert } from 'react-alert';
 import { auth } from '../firebase';
 import SocialLogin from './SocialLogin';
 
-const loginStyles = {
-  width: '90%',
-  maxWidth: '315px',
-  margin: '20px auto',
-  border: '1px solid #ddd',
-  borderRadius: '5px',
-  padding: '10px',
-};
-
 class LoginPage extends Component {
   constructor(props) {
     super(props);

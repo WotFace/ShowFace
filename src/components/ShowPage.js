@@ -37,7 +37,6 @@ class ShowPage extends Component {
   }
 
   handleSelectDeselectTimes(startTimes, name, isSelect) {
-    // Assume latestShow will return something
     const show = this.latestShow();
     if (!name || !show) return;
 

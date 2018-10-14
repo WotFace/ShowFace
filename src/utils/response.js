@@ -13,7 +13,6 @@ export function respondentToUserIdOrName(respondent) {
 
 // Shape of returned Map: { startTime: [User ID or anonymousName] }
 export function respondentsToDict(respondents) {
-  // respondents = respondents.map((v) => _.map(v, (dt) => dt.toDate()));
   const hm = new DateMap();
   respondents.forEach((respondent) => {
     const { response } = respondent;

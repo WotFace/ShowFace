@@ -77,6 +77,8 @@ class ShowResults extends Component {
     };
     const maxSelectable = calcMaxSelectable();
 
+    // TODO: Pass startTime and endTime in from show, and make Timeline handle them.
+    // TODO: Deduplicate allowedDates, startTime, endTime between ShowResults and ShowRespond
     return (
       <div>
         <Timeline

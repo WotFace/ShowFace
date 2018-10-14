@@ -1,16 +1,31 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import classnames from 'classnames';
+import _ from 'lodash';
 import Timeline from './Timeline';
-import responsesToDict from '../utils/response';
+import { respondentToUserIdOrName, respondentsToDict } from '../utils/response';
 import { datesFromRange } from '../utils/datetime';
 
 import styles from './ShowResults.module.scss';
 
-function ShowAttendees({ responses, allAttendees, time }) {
-  let attendees = time ? responses.get(time) || [] : [];
-  attendees = Array.from(attendees);
-  const notAttending = allAttendees.filter((x) => !new Set(attendees).has(x));
+function ShowAttendees({ respondents, renderableRespondents, time }) {
+  const respondersRespondentsObj = _.zipObject(
+    respondents.map(respondentToUserIdOrName),
+    respondents,
+  );
+  const responders = Object.keys(respondersRespondentsObj);
+  const respondersAtTime = new Set(renderableRespondents.get(time));
+
+  const [attending, possiblyNotAttending] = _.partition(responders, (r) => respondersAtTime.has(r));
+  // TODO: Partition possiblyNotAttending further into non-responses and not attendings
+  const notAttending = possiblyNotAttending;
+
+  // TODO: Display respondents differently depending on whether the user is
+  // logged in, has admin rights, and whether the respondent has responded
+  function renderRespondent(responder, respondent) {
+    const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
+    return <li key={responder}>{displayName}</li>;
+  }
 
   return (
     <div className="col-4">
@@ -21,16 +36,18 @@ function ShowAttendees({ responses, allAttendees, time }) {
         <section id="attending">
           <h3>Attending</h3>
           <ol>
-            {attendees.map((attendee) => {
-              return <li key={attendee}>{attendee}</li>;
+            {attending.map((responder) => {
+              const respondent = respondersRespondentsObj[responder];
+              return renderRespondent(responder, respondent);
             })}
           </ol>
         </section>
         <section id="notAttending">
           <h3>Not Attending</h3>
           <ol>
-            {notAttending.map((notAttendee) => {
-              return <li key={notAttendee}>{notAttendee}</li>;
+            {notAttending.map((responder) => {
+              const respondent = respondersRespondentsObj[responder];
+              return renderRespondent(responder, respondent);
             })}
           </ol>
         </section>
@@ -48,13 +65,12 @@ class ShowResults extends Component {
     const { selectedTime } = this.state;
     const allowedDates = datesFromRange(show.startDate, show.endDate);
 
-    const responses = show.responses || {};
-    const allAttendees = Object.keys(responses);
-    const renderableResponses = responsesToDict(responses);
+    const respondents = show.respondents || [];
+    const renderableRespondents = respondentsToDict(respondents);
 
     const calcMaxSelectable = () => {
       let max = 0;
-      for (let r of renderableResponses.values()) {
+      for (let r of renderableRespondents.values()) {
         if (r.size > max) max = r.size;
       }
       return max;
@@ -67,13 +83,13 @@ class ShowResults extends Component {
           allowedDates={allowedDates}
           startTime={moment().startOf('day')}
           endTime={moment().endOf('day')}
-          responses={show.responses}
+          respondents={respondents}
           maxSelectable={maxSelectable}
           onCellHover={this.handleCellHover}
         />
         <ShowAttendees
-          responses={renderableResponses}
-          allAttendees={allAttendees}
+          respondents={respondents}
+          renderableRespondents={renderableRespondents}
           time={selectedTime}
         />
       </div>

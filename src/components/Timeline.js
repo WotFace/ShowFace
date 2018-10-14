@@ -4,7 +4,7 @@ import moment from 'moment';
 import { isWithinRange } from 'date-fns';
 import _ from 'lodash';
 import memoize from 'memoize-one';
-import responsesToDict from '../utils/response';
+import { respondentsToDict } from '../utils/response';
 import DateMap from '../utils/DateMap';
 import styles from './Timeline.module.scss';
 
@@ -121,7 +121,7 @@ const DragStateEnum = Object.freeze({
 // Props
 // allowedDates
 // startTime, endTime
-// responses
+// respondents
 class Timeline extends Component {
   constructor(props) {
     super(props);
@@ -240,11 +240,11 @@ class Timeline extends Component {
   };
 
   render() {
-    const { allowedDates, startTime, endTime, responses, maxSelectable } = this.props;
+    const { allowedDates, startTime, endTime, respondents, maxSelectable, dragState } = this.props;
 
     const startTimes = getStartTimes(startTime, endTime);
     const allStartTimes = getAllStartTimes(startTimes, allowedDates);
-    this.renderableResponses = responsesToDict(responses || {});
+    this.renderableResponses = respondentsToDict(respondents);
     const selectingDates = this.selectingDates(allStartTimes);
 
     const rows = startTimes.map((time) => {
@@ -259,8 +259,8 @@ class Timeline extends Component {
                 startTimeWithDate={startTimeWithDate}
                 key={`timebox ${startTimeWithDate.getTime()}`}
                 maxSelectable={maxSelectable}
-                isSelecting={isSelecting}
-                isDeselecting={!isSelecting}
+                isSelecting={isSelecting && dragState === DragStateEnum.dragSelecting}
+                isDeselecting={isSelecting && dragState === DragStateEnum.dragDeselecting}
                 responseCount={this.getResponseCount(startTimeWithDate)}
                 onMouseDown={this.handleMouseDown}
                 onMouseMove={this.handleMouseMove}

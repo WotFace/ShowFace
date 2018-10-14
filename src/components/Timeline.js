@@ -240,7 +240,8 @@ class Timeline extends Component {
   };
 
   render() {
-    const { allowedDates, startTime, endTime, respondents, maxSelectable, dragState } = this.props;
+    const { allowedDates, startTime, endTime, respondents, maxSelectable } = this.props;
+    const { dragState } = this.state;
 
     const startTimes = getStartTimes(startTime, endTime);
     const allStartTimes = getAllStartTimes(startTimes, allowedDates);

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
-import update from 'immutability-helper';
 import Timeline from './Timeline';
 import { datesFromRange } from '../utils/datetime';
 
@@ -13,9 +12,14 @@ class ShowRespond extends Component {
     };
   }
 
-  handleSelect = (startTimes) => this.state.name.length > 0 && this.props.onSelectTimes(startTimes);
-  handleDeselect = (startTimes) =>
-    this.state.name.length > 0 && this.props.onDeselectTimes(startTimes);
+  handleSelect = (startTimes) => {
+    const { name } = this.state;
+    name.length > 0 && this.props.onSelectTimes(startTimes, name);
+  };
+  handleDeselect = (startTimes) => {
+    const { name } = this.state;
+    name.length > 0 && this.props.onDeselectTimes(startTimes, name);
+  };
 
   render() {
     const { show } = this.props;

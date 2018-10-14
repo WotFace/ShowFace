@@ -7,6 +7,7 @@ import { Query, Mutation } from 'react-apollo';
 import classnames from 'classnames';
 import gql from 'graphql-tag';
 import _ from 'lodash';
+import update from 'immutability-helper';
 
 import copyToClipboard from '../utils/copyToClipboard';
 import ShowRespond from './ShowRespond';
@@ -24,35 +25,63 @@ class ShowPage extends Component {
     });
   };
 
-  handleSelectTimes = (startTimes) => {
-    // TODO: Fire mutation
+  latestShow() {
+    const { getShowResult, upsertResponsesResult } = this.props;
+    if (upsertResponsesResult.data && upsertResponsesResult.data._upsertResponse) {
+      return upsertResponsesResult.data._upsertResponse;
+    }
+    if (getShowResult.data && getShowResult.data.show) {
+      return getShowResult.data.show;
+    }
+    return null;
+  }
+
+  handleSelectTimes = (startTimes, name) => {
+    // Assume latestShow will return something
+    const show = this.latestShow();
+    if (!name || !show) return;
+
+    const { slug, respondents } = show;
+    const currentRespondent = respondents.find((r) => r.anonymousName === name);
+    const responses = currentRespondent ? currentRespondent.response : [];
+    const newResponses = [...responses, ...startTimes];
+    this.props.upsertResponses(slug, name, newResponses);
   };
 
-  handleDeselectTimes = (startTimes) => {
+  handleDeselectTimes = (startTimes, name) => {
     // TODO: Fire mutation
   };
 
   render() {
-    const { match, getShowResult } = this.props;
-    const { loading, data, error } = getShowResult;
-    if (loading) {
+    const { match, getShowResult, upsertResponsesResult } = this.props;
+    const { loading: getShowLoading, error: getShowError } = getShowResult;
+    const { error: upsertResponsesError } = upsertResponsesResult;
+    if (getShowLoading) {
       return (
         <section className="full-page flex">
           <h2>Loading</h2>
           <ReactLoading type="bubbles" color="#111" />
         </section>
       );
-    } else if (error) {
-      console.log('Show page load got error', error);
+    } else if (getShowError) {
+      console.log('Show page load got getShowError', getShowError);
       return (
         <section className="full-page flex">
           <h2>That didn&#39;t work</h2>
-          <div>{error.message}</div>
+          <div>{getShowError.message}</div>
+        </section>
+      );
+    } else if (upsertResponsesError) {
+      console.log('Show page load got upsertResponsesError', upsertResponsesError);
+      return (
+        <section className="full-page flex">
+          <h2>We couldn&apos;t save your changes didn&#39;t work</h2>
+          <div>{upsertResponsesError.message}</div>
         </section>
       );
     }
 
-    const { show } = data;
+    const show = this.latestShow();
 
     return (
       <div className={classnames(styles.container, 'container')}>
@@ -115,6 +144,7 @@ class ShowPage extends Component {
 ShowPage.fragments = {
   show: gql`
     fragment ShowPageShow on Show {
+      id
       slug
       name
       isPrivate
@@ -124,6 +154,7 @@ ShowPage.fragments = {
       endDate
       interval
       respondents {
+        id
         anonymousName
         user {
           email
@@ -147,11 +178,75 @@ const GET_SHOW_QUERY = gql`
   ${ShowPage.fragments.show}
 `;
 
+const UPSERT_RESPONSES_MUTATION = gql`
+  mutation UpsertResponse($slug: String!, $name: String, $responses: [DateTime!]) {
+    _upsertResponse(where: { slug: $slug, name: $name }, data: { response: $responses }) {
+      ...ShowPageShow
+    }
+  }
+  ${ShowPage.fragments.show}
+`;
+
+function getOptimisticResponseForUpsertResponses(name, responses, getShowResult) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  const { respondents } = show;
+  const index = respondents.findIndex((r) => r.anonymousName === name);
+  let newRespondents;
+  if (index === -1) {
+    newRespondents = [
+      ...respondents,
+      {
+        __typename: 'Respondent',
+        anonymousName: name,
+        role: 'Member',
+        response: responses,
+      },
+    ];
+  } else {
+    newRespondents = update(respondents, {
+      [index]: {
+        response: { $set: responses },
+      },
+    });
+  }
+
+  return {
+    __typename: 'Mutation',
+    _upsertResponse: {
+      __typename: 'Show',
+      ...show,
+      respondents: newRespondents,
+    },
+  };
+}
+
 export default withAlert((props) => {
   const slug = props.match.params.showId;
   return (
     <Query query={GET_SHOW_QUERY} variables={{ slug }}>
-      {(getShowResult) => <ShowPage {...props} getShowResult={getShowResult} />}
+      {(getShowResult) => (
+        <Mutation mutation={UPSERT_RESPONSES_MUTATION}>
+          {(upsertResponses, upsertResponsesResult) => (
+            <ShowPage
+              {...props}
+              getShowResult={getShowResult}
+              upsertResponses={(slug, name, responses) =>
+                upsertResponses({
+                  variables: { slug, name, responses },
+                  // TODO: Figure out why the optimistic response isn't used
+                  optimisticResponse: getOptimisticResponseForUpsertResponses(
+                    name,
+                    responses,
+                    getShowResult,
+                  ),
+                })
+              }
+              upsertResponsesResult={upsertResponsesResult}
+            />
+          )}
+        </Mutation>
+      )}
     </Query>
   );
 });

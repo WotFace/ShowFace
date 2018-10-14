@@ -4,7 +4,7 @@ import moment from 'moment';
 import { isWithinRange } from 'date-fns';
 import _ from 'lodash';
 import memoize from 'memoize-one';
-import { respondentsToDict } from '../utils/response';
+import { anonNameToId, respondentsToDict } from '../utils/response';
 import DateMap from '../utils/DateMap';
 import styles from './Timeline.module.scss';
 
@@ -136,7 +136,8 @@ class Timeline extends Component {
 
   isSelected(startTime) {
     const responsesForDate = this.renderableResponses.get(startTime) || new Set();
-    return responsesForDate.has(this.props.name);
+    // TODO: Also check if has current user's ID
+    return responsesForDate.has(anonNameToId(this.props.name));
   }
 
   getResponseCount(startTime) {

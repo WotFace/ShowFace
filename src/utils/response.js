@@ -1,11 +1,14 @@
-import _ from 'lodash';
 import DateMap from './DateMap';
+
+export function anonNameToId(anonName) {
+  return `anon ${anonName}`;
+}
 
 export function respondentToUserIdOrName(respondent) {
   if (!respondent) return undefined;
   const { anonymousName, user } = respondent;
   // Prefix anon so that no names can pretend to be a User id
-  return user ? user.id : `anon ${anonymousName}`;
+  return user ? user.id : anonNameToId(anonymousName);
 }
 
 // Shape of returned Map: { startTime: [User ID or anonymousName] }
@@ -26,5 +29,3 @@ export function respondentsToDict(respondents) {
   });
   return hm;
 }
-
-export default respondentsToDict;

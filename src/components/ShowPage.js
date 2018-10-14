@@ -36,7 +36,7 @@ class ShowPage extends Component {
     return null;
   }
 
-  handleSelectTimes = (startTimes, name) => {
+  handleSelectDeselectTimes(startTimes, name, isSelect) {
     // Assume latestShow will return something
     const show = this.latestShow();
     if (!name || !show) return;
@@ -44,13 +44,23 @@ class ShowPage extends Component {
     const { slug, respondents } = show;
     const currentRespondent = respondents.find((r) => r.anonymousName === name);
     const responses = currentRespondent ? currentRespondent.response : [];
-    const newResponses = [...responses, ...startTimes];
-    this.props.upsertResponses(slug, name, newResponses);
-  };
+    const responsesTimestamps = responses.map((r) => new Date(r).getTime()); // Create Dates as some are strings
+    const startTimestamps = startTimes.map((r) => r.getTime());
 
-  handleDeselectTimes = (startTimes, name) => {
-    // TODO: Fire mutation
-  };
+    let newResponseTimestamps;
+    if (isSelect) {
+      newResponseTimestamps = _.uniq([...responsesTimestamps, ...startTimestamps]);
+    } else {
+      newResponseTimestamps = responsesTimestamps.filter((r) => !startTimestamps.includes(r));
+    }
+
+    const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
+    this.props.upsertResponses(slug, name, newResponses);
+  }
+
+  handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
+  handleDeselectTimes = (startTimes, name) =>
+    this.handleSelectDeselectTimes(startTimes, name, false);
 
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;

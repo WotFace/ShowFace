@@ -7,3 +7,6 @@ $mdc-theme-surface: #F7F6F4;
 @import '@material/react-text-field/index';
 @import '@material/react-tab-bar/index.scss';
 @import '@material/react-tab/index.scss';
+
+// Override standard MDC classes
+@import './mdc-override.scss'

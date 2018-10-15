@@ -41,7 +41,13 @@ class ShowPage extends Component {
   }
 
   handleTabChange(index) {
+    if (index === 0) {
 
+    }
+
+    if (index === 1) {
+
+    }
   }
 
   handleSelectDeselectTimes(startTimes, name, isSelect) {
@@ -103,55 +109,39 @@ class ShowPage extends Component {
     return (
       <div className={classnames(styles.container, 'container')}>
         <section id="form-header">
-          <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} />
+          {/* <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} /> */}
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
             <div className={styles.copyUrlInputContainer}>
-              <TextField outlined className={styles.copyUrlInput} label=''>
+              <TextField 
+                outlined 
+                className={styles.copyUrlInput} 
+                label=''
+              >
                 <Input type="text" value={window.location.href}/>
               </TextField>
-            </div>
-            <Button 
-              onClick={this.copyUrlToClipboard}
-              icon={<img src={clipboardIcon} className="font-icon" alt="Clipboard icon" />}
-              outlined
-            >
-              Copy link
-            </Button>
-          </div>
-          
-          {/* <nav>
-            <ul className="nav nav-tabs nav-fill">
-              <NavLink
-                to={`${match.url}/respond`}
-                className="nav-item nav-link"
-                activeClassName="active"
-              >
-                Respond
-              </NavLink>
-              <NavLink
-                to={`${match.url}/results`}
-                className="nav-item nav-link"
-                activeClassName="active"
-              >
-                Results
-              </NavLink>
-            </ul>
-          </nav> */}
 
-          <div 
-            className={styles.tabBar}
-            // activeIndex={0}
-            // handleActiveIndexUpdate={this.handleTabChange}
-          >
-            <Tab>
-              <span> Respond</span>
-            </Tab>
-            
-            <Tab>
-              <span> View Results</span>
-            </Tab>
+              <Button 
+                className={styles.clipboardButton}
+                onClick={this.copyUrlToClipboard}
+                icon={<img src={clipboardIcon} className="font-icon" alt="Clipboard icon" />}
+              >
+              </Button>
+            </div>
           </div>
+            <div className={styles.tabsContainer}>
+              <NavLink to={`${match.url}/respond`} className={styles.noUnderline}>
+                <Button>
+                  <span> Respond </span>
+                </Button>
+              </NavLink>
+
+              <NavLink to={`${match.url}/results`} className={styles.noUnderline}>
+                <Button>
+                  <span> Results </span>
+                </Button>
+              </NavLink>
+            </div>
 
         </section>
         <section id="show">

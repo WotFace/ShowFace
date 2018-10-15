@@ -13,15 +13,24 @@
 
 .copyUrlInputContainer {
   margin-bottom: 5px;
-  display: block;
+  display: flex;
+  justify-content: center;
 }
 
 .copyUrlInput {
   height: 30px !important;
-  width: 350px;
+  width: 300px;
 }
 
-.tabBar {
+.clipboardButton {
+  height: 30px !important;
+}
+
+.noUnderline {
+  text-decoration: none
+}
+
+.tabsContainer {
   display: flex;
-  flex-direction: row;
+  justify-content: space-evenly ;
 }

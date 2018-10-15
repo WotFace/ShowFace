@@ -10,7 +10,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import styles from './CreatePage.module.scss';
 
-import TextField, {HelperText, Input} from '@material/react-text-field';
+import TextField, {Input} from '@material/react-text-field';
 import Button from '@material/react-button';
 
 class CreatePage extends Component {
@@ -78,7 +78,7 @@ class CreatePage extends Component {
               <TextField
                 label='Enter Show Name'
                 className={styles.form_input}
-                outlined={true}
+                outlined
               >
                 <Input
                   type="text"

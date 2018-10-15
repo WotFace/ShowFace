@@ -1,10 +1,63 @@
-import React from 'react';
+import React, { Component } from 'react';
 import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
+import { kMaxRanges } from '../utils/bestTime';
 import { respondentToUserIdOrName } from '../utils/response';
 
 import styles from './ShowResultsSidebar.module.scss';
+
+class BestTime extends Component {
+  // TODO: Override shouldComponentUpdate to fix unnecessary renders
+  render() {
+    const { renderableRespondents, interval } = this.props;
+    console.log('sntoe', renderableRespondents);
+
+    const entries = Array.from(renderableRespondents.entries());
+    entries.sort((a, b) => b[0] - a[0]);
+    const intervalMs = interval * 60 * 1000;
+
+    const dividedEntries = [];
+    for (const entry of entries) {
+      if (dividedEntries.length === 0) {
+        dividedEntries.push(entry);
+        continue;
+      }
+
+      const lastTime = dividedEntries[dividedEntries.length - 1][0];
+      if (lastTime - entry[0] > intervalMs) {
+        dividedEntries.push([0, Number.MIN_SAFE_INTEGER]);
+      }
+      dividedEntries.push(entry);
+    }
+
+    const sizes = dividedEntries.map(
+      ([time, responders]) => (responders instanceof Set ? responders.size : responders),
+    );
+    const bestRanges = kMaxRanges(3, sizes);
+
+    // TODO: Only process the stuff below for the selected best index
+    // TODO: Clean up the fugly code below
+    const bestTimes = bestRanges.map((r) => dividedEntries.slice(r.start, r.end + 1));
+    const bestIntervals = bestTimes.map((t) => ({ start: t[t.length - 1][0], end: t[0][0] }));
+    // TODO: Split into attendees who will arrive late, leave early, pop by, or stay throughout
+    const bestAttendees = bestTimes.map(
+      (interval) => new Set(_.flatten(interval.map((i) => Array.from(i[1])))),
+    );
+    console.log('snteo', bestIntervals, bestAttendees, bestTimes);
+
+    const selectedBestInterval = bestIntervals[0];
+    const selectedBestAttendees = bestAttendees[0];
+
+    return (
+      <div>
+        Best time to meet
+        {new Date(selectedBestInterval.start).toISOString()} to{' '}
+        {new Date(selectedBestInterval.end).toISOString()}
+      </div>
+    );
+  }
+}
 
 function ShowAttendees({ respondents, renderableRespondents, time }) {
   const respondersRespondentsObj = _.zipObject(
@@ -55,8 +108,10 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
 }
 
 export default function ShowResultsSidebar({ respondents, renderableRespondents, time }) {
+  // TODO: Pass in interval
   return (
     <div className="col-4">
+      <BestTime renderableRespondents={renderableRespondents} interval={15} />
       <ShowAttendees
         respondents={respondents}
         renderableRespondents={renderableRespondents}

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { withAlert } from 'react-alert';
 import { DateRange } from 'react-date-range';
-import Button from '@material/react-button';
 import classnames from 'classnames';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -10,6 +9,10 @@ import gql from 'graphql-tag';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import styles from './CreatePage.module.scss';
+
+import TextField, {HelperText, Input} from '@material/react-text-field';
+import Button from '@material/react-button';
+
 
 import logo from '../logo.png';
 
@@ -72,26 +75,32 @@ class CreatePage extends Component {
 
       // TODO: Validate input and disable submit button if necessary
       return (
-        <form onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <input
-              name="name"
-              className="form-control"
-              type="text"
-              placeholder="Show Name"
-              onChange={this.handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <DateRange
-              onChange={this.handleRangeChange.bind(this, 'dateRanges')}
-              moveRangeOnFirstSelection={false}
-              ranges={[this.state.dateRanges.selection]}
-              minDate={new Date()}
-            />
-          </div>
-          <Button raised>Submit</Button>
-        </form>
+        <div className={styles.create_page_form}>
+          <form onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <TextField
+                label='Enter Show Name'
+                className={styles.form_input}
+                outlined={true}
+              >
+                <Input
+                  type="text"
+                  value={this.state.value}
+                  onChange={this.handleInputChange}
+                />
+              </TextField>
+            </div>
+            <div className="form-group">
+              <DateRange
+                onChange={this.handleRangeChange.bind(this, 'dateRanges')}
+                moveRangeOnFirstSelection={false}
+                ranges={[this.state.dateRanges.selection]}
+                minDate={new Date()}
+              />
+            </div>
+            <Button raised>Submit</Button>
+          </form>
+        </div>
       );
     }
   }
@@ -99,9 +108,8 @@ class CreatePage extends Component {
   render() {
     return (
       <div className={classnames(styles.container, 'container')}>
-        <section id="form-header">
-          <img className="content-logo" alt="" src={logo} />
-          <h1 id="header">Create a new Show</h1>
+        <section id={styles.form_header}>
+          <h1 id={styles.header}>Create a new Show</h1>
         </section>
         <section id="form" className="row">
           <div className="col">{this.renderContent()}</div>

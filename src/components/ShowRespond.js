@@ -13,6 +13,7 @@ class ShowRespond extends Component {
     super(props);
     this.state = {
       name: '',
+      placeholderName: ''
     };
   }
 
@@ -25,9 +26,12 @@ class ShowRespond extends Component {
     name.length > 0 && this.props.onDeselectTimes(startTimes, name);
   };
 
-  debouncedSetState = _.debounce((state) => this.setState(state), 100);
+  debouncedSetState = _.debounce((state) => this.setState(state), 250);
 
-  handleNameChange = (e) => this.debouncedSetState({ name: e.target.value });
+  handleNameChange = (e)  => {
+    this.setState({placeholderName: e.target.value})
+    this.debouncedSetState({ name: e.target.value });
+  }
 
   render() {
     const { show } = this.props;
@@ -53,7 +57,7 @@ class ShowRespond extends Component {
               <Input
                 type="text"
                 name="name"
-                value={this.state.name}
+                value={this.state.placeholderName}
                 onChange={this.handleNameChange}
                 autoComplete = "off"
               />

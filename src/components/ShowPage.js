@@ -103,7 +103,7 @@ class ShowPage extends Component {
     return (
       <div className={classnames(styles.container, 'container')}>
         <section id="form-header">
-          {/* <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} /> */}
+          <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} />
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
             <div className={styles.copyUrlInputContainer}>

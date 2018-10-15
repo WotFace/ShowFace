@@ -77,33 +77,40 @@ class CreatePage extends Component {
 
       // TODO: Validate input and disable submit button if necessary
       return (
-        <div className={styles.create_page_form}>
-          <form onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <TextField
-                label='Enter Show Name'
-                className={styles.form_input}
-                outlined
-              >
-                <Input
-                  type="text"
-                  name="name"
-                  value={this.state.name}
-                  autoComplete = "off"
-                  onChange={this.handleInputChange}
-                />
-              </TextField>
+        <div>
+          <section id={styles.form_header}>
+            <h1 id={styles.header}>Create a new Show</h1>
+          </section>
+          <section>
+            <div className={styles.create_page_form}>
+              <form onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                  <TextField
+                    label='Enter Show Name'
+                    className={styles.form_input}
+                    outlined
+                  >
+                    <Input
+                      type="text"
+                      name="name"
+                      value={this.state.name}
+                      autoComplete = "off"
+                      onChange={this.handleInputChange}
+                    />
+                  </TextField>
+                </div>
+                <div className="form-group">
+                  <DateRange
+                    onChange={this.handleRangeChange.bind(this, 'dateRanges')}
+                    moveRangeOnFirstSelection={false}
+                    ranges={[this.state.dateRanges.selection]}
+                    minDate={new Date()}
+                  />
+                </div>
+                <Button raised>Submit</Button>
+              </form>
             </div>
-            <div className="form-group">
-              <DateRange
-                onChange={this.handleRangeChange.bind(this, 'dateRanges')}
-                moveRangeOnFirstSelection={false}
-                ranges={[this.state.dateRanges.selection]}
-                minDate={new Date()}
-              />
-            </div>
-            <Button raised>Submit</Button>
-          </form>
+          </section>
         </div>
       );
     }
@@ -112,11 +119,8 @@ class CreatePage extends Component {
   render() {
     return (
       <div className={classnames(styles.container, 'container')}>
-        <section id={styles.form_header}>
-          <h1 id={styles.header}>Create a new Show</h1>
-        </section>
-        <section id="form" className="row">
-          <div className="col">{this.renderContent()}</div>
+        <section>
+          <div>{this.renderContent()}</div>
         </section>
       </div>
     );

@@ -4,6 +4,7 @@ import { withAlert } from 'react-alert';
 import { DateRange } from 'react-date-range';
 import classnames from 'classnames';
 import { Mutation } from 'react-apollo';
+import ReactLoading from 'react-loading';
 import gql from 'graphql-tag';
 
 import 'react-date-range/dist/styles.css'; // main style file
@@ -60,7 +61,11 @@ class CreatePage extends Component {
 
     if (loading) {
       // TODO: Beautify
-      return <span>Creating...</span>;
+      return <section className="full-page flex">
+          <h2>Creating</h2>
+          <ReactLoading type="bubbles" color="#111" />
+        </section>
+
     } else if (data) {
       return <Redirect to={`/show/${data.createNewShow.slug}`} />;
     } else {
@@ -84,6 +89,7 @@ class CreatePage extends Component {
                   type="text"
                   name="name"
                   value={this.state.name}
+                  autoComplete = "off"
                   onChange={this.handleInputChange}
                 />
               </TextField>

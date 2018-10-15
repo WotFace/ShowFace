@@ -13,9 +13,6 @@ import styles from './CreatePage.module.scss';
 import TextField, {HelperText, Input} from '@material/react-text-field';
 import Button from '@material/react-button';
 
-
-import logo from '../logo.png';
-
 class CreatePage extends Component {
   constructor(props) {
     super(props);
@@ -85,7 +82,8 @@ class CreatePage extends Component {
               >
                 <Input
                   type="text"
-                  value={this.state.value}
+                  name="name"
+                  value={this.state.name}
                   onChange={this.handleInputChange}
                 />
               </TextField>

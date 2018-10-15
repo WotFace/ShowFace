@@ -17,6 +17,10 @@ import styles from './ShowPage.module.scss';
 import logo from '../logo.png';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
+import TextField, {Input} from '@material/react-text-field';
+import Tab from '@material/react-tab';
+import TabBar from '@material/react-tab-bar';
+import Button from '@material/react-button';
 class ShowPage extends Component {
   copyUrlToClipboard = () => {
     copyToClipboard(window.location.href);
@@ -34,6 +38,16 @@ class ShowPage extends Component {
       return getShowResult.data.show;
     }
     return null;
+  }
+
+  handleTabChange(index) {
+    if (index === 0) {
+
+    }
+
+    if (index === 1) {
+
+    }
   }
 
   handleSelectDeselectTimes(startTimes, name, isSelect) {
@@ -95,31 +109,40 @@ class ShowPage extends Component {
     return (
       <div className={classnames(styles.container, 'container')}>
         <section id="form-header">
-          <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} />
+          {/* <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} /> */}
           <div className={styles.header}>
-            <h1 className="ShowPage-name">{show && show.name}</h1>
-            <button className="btn btn-link" onClick={this.copyUrlToClipboard}>
-              Copy link <img src={clipboardIcon} className="font-icon" alt="Clipboard icon" />
-            </button>
+            <h1>{show && show.name}</h1>
+            <div className={styles.copyUrlInputContainer}>
+              <TextField 
+                outlined 
+                className={styles.copyUrlInput} 
+                label=''
+              >
+                <Input type="text" value={window.location.href}/>
+              </TextField>
+
+              <Button 
+                className={styles.clipboardButton}
+                onClick={this.copyUrlToClipboard}
+                icon={<img src={clipboardIcon} className="font-icon" alt="Clipboard icon" />}
+              >
+              </Button>
+            </div>
           </div>
-          <nav>
-            <ul className="nav nav-tabs nav-fill">
-              <NavLink
-                to={`${match.url}/respond`}
-                className="nav-item nav-link"
-                activeClassName="active"
-              >
-                Respond
+            <div className={styles.tabsContainer}>
+              <NavLink to={`${match.url}/respond`} className={styles.noUnderline}>
+                <Button>
+                  <span> Respond </span>
+                </Button>
               </NavLink>
-              <NavLink
-                to={`${match.url}/results`}
-                className="nav-item nav-link"
-                activeClassName="active"
-              >
-                Results
+
+              <NavLink to={`${match.url}/results`} className={styles.noUnderline}>
+                <Button>
+                  <span> Results </span>
+                </Button>
               </NavLink>
-            </ul>
-          </nav>
+            </div>
+
         </section>
         <section id="show">
           {show && (

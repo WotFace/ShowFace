@@ -8,3 +8,26 @@
   margin-bottom: 1em;
 }
 
+@media all and (min-width: 900px) {
+  .resultsContainer {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+} else {
+  .resultsContainer {
+    position: sticky;
+    bottom:0;
+  }
+}
+
+.timelineContainer {
+  flex: 3.5;
+  padding: 15px;
+}
+
+.sidebarResultsContainer {
+  flex: 1;
+  padding: 10px;
+}

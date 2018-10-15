@@ -1,9 +1,29 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans');
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,400');
 @import './mdc';
 
 body {
   color: rgb(28,48,92);
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'Raleway', sans-serif;
+  // font-family: 'Fira Sans', sans-serif;
+
+  font-weight: 300;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+body {
+  position: relative
+}
+
+h1 {
+  font-size: 250%;
+}
+
+h1, h2, h3 {
+  font-weight: 300;
+  margin: inherit, 10px;
 }
 
 .center {

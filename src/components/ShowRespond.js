@@ -4,11 +4,16 @@ import moment from 'moment';
 import Timeline from './Timeline';
 import { datesFromRange } from '../utils/datetime';
 
+import TextField, {HelperText, Input} from '@material/react-text-field';
+import Button from '@material/react-button';
+
+import styles from './ShowRespond.module.scss'
 class ShowRespond extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
+      placeholderName: ''
     };
   }
 
@@ -21,9 +26,12 @@ class ShowRespond extends Component {
     name.length > 0 && this.props.onDeselectTimes(startTimes, name);
   };
 
-  debouncedSetState = _.debounce((state) => this.setState(state), 100);
+  debouncedSetState = _.debounce((state) => this.setState(state), 250);
 
-  handleNameChange = (e) => this.debouncedSetState({ name: e.target.value });
+  handleNameChange = (e)  => {
+    this.setState({placeholderName: e.target.value})
+    this.debouncedSetState({ name: e.target.value });
+  }
 
   render() {
     const { show } = this.props;
@@ -37,18 +45,23 @@ class ShowRespond extends Component {
     return (
       <React.Fragment>
         <section id="form">
-          <div className="form-group">
-            <label htmlFor="name">Your Name</label>
-            <input
-              name="name"
-              type="text"
-              className="form-control"
-              placeholder="Tony Stark"
+          <div className={styles.form_group}>
+
+            <TextField
+              label='Enter Your Name'
+              className={styles.form_input}
+              helperText={<HelperText className={styles.form_helper_text}>Enter your name so that you can select your availability</HelperText>}
               onChange={this.handleNameChange}
-            />
-            <small className="form-text text-muted">
-              Enter your name so that you can select your availability
-            </small>
+              outlined
+            >
+              <Input
+                type="text"
+                name="name"
+                value={this.state.placeholderName}
+                onChange={this.handleNameChange}
+                autoComplete = "off"
+              />
+            </TextField>
           </div>
         </section>
 

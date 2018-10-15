@@ -41,12 +41,12 @@ class ShowRespond extends Component {
     return (
       <React.Fragment>
         <section id="form">
-          <div className="form-group">
+          <div className={styles.form_group}>
 
             <TextField
               label='Enter Your Name'
               className={styles.form_input}
-              helperText={<HelperText>Enter your name so that you can select your availability</HelperText>}
+              helperText={<HelperText className={styles.form_helper_text}>Enter your name so that you can select your availability</HelperText>}
               onChange={this.handleNameChange}
               outlined
             >

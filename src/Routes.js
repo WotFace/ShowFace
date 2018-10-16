@@ -6,6 +6,7 @@ import WelcomePage from './components/WelcomePage';
 import CreatePage from './components/CreatePage';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
+import DashboardPage from './components/DashboardPage';
 
 const Routes = () => (
   <Switch>
@@ -15,6 +16,7 @@ const Routes = () => (
     <Route path="/new" component={CreatePage} />
     <Route path="/login" component={LoginPage} />
     <Route path="/signup" component={SignupPage} />
+    <Route path="/dashboard" component={DashboardPage} />
   </Switch>
 );
 

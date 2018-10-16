@@ -60,40 +60,40 @@ class DashboardPage extends Component {
   }
 }
 
-DashboardPage.fragments = {
-  suserShows: gql`
-    fragment DashboardPageShow on UserShows {
-      id
-      slug
-      name
-      isPrivate
-      isReadOnly
-      areResponsesHidden
-      startDate
-      endDate
-      interval
-      respondents {
-        id
-        anonymousName
-        user {
-          email
-          name
-          uid
-        }
-        role
-        response
-      }
-    }
-  `,
-};
-
-const GET_USER_SHOW_QUERY = gql`
-  query UserShow($auth: AuthInput!) {
-    show(where: { auth: $auth }) {
-      ...DashboardPageShow
-    }
-  }
-  ${DashboardPage.fragments.show}
-`;
+// DashboardPage.fragments = {
+//   suserShows: gql`
+//     fragment DashboardPageShow on UserShows {
+//       id
+//       slug
+//       name
+//       isPrivate
+//       isReadOnly
+//       areResponsesHidden
+//       startDate
+//       endDate
+//       interval
+//       respondents {
+//         id
+//         anonymousName
+//         user {
+//           email
+//           name
+//           uid
+//         }
+//         role
+//         response
+//       }
+//     }
+//   `,
+// };
+//
+// const GET_USER_SHOW_QUERY = gql`
+//   query UserShow($auth: AuthInput!) {
+//     show(where: { auth: $auth }) {
+//       ...DashboardPageShow
+//     }
+//   }
+//   ${DashboardPage.fragments.show}
+// `;
 
 export default withAlert(DashboardPage);

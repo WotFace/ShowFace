@@ -15,12 +15,9 @@ import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 
 import styles from './ShowPage.module.scss';
-import logo from '../logo.png';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
 import TextField, { Input } from '@material/react-text-field';
-import Tab from '@material/react-tab';
-import TabBar from '@material/react-tab-bar';
 import Button from '@material/react-button';
 
 class ShowPage extends Component {
@@ -133,13 +130,13 @@ class ShowPage extends Component {
           <div className={styles.tabsContainer}>
             <NavLink to={`${match.url}/respond`} className={styles.noUnderline}>
               <Button>
-                <span> Respond </span>
+                Respond
               </Button>
             </NavLink>
 
             <NavLink to={`${match.url}/results`} className={styles.noUnderline}>
               <Button>
-                <span> Results </span>
+                Results
               </Button>
             </NavLink>
           </div>

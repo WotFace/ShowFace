@@ -4,7 +4,7 @@ import moment from 'moment';
 import { isWithinRange } from 'date-fns';
 import _ from 'lodash';
 import memoize from 'memoize-one';
-import { anonNameToId, respondentsToDict } from '../utils/response';
+import { respondentsToDict } from '../utils/response';
 import DateMap from '../utils/DateMap';
 import styles from './Timeline.module.scss';
 
@@ -136,11 +136,9 @@ class Timeline extends Component {
 
   isSelected(startTime) {
     const responsesForDate = this.renderableResponses.get(startTime) || new Set();
-    // TODO: Also check if has current user's ID
-    if (this.props.name) {
-      return responsesForDate.has(anonNameToId(this.props.name));
-    } else if (this.props.auth) {
-      return responsesForDate.has(this.props.auth);
+    const { userResponseKey } = this.props;
+    if (userResponseKey) {
+      return responsesForDate.has(userResponseKey);
     }
     return false;
   }
@@ -195,11 +193,7 @@ class Timeline extends Component {
   handleMouseEvent(startTime, shouldStart) {
     let dragState = this.state.dragState;
     // const startMoment = moment(startTime);
-    if (
-      shouldStart &&
-      (this.props.auth || this.props.name) &&
-      this.state.dragState === DragStateEnum.none
-    ) {
+    if (shouldStart && this.props.userResponseKey && this.state.dragState === DragStateEnum.none) {
       const isSelected = this.isSelected(startTime);
       dragState = isSelected ? DragStateEnum.dragDeselecting : DragStateEnum.dragSelecting;
       this.setState({ dragState, dragStartTime: startTime, dragCurrentTime: startTime });

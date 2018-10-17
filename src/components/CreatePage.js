@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { Mutation } from 'react-apollo';
 import ReactLoading from 'react-loading';
 import gql from 'graphql-tag';
-import { auth } from '../firebase';
+import { getAuthInput } from '../utils/auth';
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -19,8 +19,6 @@ class CreatePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null,
-      auth: null,
       name: '',
       dateRanges: {
         selection: {
@@ -35,25 +33,12 @@ class CreatePage extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
-    auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ user: user });
-        // TODO: change to actual auth object when DO is up
-        this.setState({ auth: { uid: 'trang', token: 'stupidtoken' } });
-      } else {
-        this.setState({ user: null });
-        this.setState({ auth: null });
-      }
-    });
-  }
-
   handleSubmit(event) {
     // TODO: Add interval option to UI and retrieve from state
     const interval = 15;
-    const { name, dateRanges, auth } = this.state;
+    const { name, dateRanges } = this.state;
     const { startDate, endDate } = dateRanges.selection;
-    this.props.createShow(name, startDate, endDate, interval, auth);
+    this.props.createShow(name, startDate, endDate, interval);
     event.preventDefault();
   }
 
@@ -162,9 +147,10 @@ export default withAlert((props) => (
     {(createNewShow, result) => (
       <CreatePage
         {...props}
-        createShow={(name, startDate, endDate, interval, auth) =>
-          createNewShow({ variables: { name, startDate, endDate, interval, auth } })
-        }
+        createShow={async (name, startDate, endDate, interval) => {
+          const auth = await getAuthInput();
+          createNewShow({ variables: { name, startDate, endDate, interval, auth } });
+        }}
         createShowResult={result}
       />
     )}

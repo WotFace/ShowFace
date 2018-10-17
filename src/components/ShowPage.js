@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
-import { auth } from '../firebase';
+import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 
 import copyToClipboard from '../utils/copyToClipboard';
 import ShowRespond from './ShowRespond';
@@ -22,24 +22,8 @@ import TextField, { Input } from '@material/react-text-field';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import Button from '@material/react-button';
+
 class ShowPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: null,
-      auth: null,
-    };
-  }
-
-  componentDidMount() {
-    auth().onAuthStateChanged((user) => {
-      if (user) {
-        // TODO: get real auth object
-        this.setState({ user: user, auth: { uid: 'trang', token: 'stupidtoken' } });
-      }
-    });
-  }
-
   copyUrlToClipboard = () => {
     copyToClipboard(window.location.href);
     this.props.alert.show('Url copied to clipboard.', {
@@ -67,11 +51,10 @@ class ShowPage extends Component {
   }
 
   handleSelectDeselectTimes(startTimes, name, isSelect) {
-    const auth = this.state.auth;
-    const email = this.state.user ? this.state.user.email : null;
+    const user = getFirebaseUserInfo();
+    const email = user ? user.email : null;
     const show = this.latestShow();
-    console.log(auth, email, show);
-    if ((!name && !auth) || !show) return;
+    if ((!name && !isSignedIn()) || !show) return;
 
     const { slug, respondents } = show;
     // Find current respondent by anonymousName if name is supplied,
@@ -91,7 +74,7 @@ class ShowPage extends Component {
     }
 
     const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
-    this.props.upsertResponses(slug, name, email, auth, newResponses);
+    this.props.upsertResponses(slug, name, email, newResponses);
   }
 
   handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
@@ -102,7 +85,6 @@ class ShowPage extends Component {
     const { match, getShowResult, upsertResponsesResult } = this.props;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
     const { error: upsertResponsesError } = upsertResponsesResult;
-    const auth = this.state;
     if (getShowLoading) {
       return (
         <section className="full-page flex">
@@ -179,7 +161,6 @@ class ShowPage extends Component {
                     show={show}
                     onSelectTimes={this.handleSelectTimes}
                     onDeselectTimes={this.handleDeselectTimes}
-                    auth={auth}
                   />
                 )}
               />
@@ -256,13 +237,22 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
     : respondents.findIndex((r) => (r.user ? r.user.email : false) === email);
   let newRespondents;
   if (index === -1) {
+    const firebaseUser = getFirebaseUserInfo();
+    const user = firebaseUser
+      ? {
+          __typename: 'User',
+          name: firebaseUser.displayName, // TODO: Use user's name on our server
+          uid: firebaseUser.uid,
+          email,
+        }
+      : null;
     newRespondents = [
       ...respondents,
       {
         __typename: 'Respondent',
         id: 'optimisticRespondent',
         anonymousName: name,
-        user: email ? { email: email } : null, // TODO: Use logged in user
+        user,
         role: 'Member',
         response: responses,
       },
@@ -295,18 +285,18 @@ export default withAlert((props) => {
             <ShowPage
               {...props}
               getShowResult={getShowResult}
-              upsertResponses={(slug, name, email, auth, responses) =>
+              upsertResponses={async (slug, name, email, responses) => {
+                const auth = await getAuthInput();
                 upsertResponses({
                   variables: { slug, name, email, auth, responses },
                   optimisticResponse: getOptimisticResponseForUpsertResponses(
                     name,
                     email,
-                    auth,
                     responses,
                     getShowResult,
                   ),
-                })
-              }
+                });
+              }}
               upsertResponsesResult={upsertResponsesResult}
             />
           )}

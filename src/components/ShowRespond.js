@@ -3,9 +3,10 @@ import _ from 'lodash';
 import moment from 'moment';
 import Timeline from './Timeline';
 import { datesFromRange } from '../utils/datetime';
+import { anonNameToId } from '../utils/response';
+import { getFirebaseUserInfo } from '../utils/auth';
 
 import TextField, { HelperText, Input } from '@material/react-text-field';
-import Button from '@material/react-button';
 
 import styles from './ShowRespond.module.scss';
 class ShowRespond extends Component {
@@ -13,19 +14,46 @@ class ShowRespond extends Component {
     super(props);
     this.state = {
       name: null,
-      placeholderName: null,
+      placeholderName: '',
     };
+  }
+
+  shouldUseName() {
+    const { name } = this.state;
+    return name && name.length > 0;
+  }
+
+  userResponseKey() {
+    const firebaseUser = getFirebaseUserInfo();
+    if (this.shouldUseName()) return anonNameToId(this.state.name);
+    else if (firebaseUser) return firebaseUser.email;
+    return null;
+  }
+
+  filteredRespondents() {
+    const { show } = this.props;
+    if (!show) return [];
+
+    const respondents = show.respondents || [];
+
+    if (this.shouldUseName()) {
+      const { name } = this.state;
+      return respondents.filter((r) => r.anonymousName === name);
+    }
+
+    const firebaseUser = getFirebaseUserInfo();
+    if (!firebaseUser) return [];
+
+    return respondents.filter((r) => r.user && r.user.email === firebaseUser.email);
   }
 
   handleSelect = (startTimes) => {
     const { name } = this.state;
-    const { auth } = this.props;
-    (auth || name.length > 0) && this.props.onSelectTimes(startTimes, name);
+    name.length > 0 && this.props.onSelectTimes(startTimes, name);
   };
   handleDeselect = (startTimes) => {
     const { name } = this.state;
-    const { auth } = this.props;
-    (auth || name.length > 0) && this.props.onDeselectTimes(startTimes, name);
+    name.length > 0 && this.props.onDeselectTimes(startTimes, name);
   };
 
   debouncedSetState = _.debounce((state) => this.setState(state), 250);
@@ -36,13 +64,10 @@ class ShowRespond extends Component {
   };
 
   render() {
-    const { show, auth } = this.props;
-    const { name } = this.state;
+    const { show } = this.props;
     const allowedDates = datesFromRange(show.startDate, show.endDate);
-
-    const respondents = show.respondents || [];
-    // TODO: Filter by logged-in user if present
-    const ourRespondents = respondents.filter((r) => r.anonymousName === name);
+    const userResponseKey = this.userResponseKey();
+    const ourRespondents = this.filteredRespondents();
 
     return (
       <React.Fragment>
@@ -70,15 +95,14 @@ class ShowRespond extends Component {
           </div>
         </section>
 
-        {(name || auth) && (
+        {userResponseKey && (
           <Timeline
             allowedDates={allowedDates}
             startTime={moment().startOf('day')}
             endTime={moment().endOf('day')}
             respondents={ourRespondents}
             maxSelectable={1}
-            name={name}
-            auth={auth}
+            userResponseKey={userResponseKey}
             onSelect={this.handleSelect}
             onDeselect={this.handleDeselect}
           />

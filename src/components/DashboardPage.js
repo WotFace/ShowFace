@@ -5,30 +5,15 @@ import _ from 'lodash';
 import logo from '../logo.png';
 import { Link } from 'react-router-dom';
 import { withAlert } from 'react-alert';
-import { auth } from '../firebase';
+import { getFirebaseUserInfo } from '../utils/auth';
 
 class DashboardPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: auth().currentUser,
-    };
-  }
-
-  componentDidMount() {
-    auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ user: user });
-      }
-    });
-  }
-
   render() {
-    const user = this.state.user;
+    const firebaseUser = getFirebaseUserInfo();
 
-    const header = user ? (
+    const header = firebaseUser ? (
       <div>
-        <h1>Welcome, {this.state.user.displayName}!</h1>
+        <h1>Welcome, {firebaseUser.displayName}!</h1>
       </div>
     ) : (
       <div>

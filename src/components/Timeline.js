@@ -137,7 +137,12 @@ class Timeline extends Component {
   isSelected(startTime) {
     const responsesForDate = this.renderableResponses.get(startTime) || new Set();
     // TODO: Also check if has current user's ID
-    return responsesForDate.has(anonNameToId(this.props.name));
+    if (this.props.name) {
+      return responsesForDate.has(anonNameToId(this.props.name));
+    } else if (this.props.auth) {
+      return responsesForDate.has(this.props.auth);
+    }
+    return false;
   }
 
   getResponseCount(startTime) {
@@ -190,7 +195,11 @@ class Timeline extends Component {
   handleMouseEvent(startTime, shouldStart) {
     let dragState = this.state.dragState;
     // const startMoment = moment(startTime);
-    if (shouldStart && this.props.name && this.state.dragState === DragStateEnum.none) {
+    if (
+      shouldStart &&
+      (this.props.auth || this.props.name) &&
+      this.state.dragState === DragStateEnum.none
+    ) {
       const isSelected = this.isSelected(startTime);
       dragState = isSelected ? DragStateEnum.dragDeselecting : DragStateEnum.dragSelecting;
       this.setState({ dragState, dragStartTime: startTime, dragCurrentTime: startTime });

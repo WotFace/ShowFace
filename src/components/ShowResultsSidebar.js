@@ -2,13 +2,13 @@ import React from 'react';
 import moment from 'moment';
 import classnames from 'classnames';
 import _ from 'lodash';
-import { respondentToUserIdOrName } from '../utils/response';
+import { respondentToEmailOrName } from '../utils/response';
 
 import styles from './ShowResultsSidebar.module.scss';
 
 function ShowAttendees({ respondents, renderableRespondents, time }) {
   const respondersRespondentsObj = _.zipObject(
-    respondents.map(respondentToUserIdOrName),
+    respondents.map(respondentToEmailOrName),
     respondents,
   );
   const responders = Object.keys(respondersRespondentsObj);

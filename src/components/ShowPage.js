@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
+import { auth } from '../firebase';
 
 import copyToClipboard from '../utils/copyToClipboard';
 import ShowRespond from './ShowRespond';
@@ -17,11 +18,28 @@ import styles from './ShowPage.module.scss';
 import logo from '../logo.png';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
-import TextField, {Input} from '@material/react-text-field';
+import TextField, { Input } from '@material/react-text-field';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import Button from '@material/react-button';
 class ShowPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+      auth: null,
+    };
+  }
+
+  componentDidMount() {
+    auth().onAuthStateChanged((user) => {
+      if (user) {
+        // TODO: get real auth object
+        this.setState({ user: user, auth: { uid: 'trang', token: 'stupidtoken' } });
+      }
+    });
+  }
+
   copyUrlToClipboard = () => {
     copyToClipboard(window.location.href);
     this.props.alert.show('Url copied to clipboard.', {
@@ -42,20 +60,25 @@ class ShowPage extends Component {
 
   handleTabChange(index) {
     if (index === 0) {
-
     }
 
     if (index === 1) {
-
     }
   }
 
   handleSelectDeselectTimes(startTimes, name, isSelect) {
+    const auth = this.state.auth;
+    const email = this.state.user ? this.state.user.email : null;
     const show = this.latestShow();
-    if (!name || !show) return;
+    console.log(auth, email, show);
+    if ((!name && !auth) || !show) return;
 
     const { slug, respondents } = show;
-    const currentRespondent = respondents.find((r) => r.anonymousName === name);
+    // Find current respondent by anonymousName if name is supplied,
+    // if not find by current user's email
+    const currentRespondent = name
+      ? respondents.find((r) => r.anonymousName === name)
+      : respondents.find((r) => (r.user ? r.user.email : false) === email);
     const responses = currentRespondent ? currentRespondent.response : [];
     const responsesTimestamps = responses.map((r) => new Date(r).getTime()); // Create Dates as some are strings
     const startTimestamps = startTimes.map((r) => r.getTime());
@@ -68,7 +91,7 @@ class ShowPage extends Component {
     }
 
     const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
-    this.props.upsertResponses(slug, name, newResponses);
+    this.props.upsertResponses(slug, name, email, auth, newResponses);
   }
 
   handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
@@ -79,6 +102,7 @@ class ShowPage extends Component {
     const { match, getShowResult, upsertResponsesResult } = this.props;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
     const { error: upsertResponsesError } = upsertResponsesResult;
+    const auth = this.state;
     if (getShowLoading) {
       return (
         <section className="full-page flex">
@@ -113,36 +137,30 @@ class ShowPage extends Component {
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
             <div className={styles.copyUrlInputContainer}>
-              <TextField 
-                outlined 
-                className={styles.copyUrlInput} 
-                label=''
-              >
-                <Input type="text" value={window.location.href}/>
+              <TextField outlined className={styles.copyUrlInput} label="">
+                <Input type="text" value={window.location.href} />
               </TextField>
 
-              <Button 
+              <Button
                 className={styles.clipboardButton}
                 onClick={this.copyUrlToClipboard}
                 icon={<img src={clipboardIcon} className="font-icon" alt="Clipboard icon" />}
-              >
-              </Button>
+              />
             </div>
           </div>
-            <div className={styles.tabsContainer}>
-              <NavLink to={`${match.url}/respond`} className={styles.noUnderline}>
-                <Button>
-                  <span> Respond </span>
-                </Button>
-              </NavLink>
+          <div className={styles.tabsContainer}>
+            <NavLink to={`${match.url}/respond`} className={styles.noUnderline}>
+              <Button>
+                <span> Respond </span>
+              </Button>
+            </NavLink>
 
-              <NavLink to={`${match.url}/results`} className={styles.noUnderline}>
-                <Button>
-                  <span> Results </span>
-                </Button>
-              </NavLink>
-            </div>
-
+            <NavLink to={`${match.url}/results`} className={styles.noUnderline}>
+              <Button>
+                <span> Results </span>
+              </Button>
+            </NavLink>
+          </div>
         </section>
         <section id="show">
           {show && (
@@ -161,6 +179,7 @@ class ShowPage extends Component {
                     show={show}
                     onSelectTimes={this.handleSelectTimes}
                     onDeselectTimes={this.handleDeselectTimes}
+                    auth={auth}
                   />
                 )}
               />
@@ -210,19 +229,31 @@ const GET_SHOW_QUERY = gql`
 `;
 
 const UPSERT_RESPONSES_MUTATION = gql`
-  mutation UpsertResponse($slug: String!, $name: String, $responses: [DateTime!]) {
-    _upsertResponse(where: { slug: $slug, name: $name }, data: { response: $responses }) {
+  mutation UpsertResponse(
+    $slug: String!
+    $name: String
+    $email: String
+    $auth: AuthInput
+    $responses: [DateTime!]
+  ) {
+    _upsertResponse(
+      where: { slug: $slug, name: $name, email: $email }
+      data: { response: $responses }
+      auth: $auth
+    ) {
       ...ShowPageShow
     }
   }
   ${ShowPage.fragments.show}
 `;
 
-function getOptimisticResponseForUpsertResponses(name, responses, getShowResult) {
+function getOptimisticResponseForUpsertResponses(name, email, responses, getShowResult) {
   const show = getShowResult.data && getShowResult.data.show;
   if (!show) return null;
   const { respondents } = show;
-  const index = respondents.findIndex((r) => r.anonymousName === name);
+  const index = name
+    ? respondents.findIndex((r) => r.anonymousName === name)
+    : respondents.findIndex((r) => (r.user ? r.user.email : false) === email);
   let newRespondents;
   if (index === -1) {
     newRespondents = [
@@ -231,7 +262,7 @@ function getOptimisticResponseForUpsertResponses(name, responses, getShowResult)
         __typename: 'Respondent',
         id: 'optimisticRespondent',
         anonymousName: name,
-        user: null, // TODO: Use logged in user
+        user: email ? { email: email } : null, // TODO: Use logged in user
         role: 'Member',
         response: responses,
       },
@@ -264,11 +295,13 @@ export default withAlert((props) => {
             <ShowPage
               {...props}
               getShowResult={getShowResult}
-              upsertResponses={(slug, name, responses) =>
+              upsertResponses={(slug, name, email, auth, responses) =>
                 upsertResponses({
-                  variables: { slug, name, responses },
+                  variables: { slug, name, email, auth, responses },
                   optimisticResponse: getOptimisticResponseForUpsertResponses(
                     name,
+                    email,
+                    auth,
                     responses,
                     getShowResult,
                   ),

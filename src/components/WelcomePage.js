@@ -3,7 +3,7 @@ import Card from '@material/react-card';
 import Button from '@material/react-button';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import { auth } from '../firebase';
+import { getFirebaseUserInfo } from '../utils/auth';
 
 import styles from './WelcomePage.module.scss';
 import logo from '../logo.png';
@@ -13,35 +13,19 @@ function Divider() {
 }
 
 class WelcomePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: auth().currentUser,
-    };
-  }
-
-  componentDidMount() {
-    auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ user: user });
-      }
-    });
-  }
-
   render() {
-    const user = this.state.user;
-    const isLoggedIn = !!user;
+    const user = getFirebaseUserInfo();
 
-    const dashboardButton = isLoggedIn && (
+    const dashboardButton = user && (
       <>
-        <h1 id="header">Welcome, {this.state.user.displayName}!</h1>
+        <h1 id="header">Welcome, {user.displayName}!</h1>
         <Link to="/dashboard">
           <Button raised>Dashboard</Button>
         </Link>
       </>
     );
 
-    const authButtons = isLoggedIn || (
+    const authButtons = user || (
       <div className={styles.authButtons}>
         <Link to="/login">
           <Button>Log in</Button>

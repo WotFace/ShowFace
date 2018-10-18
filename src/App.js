@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import { ApolloProvider } from 'react-apollo';
+import { auth } from './firebase';
 import Routes from './Routes.js';
 import apolloClient from './apolloClient';
 
@@ -13,14 +14,20 @@ const alertOptions = {
   position: 'bottom center',
 };
 
-const App = () => (
-  <AlertProvider template={AlertTemplate} {...alertOptions}>
-    <ApolloProvider client={apolloClient}>
-      <Router>
-        <Routes />
-      </Router>
-    </ApolloProvider>
-  </AlertProvider>
-);
+export default class App extends Component {
+  componentDidMount() {
+    auth().onAuthStateChanged(() => this.forceUpdate());
+  }
 
-export default App;
+  render() {
+    return (
+      <AlertProvider template={AlertTemplate} {...alertOptions}>
+        <ApolloProvider client={apolloClient}>
+          <Router>
+            <Routes />
+          </Router>
+        </ApolloProvider>
+      </AlertProvider>
+    );
+  }
+}

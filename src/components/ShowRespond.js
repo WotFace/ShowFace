@@ -49,11 +49,11 @@ class ShowRespond extends Component {
 
   handleSelect = (startTimes) => {
     const { name } = this.state;
-    name.length > 0 && this.props.onSelectTimes(startTimes, name);
+    this.userResponseKey() && this.props.onSelectTimes(startTimes, name);
   };
   handleDeselect = (startTimes) => {
     const { name } = this.state;
-    name.length > 0 && this.props.onDeselectTimes(startTimes, name);
+    this.userResponseKey() && this.props.onDeselectTimes(startTimes, name);
   };
 
   debouncedSetState = _.debounce((state) => this.setState(state), 250);

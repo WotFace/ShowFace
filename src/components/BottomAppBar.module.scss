@@ -1,0 +1,26 @@
+$mdc-theme-primary: #193163;
+$mdc-theme-secondary: #F9BA5C;
+$mdc-theme-surface: #F7F6F4;
+
+.appBarBottom {
+  left: 0;
+  right: 0;
+  height: 40px;
+  background-color: $mdc-theme-secondary;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  padding: 5px 20px 5px 0px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0px;
+  -webkit-border-radius: 10px 10px 0px 0px;
+  border-radius: 10px 10px 0px 0px;
+}
+
+@media screen and (max-width: 750px) {
+  .appBarBottom {
+    border-radius: 0px;
+  }
+}

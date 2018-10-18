@@ -9,11 +9,9 @@ export function isSignedIn() {
 export async function getAuthInput() {
   const { currentUser } = auth();
   if (!currentUser) return null;
-  // TODO: Uncomment the following code after the backend crash is fixed. Pretend to be Trang for now.
-  // const { uid } = currentUser;
-  // const token = await currentUser.getIdToken();
-  // return { uid, token };
-  return { uid: 'trang', token: 'stupidtoken' };
+  const { uid } = currentUser;
+  const token = await currentUser.getIdToken();
+  return { uid, token };
 }
 
 // If logged in, returns an object with email, displayName, else returns null.

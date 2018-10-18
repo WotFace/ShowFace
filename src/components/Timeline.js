@@ -244,7 +244,7 @@ class Timeline extends Component {
   };
 
   render() {
-    const { allowedDates, startTime, endTime, respondents, maxSelectable } = this.props;
+    const { className, allowedDates, startTime, endTime, respondents, maxSelectable } = this.props;
     const { dragState } = this.state;
 
     const startTimes = getStartTimes(startTime, endTime);
@@ -281,7 +281,7 @@ class Timeline extends Component {
     const headerCells = allowedDates.map((date) => <DateHeader date={date} key={date} />);
 
     return (
-      <section id="timeline" className="flex-container">
+      <section id="timeline" className={className}>
         <div
           className={classnames(styles.timeline)}
           style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}

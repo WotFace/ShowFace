@@ -54,9 +54,14 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
   );
 }
 
-export default function ShowResultsSidebar({ respondents, renderableRespondents, time }) {
+export default function ShowResultsSidebar({
+  className,
+  respondents,
+  renderableRespondents,
+  time,
+}) {
   return (
-    <div className="col-4">
+    <div className={className}>
       <ShowAttendees
         respondents={respondents}
         renderableRespondents={renderableRespondents}

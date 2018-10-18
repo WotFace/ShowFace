@@ -4,7 +4,6 @@ import { Redirect } from 'react-router';
 import { withAlert } from 'react-alert';
 import ReactLoading from 'react-loading';
 import { Query, Mutation } from 'react-apollo';
-import classnames from 'classnames';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
@@ -110,7 +109,7 @@ class ShowPage extends Component {
     const show = this.latestShow();
 
     return (
-      <div className={classnames(styles.container, 'container')}>
+      <div className={styles.container}>
         <section id="form-header">
           {/* <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} /> */}
           <div className={styles.header}>

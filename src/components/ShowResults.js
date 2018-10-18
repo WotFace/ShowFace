@@ -4,6 +4,7 @@ import Timeline from './Timeline';
 import { respondentsToDict } from '../utils/response';
 import { datesFromRange } from '../utils/datetime';
 import ShowResultsSidebar from './ShowResultsSidebar';
+import styles from './ShowResults.module.scss';
 
 class ShowResults extends Component {
   state = {};
@@ -29,8 +30,9 @@ class ShowResults extends Component {
     // TODO: Pass startTime and endTime in from show, and make Timeline handle them.
     // TODO: Deduplicate allowedDates, startTime, endTime between ShowResults and ShowRespond
     return (
-      <div>
+      <div className={styles.resultsContainer}>
         <Timeline
+          className={styles.timeline}
           allowedDates={allowedDates}
           startTime={moment().startOf('day')}
           endTime={moment().endOf('day')}
@@ -38,11 +40,14 @@ class ShowResults extends Component {
           maxSelectable={maxSelectable}
           onCellHover={this.handleCellHover}
         />
-        <ShowResultsSidebar
-          respondents={respondents}
-          renderableRespondents={renderableRespondents}
-          time={selectedTime}
-        />
+        <div>
+          <ShowResultsSidebar
+            className={styles.sidebar}
+            respondents={respondents}
+            renderableRespondents={renderableRespondents}
+            time={selectedTime}
+          />
+        </div>
       </div>
     );
   }

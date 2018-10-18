@@ -1,0 +1,15 @@
+.resultsContainer {
+  display: flex;
+}
+
+.timeline {
+  flex: 1;
+}
+
+.sidebar {
+  margin-left: 1em;
+  width: 17em;
+  top: 1em;
+  position: -webkit-sticky;
+  position: sticky;
+}

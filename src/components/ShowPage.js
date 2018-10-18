@@ -129,15 +129,11 @@ class ShowPage extends Component {
           </div>
           <div className={styles.tabsContainer}>
             <NavLink to={`${match.url}/respond`} className={styles.noUnderline}>
-              <Button>
-                Respond
-              </Button>
+              <Button>Respond</Button>
             </NavLink>
 
             <NavLink to={`${match.url}/results`} className={styles.noUnderline}>
-              <Button>
-                Results
-              </Button>
+              <Button>Results</Button>
             </NavLink>
           </div>
         </section>

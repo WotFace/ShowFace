@@ -1,7 +1,8 @@
-
-.container {
-  margin-bottom: 30px;
-}
+// Temporary imports
+$mdc-theme-primary: #193163;
+// $mdc-theme-primary: rgb(80, 151, 207);
+$mdc-theme-secondary: #F9BA5C;
+$mdc-theme-surface: #F7F6F4;
 
 .create_page_form {
   text-align: center;
@@ -19,4 +20,32 @@
   text-align: center;
   font-size: 250%;
   margin-bottom: 10px;
+  margin: 20px;
+  font-weight: 700;
+}
+
+#pageContainer {
+  color: white;
+  background: $mdc-theme-primary;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+@media screen and (min-width: 750px) {
+  #pageContainer {
+    color: white;
+    background: $mdc-theme-primary;
+    margin: 40px 40px 0px 40px;
+    width: 700px;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 10px 10px 0px 0px;
+    border-radius: 10px 10px 0px 0px;
+    padding: 10px;
+  }
+} 
+@media screen and (max-width: 750px) {
+  #pageContainer {
+    font-size: 10px;
+    width: 100vw;
+  }
 }

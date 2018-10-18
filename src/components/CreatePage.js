@@ -14,6 +14,7 @@ import styles from './CreatePage.module.scss';
 
 import TextField, { Input } from '@material/react-text-field';
 import Button from '@material/react-button';
+import BottomAppBar from './BottomAppBar';
 
 class CreatePage extends Component {
   constructor(props) {
@@ -88,15 +89,15 @@ class CreatePage extends Component {
 
       // TODO: Validate input and disable submit button if necessary
       return (
-        <div>
+        <div id={styles.pageContainer}>
           <section id={styles.form_header}>
-            <h1 id={styles.header}>Create a new Show</h1>
+            <h1 id={styles.header}>Create a new Meeting</h1>
           </section>
           <section>
             <div className={styles.create_page_form}>
-              <form onSubmit={this.handleSubmit}>
+              <form>
                 <div className="form-group">
-                  <TextField label="Enter Show Name" className={styles.form_input} outlined>
+                  <TextField label="Meet for what?" className={styles.form_input} disabled>
                     <Input
                       type="text"
                       name="name"
@@ -114,9 +115,6 @@ class CreatePage extends Component {
                     onDayClick={this.handleDayClick}
                   />
                 </div>
-                <Button raised disabled={hasSelectedDay}>
-                  Submit
-                </Button>
               </form>
             </div>
           </section>
@@ -131,6 +129,14 @@ class CreatePage extends Component {
         <section>
           <div>{this.renderContent()}</div>
         </section>
+        {/* <div className={styles.appBarBottom}></div> */}
+        <BottomAppBar
+          content={
+            <Button className={styles.submitButton} onClick={this.handleSubmit} raised>
+              Submit
+            </Button>
+          }
+        />
       </div>
     );
   }

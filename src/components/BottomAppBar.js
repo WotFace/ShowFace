@@ -3,15 +3,41 @@ import styles from './BottomAppBar.module.scss';
 import React, { Component } from 'react';
 
 class BottomAppBar extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            isAtBottom: true
+        }
+    }
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  handleScroll = () => {
+      this.setState({isAtBottom: this.isAtBottom()});
+  };
+
+  isAtBottom = () => {
+      const appBarBottom = document.getElementsByClassName(styles.appBarBottom)[0].getBoundingClientRect().bottom;
+      const windoBottom = window.innerHeight;
+      return appBarBottom >= windoBottom - 0.01;
+  }
+
   render() {
-    var className = styles.appBarBottom;
-    if (this.props.align) {
-        className += this.props.align.toLowerCase()
+    let classes = [styles.appBarBottom]
+    if (this.state.isAtBottom) {
+        classes.push(styles.noBorderRadius);
     }
 
     return ( 
-        <div className={styles.appBarBottom}>
-            {this.props.content}
+        <div className={classes.join(' ')}>
+            {this.props.children}
         </div>
     );
   }

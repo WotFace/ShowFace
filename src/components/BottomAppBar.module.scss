@@ -7,7 +7,6 @@ $mdc-theme-surface: #F7F6F4;
   right: 0;
   height: 40px;
   background-color: $mdc-theme-secondary;
-  position: sticky;
   bottom: 0;
   z-index: 10;
   padding: 5px 20px 5px 0px;
@@ -15,12 +14,15 @@ $mdc-theme-surface: #F7F6F4;
   justify-content: flex-end;
   align-items: center;
   margin: 0px;
-  -webkit-border-radius: 10px 10px 0px 0px;
-  border-radius: 10px 10px 0px 0px;
+  position: sticky;
 }
 
-@media screen and (max-width: 750px) {
+@media screen and (min-width: 750px) {
   .appBarBottom {
-    border-radius: 0px;
+    border-radius: 0px 0px 10px 10px;
   }
+}
+
+.noBorderRadius {
+  border-radius: 0px;
 }

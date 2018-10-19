@@ -30,6 +30,7 @@ class CreatePage extends Component {
   }
 
   handleSubmit(event) {
+    console.log('handling');
     // TODO: Add interval option to UI and retrieve from state
     const interval = 15;
     const { name, selectedDays } = this.state;
@@ -96,7 +97,7 @@ class CreatePage extends Component {
           <section>
             <div className={styles.create_page_form}>
               <form>
-                <div className="form-group">
+                <div className={styles.formGroup}>
                   <TextField label="Meet for what?" className={styles.form_input} disabled>
                     <Input
                       type="text"
@@ -107,7 +108,7 @@ class CreatePage extends Component {
                     />
                   </TextField>
                 </div>
-                <div className="form-group">
+                <div className={styles.formGroup}>
                   <DayPicker
                     fromMonth={today}
                     disabledDays={{ before: today }}
@@ -116,6 +117,11 @@ class CreatePage extends Component {
                   />
                 </div>
               </form>
+              <BottomAppBar>
+                <Button className={styles.submitButton} onClick={this.handleSubmit} raised>
+                  Submit
+                </Button>
+              </BottomAppBar>
             </div>
           </section>
         </div>
@@ -128,15 +134,8 @@ class CreatePage extends Component {
       <div className={classnames(styles.container, 'container')}>
         <section>
           <div>{this.renderContent()}</div>
+          <div id={styles.appBarBottom} />
         </section>
-        {/* <div className={styles.appBarBottom}></div> */}
-        <BottomAppBar
-          content={
-            <Button className={styles.submitButton} onClick={this.handleSubmit} raised>
-              Submit
-            </Button>
-          }
-        />
       </div>
     );
   }

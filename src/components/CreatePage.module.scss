@@ -8,6 +8,10 @@ $mdc-theme-surface: #F7F6F4;
   text-align: center;
 }
 
+.formGroup {
+  padding-bottom: 20px;
+}
+
 .form_input {
   margin: 40px;
 }
@@ -25,22 +29,23 @@ $mdc-theme-surface: #F7F6F4;
 }
 
 #pageContainer {
+  box-shadow: 50px 50px #fff;
   color: white;
   background: $mdc-theme-primary;
   display: flex;
   flex-direction: column;
-  padding: 10px;
 }
+
 @media screen and (min-width: 750px) {
   #pageContainer {
     color: white;
     background: $mdc-theme-primary;
-    margin: 40px 40px 0px 40px;
+    margin: 40px 40px 40px 40px;
     width: 700px;
     -moz-border-radius: 0px;
     -webkit-border-radius: 10px 10px 0px 0px;
-    border-radius: 10px 10px 0px 0px;
-    padding: 10px;
+    border-radius: 10px 10px 10px 10px;
+    padding-top: 10px;
   }
 } 
 @media screen and (max-width: 750px) {

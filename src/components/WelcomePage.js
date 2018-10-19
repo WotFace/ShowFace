@@ -25,7 +25,7 @@ class WelcomePage extends Component {
       </>
     );
 
-    const authButtons = user || (
+    const authButtons = !!user || (
       <div className={styles.authButtons}>
         <Link to="/login">
           <Button>Log in</Button>

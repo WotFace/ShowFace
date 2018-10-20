@@ -305,7 +305,7 @@ class Timeline extends Component {
           style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
           onMouseLeave={this.handleMouseEnd}
         >
-          <span className="Timeline-filler" />
+          <span className={styles.cornerHeaderCell} />
           {headerCells}
           {rows}
         </div>

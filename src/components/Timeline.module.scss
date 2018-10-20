@@ -1,5 +1,7 @@
 @import '../mdc-variables.scss';
 
+$empty-cell-color: white;
+
 .timelineWrapper {
   overflow-x: auto;
 }
@@ -7,6 +9,13 @@
 .timeline {
   display: inline-grid;
   width: 100%;
+}
+
+.cornerHeaderCell {
+  position: sticky;
+  top: 0;
+  left: 0;
+  background-color: $empty-cell-color;
 }
 
 .tick {
@@ -20,7 +29,7 @@
   border-color: $mdc-theme-primary;
   border-width: 0px;
   margin: -1px 0 0 -1px;
-  background-color: white;
+  background-color: $empty-cell-color;
 
   &:hover {
     border-width: 2px 3px 3px 2px;
@@ -35,7 +44,7 @@
   }
 
   &.deselecting {
-    background-color: white !important;
+    background-color: $empty-cell-color !important;
   }
 }
 
@@ -44,7 +53,7 @@
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   border-style: solid;
-  border-color: white white rgb(200, 200, 200) white;
+  border-color: $empty-cell-color $empty-cell-color rgb(200, 200, 200) $empty-cell-color;
   border-width: 1px;
   margin: -1px 0 0 -1px;
   text-align: center;

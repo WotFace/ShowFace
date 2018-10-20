@@ -3,10 +3,9 @@ import _ from 'lodash';
 import Timeline from './Timeline';
 import { anonNameToId } from '../utils/response';
 import { getFirebaseUserInfo } from '../utils/auth';
-
 import TextField, { HelperText, Input } from '@material/react-text-field';
-
 import styles from './ShowRespond.module.scss';
+
 class ShowRespond extends Component {
   constructor(props) {
     super(props);

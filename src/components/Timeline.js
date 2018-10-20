@@ -115,17 +115,26 @@ const DragStateEnum = Object.freeze({
   dragDeselecting: 2,
 });
 
-// Props
-// allowedDates
-// startTime, endTime
-// respondents
+// type Props = {
+//   allowedDates: [Date],
+//   startTime: Date,
+//   endTime: Date,
+//   interval: Date,
+//   userResponseKey: String,
+//
+// };
+//
+// type State = {
+//   dragState: number,
+//   dragStartTime: ?number,
+//   dragCurrentTime: ?number,
+// };
 class Timeline extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dragState: DragStateEnum.none,
-    };
-  }
+  state = {
+    dragState: DragStateEnum.none,
+    dragStartTime: null,
+    dragCurrentTime: null,
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     return !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState);

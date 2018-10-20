@@ -88,9 +88,12 @@ class TimeBox extends Component {
     const { responseCount, maxSelectable, isSelecting, isDeselecting, isOddCol } = this.props;
 
     const lightness = this.getLightnessValue(maxSelectable, responseCount);
-    const backgroundColor =
-      isOddCol && responseCount === 0 ? '#f5f5f5' : `hsl(107, 60%, ${lightness}%)`;
-    const divStyle = { backgroundColor };
+    const divStyle =
+      responseCount > 0
+        ? {
+            backgroundColor: `hsl(107, 60%, ${lightness}%)`,
+          }
+        : null;
 
     return (
       <div
@@ -98,6 +101,7 @@ class TimeBox extends Component {
           styles.timeBox,
           isSelecting && styles.selecting,
           isDeselecting && styles.deselecting,
+          isOddCol && styles.oddCol,
         )}
         style={divStyle}
         onMouseDown={this.handleMouseDown}

@@ -85,12 +85,12 @@ class TimeBox extends Component {
   handleMouseEnter = this.handleMouseEvent(this.props.onMouseEnter);
 
   render() {
-    const { responseCount, maxSelectable, isSelecting, isDeselecting } = this.props;
+    const { responseCount, maxSelectable, isSelecting, isDeselecting, isOddCol } = this.props;
 
     const lightness = this.getLightnessValue(maxSelectable, responseCount);
-    const divStyle = {
-      backgroundColor: `hsla(107, 60%, ${lightness}%, 1)`,
-    };
+    const backgroundColor =
+      isOddCol && responseCount === 0 ? '#f5f5f5' : `hsl(107, 60%, ${lightness}%)`;
+    const divStyle = { backgroundColor };
 
     return (
       <div
@@ -269,7 +269,7 @@ class Timeline extends Component {
       return (
         <React.Fragment key={`row ${time.valueOf()}`}>
           <Tick startTime={time} />
-          {allowedDates.map((date) => {
+          {allowedDates.map((date, idx) => {
             const startTimeWithDate = allStartTimes.get(time).get(date);
             const isSelecting = selectingDates.includes(startTimeWithDate);
             return (
@@ -280,6 +280,7 @@ class Timeline extends Component {
                 isSelecting={isSelecting && dragState === DragStateEnum.dragSelecting}
                 isDeselecting={isSelecting && dragState === DragStateEnum.dragDeselecting}
                 responseCount={this.getResponseCount(startTimeWithDate)}
+                isOddCol={idx % 2 === 1}
                 onMouseDown={this.handleMouseDown}
                 onMouseMove={this.handleMouseMove}
                 onMouseUp={this.handleMouseEnd}

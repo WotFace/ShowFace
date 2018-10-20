@@ -1,3 +1,5 @@
+@import '../mdc-variables.scss';
+
 .timelineWrapper {
   overflow-x: auto;
 }
@@ -11,24 +13,20 @@
   // padding: 0 0.5rem 0 0.5rem;
   position: sticky;
   left: 0;
-  border-style: solid;
-  border-color: rgb(200, 200, 200);
-  border-width: 0 1px 0 0;
 }
 
 .timeBox {
   border-style: solid;
   border-color: rgb(200, 200, 200);
-  border-width: 1px;
-  background-color: rgb(250, 250, 250);
+  border-width: 0px;
   margin: -1px 0 0 -1px;
 
   &:hover {
-    border-width: 2px;
+    border-width: 2px 3px 3px 2px;
   }
 
   &.selecting {
-    background-color: hsla(107, 60%, 35%, 1) !important;
+    background-color: hsl(107, 60%, 35%) !important;
   }
 
   &.deselecting {
@@ -48,7 +46,7 @@
 }
 
 .timelineLabel {
-  background-color: white;
+  background-color: $mdc-theme-surface;
 }
 
 ol {

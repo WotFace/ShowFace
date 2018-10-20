@@ -5,8 +5,10 @@ import { DateRange } from 'react-date-range';
 import classnames from 'classnames';
 import { Mutation } from 'react-apollo';
 import ReactLoading from 'react-loading';
+import moment from 'moment';
 import gql from 'graphql-tag';
 import { getAuthInput } from '../utils/auth';
+import { datesFromRange } from '../utils/datetime';
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -38,7 +40,10 @@ class CreatePage extends Component {
     const interval = 15;
     const { name, dateRanges } = this.state;
     const { startDate, endDate } = dateRanges.selection;
-    this.props.createShow(name, startDate, endDate, interval);
+    const dates = datesFromRange(startDate, endDate);
+    const startTime = moment().startOf('day');
+    const endTime = moment().endOf('day');
+    this.props.createShow(name, dates, startTime, endTime, interval);
     event.preventDefault();
   }
 
@@ -128,14 +133,21 @@ class CreatePage extends Component {
 const CREATE_NEW_SHOW_MUTATION = gql`
   mutation CreateNewShow(
     $name: String!
-    $startDate: DateTime!
-    $endDate: DateTime!
+    $dates: [DateTime!]
+    $startTime: DateTime!
+    $endTime: DateTime!
     $interval: Int!
     $auth: AuthInput
   ) {
     createNewShow(
       auth: $auth
-      data: { name: $name, startDate: $startDate, endDate: $endDate, interval: $interval }
+      data: {
+        name: $name
+        dates: $dates
+        startTime: $startTime
+        endTime: $endTime
+        interval: $interval
+      }
     ) {
       slug
     }
@@ -147,9 +159,9 @@ export default withAlert((props) => (
     {(createNewShow, result) => (
       <CreatePage
         {...props}
-        createShow={async (name, startDate, endDate, interval) => {
+        createShow={async (name, dates, startTime, endTime, interval) => {
           const auth = await getAuthInput();
-          createNewShow({ variables: { name, startDate, endDate, interval, auth } });
+          createNewShow({ variables: { name, dates, startTime, endTime, interval, auth } });
         }}
         createShowResult={result}
       />

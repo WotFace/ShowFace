@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import Timeline from './Timeline';
 import { respondentsToDict } from '../utils/response';
-import { datesFromRange } from '../utils/datetime';
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';
 
@@ -13,8 +11,8 @@ class ShowResults extends Component {
   render() {
     const { show } = this.props;
     const { selectedTime } = this.state;
-    const allowedDates = datesFromRange(show.startDate, show.endDate);
 
+    const { dates, startTime, endTime } = show;
     const respondents = show.respondents || [];
     const renderableRespondents = respondentsToDict(respondents);
 
@@ -33,9 +31,9 @@ class ShowResults extends Component {
       <div className={styles.resultsContainer}>
         <Timeline
           className={styles.timeline}
-          allowedDates={allowedDates}
-          startTime={moment().startOf('day')}
-          endTime={moment().endOf('day')}
+          allowedDates={dates}
+          startTime={startTime}
+          endTime={endTime}
           respondents={respondents}
           maxSelectable={maxSelectable}
           onCellHover={this.handleCellHover}

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import moment from 'moment';
-import { isWithinRange } from 'date-fns';
+import { isWithinRange, differenceInMinutes, addMinutes, format } from 'date-fns';
 import _ from 'lodash';
 import memoize from 'memoize-one';
 import { respondentsToDict } from '../utils/response';
@@ -11,12 +10,12 @@ import styles from './Timeline.module.scss';
 // Return start times between 2 times
 const getStartTimes = memoize(
   (startTime, endTime) => {
-    const numMin = moment.duration(endTime.diff(startTime)).asMinutes();
+    const numMin = differenceInMinutes(endTime, startTime);
     const mins = _.range(0, _.round(numMin), 15);
-    const startTimes = mins.map((min) => startTime.clone().add(min, 'minutes'));
+    const startTimes = mins.map((min) => addMinutes(startTime, min));
     return startTimes;
   },
-  (newTime, oldTime) => newTime.isSame(oldTime),
+  (newTime, oldTime) => newTime === oldTime,
 );
 
 // All start times on all allowedDates
@@ -27,10 +26,7 @@ const getAllStartTimes = memoize(
         startTimes,
         startTimes.map((time) => {
           return new DateMap(
-            _.zip(
-              allowedDates,
-              allowedDates.map((date) => moveDateTimeToDate(date, time).toDate()),
-            ),
+            _.zip(allowedDates, allowedDates.map((date) => moveDateTimeToDate(date, time))),
           );
         }),
       ),
@@ -38,19 +34,20 @@ const getAllStartTimes = memoize(
   },
   (newTimes, oldTimes) =>
     _.zip(newTimes, oldTimes)
-      .map(([newTime, oldTime]) => newTime.isSame(oldTime))
+      .map(([newTime, oldTime]) => newTime === oldTime)
       .includes(true),
 );
 
 function moveDateTimeToDate(date, dateTime) {
-  return dateTime.clone().set({ year: date.year(), month: date.month(), date: date.date() });
+  const newDate = new Date(dateTime);
+  newDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+  return newDate;
 }
 
 function Tick({ startTime }) {
-  const format = 'h:mm';
   return (
     <span className={classnames(styles.tick, styles.timelineLabel)}>
-      {startTime.format(format)}
+      {format(startTime, 'h:mm')}
     </span>
   );
 }
@@ -58,7 +55,7 @@ function Tick({ startTime }) {
 function DateHeader({ date }) {
   return (
     <span className={classnames(styles.dateHeading, styles.timelineLabel)}>
-      {date.format('DD/MM')}
+      {format(date, 'DD/MM')}
     </span>
   );
 }
@@ -192,7 +189,6 @@ class Timeline extends Component {
 
   handleMouseEvent(startTime, shouldStart) {
     let dragState = this.state.dragState;
-    // const startMoment = moment(startTime);
     if (shouldStart && this.props.userResponseKey && this.state.dragState === DragStateEnum.none) {
       const isSelected = this.isSelected(startTime);
       dragState = isSelected ? DragStateEnum.dragDeselecting : DragStateEnum.dragSelecting;

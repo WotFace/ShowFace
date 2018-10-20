@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import moment from 'moment';
 import Timeline from './Timeline';
-import { datesFromRange } from '../utils/datetime';
 import { anonNameToId } from '../utils/response';
 import { getFirebaseUserInfo } from '../utils/auth';
 
@@ -65,7 +63,7 @@ class ShowRespond extends Component {
 
   render() {
     const { show } = this.props;
-    const allowedDates = datesFromRange(show.startDate, show.endDate);
+    const { dates, startTime, endTime } = show;
     const userResponseKey = this.userResponseKey();
     const ourRespondents = this.filteredRespondents();
 
@@ -97,9 +95,9 @@ class ShowRespond extends Component {
 
         {userResponseKey && (
           <Timeline
-            allowedDates={allowedDates}
-            startTime={moment().startOf('day')}
-            endTime={moment().endOf('day')}
+            allowedDates={dates}
+            startTime={startTime}
+            endTime={endTime}
             respondents={ourRespondents}
             maxSelectable={1}
             userResponseKey={userResponseKey}

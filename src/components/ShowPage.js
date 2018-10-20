@@ -8,7 +8,7 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
-
+import { datifyShowResponse } from '../utils/datetime';
 import copyToClipboard from '../utils/copyToClipboard';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
@@ -174,8 +174,9 @@ ShowPage.fragments = {
       isPrivate
       isReadOnly
       areResponsesHidden
-      startDate
-      endDate
+      dates
+      startTime
+      endTime
       interval
       respondents {
         id
@@ -276,7 +277,7 @@ export default withAlert((props) => {
           {(upsertResponses, upsertResponsesResult) => (
             <ShowPage
               {...props}
-              getShowResult={getShowResult}
+              getShowResult={datifyShowResponse(getShowResult, 'data.show')}
               upsertResponses={async (slug, name, email, responses) => {
                 const auth = await getAuthInput();
                 upsertResponses({
@@ -289,7 +290,10 @@ export default withAlert((props) => {
                   ),
                 });
               }}
-              upsertResponsesResult={upsertResponsesResult}
+              upsertResponsesResult={datifyShowResponse(
+                upsertResponsesResult,
+                'data._upsertResponse',
+              )}
             />
           )}
         </Mutation>

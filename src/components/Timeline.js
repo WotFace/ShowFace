@@ -44,10 +44,11 @@ function moveDateTimeToDate(date, dateTime) {
   return newDate;
 }
 
-function Tick({ startTime }) {
+function Tick({ startTime, hideByDefault }) {
+  const tickText = !hideByDefault ? format(startTime, 'h:mma') : null;
   return (
     <div className={classnames(styles.tick, styles.timelineLabel)}>
-      <div className={styles.tickContent}>{format(startTime, 'h:mm')}</div>
+      <div className={styles.tickContent}>{tickText}</div>
     </div>
   );
 }
@@ -108,6 +109,7 @@ class TimeBox extends Component {
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
       />
     );
   }
@@ -269,10 +271,10 @@ class Timeline extends Component {
     this.renderableResponses = respondentsToDict(respondents);
     const selectingDates = this.selectingDates(allStartTimes);
 
-    const rows = startTimes.map((time) => {
+    const rows = startTimes.map((time, idx) => {
       return (
         <React.Fragment key={`row ${time.valueOf()}`}>
-          <Tick startTime={time} />
+          <Tick startTime={time} hideByDefault={idx % 2 !== 0} />
           {allowedDates.map((date, idx) => {
             const startTimeWithDate = allStartTimes.get(time).get(date);
             const isSelecting = selectingDates.includes(startTimeWithDate);

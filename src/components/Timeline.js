@@ -12,7 +12,6 @@ const getStartTimes = memoize(
   (startTime, endTime, interval) => {
     const numMin = differenceInMinutes(endTime, startTime);
     const mins = _.range(0, _.round(numMin), interval);
-    console.log('oesnt', interval);
     const startTimes = mins.map((min) => addMinutes(startTime, min));
     return startTimes;
   },

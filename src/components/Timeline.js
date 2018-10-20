@@ -46,9 +46,9 @@ function moveDateTimeToDate(date, dateTime) {
 
 function Tick({ startTime }) {
   return (
-    <span className={classnames(styles.tick, styles.timelineLabel)}>
-      {format(startTime, 'h:mm')}
-    </span>
+    <div className={classnames(styles.tick, styles.timelineLabel)}>
+      <div className={styles.tickContent}>{format(startTime, 'h:mm')}</div>
+    </div>
   );
 }
 
@@ -305,7 +305,7 @@ class Timeline extends Component {
           style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
           onMouseLeave={this.handleMouseEnd}
         >
-          <span className={styles.cornerHeaderCell} />
+          <span className={classnames(styles.timelineLabel, styles.cornerHeaderCell)} />
           {headerCells}
           {rows}
         </div>

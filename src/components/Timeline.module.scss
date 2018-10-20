@@ -16,12 +16,19 @@ $empty-cell-color: white;
   top: 0;
   left: 0;
   background-color: $empty-cell-color;
+  background-color: $mdc-theme-surface;
 }
 
 .tick {
-  // padding: 0 0.5rem 0 0.5rem;
   position: sticky;
   left: 0;
+  margin: 0 1px 0 0;
+
+  .tickContent {
+    padding: 0.1rem 0.4rem;
+    text-align: right;
+    transform: translateY(-50%);
+  }
 }
 
 .timeBox {
@@ -50,12 +57,7 @@ $empty-cell-color: white;
 
 .dateHeading {
   font-size: 1rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  border-style: solid;
-  border-color: $empty-cell-color $empty-cell-color rgb(200, 200, 200) $empty-cell-color;
-  border-width: 1px;
-  margin: -1px 0 0 -1px;
+  padding: 0.25rem 0.5rem;
   text-align: center;
 }
 

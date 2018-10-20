@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import { format } from 'date-fns';
 import classnames from 'classnames';
 import _ from 'lodash';
 import { respondentToEmailOrName } from '../utils/response';
@@ -28,9 +28,7 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
   return (
     <div>
       <section className={classnames(styles.attendees, 'flex-item')}>
-        {time ? (
-          <h2 className={styles.pollTime}>{moment(time).format('Do MMM YYYY hh:mma')}</h2>
-        ) : null}
+        {time ? <h2 className={styles.pollTime}>{format(time, 'Do MMM YYYY hh:mma')}</h2> : null}
         <section id="attending">
           <h3>Attending</h3>
           <ol>

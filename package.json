@@ -22,7 +22,6 @@
     "immutability-helper": "^2.8.1",
     "lodash": "^4.17.11",
     "memoize-one": "^4.0.2",
-    "moment": "^2.22.2",
     "quickselect": "^2.0.0",
     "react": "^16.5.2",
     "react-alert": "^4.0.4",

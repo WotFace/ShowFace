@@ -5,7 +5,7 @@ import { DateRange } from 'react-date-range';
 import classnames from 'classnames';
 import { Mutation } from 'react-apollo';
 import ReactLoading from 'react-loading';
-import moment from 'moment';
+import { startOfToday, endOfToday } from 'date-fns';
 import gql from 'graphql-tag';
 import { getAuthInput } from '../utils/auth';
 import { datesFromRange } from '../utils/datetime';
@@ -41,8 +41,8 @@ class CreatePage extends Component {
     const { name, dateRanges } = this.state;
     const { startDate, endDate } = dateRanges.selection;
     const dates = datesFromRange(startDate, endDate);
-    const startTime = moment().startOf('day');
-    const endTime = moment().endOf('day');
+    const startTime = startOfToday();
+    const endTime = endOfToday();
     this.props.createShow(name, dates, startTime, endTime, interval);
     event.preventDefault();
   }

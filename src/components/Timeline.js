@@ -9,9 +9,10 @@ import styles from './Timeline.module.scss';
 
 // Return start times between 2 times
 const getStartTimes = memoize(
-  (startTime, endTime) => {
+  (startTime, endTime, interval) => {
     const numMin = differenceInMinutes(endTime, startTime);
-    const mins = _.range(0, _.round(numMin), 15);
+    const mins = _.range(0, _.round(numMin), interval);
+    console.log('oesnt', interval);
     const startTimes = mins.map((min) => addMinutes(startTime, min));
     return startTimes;
   },
@@ -217,8 +218,8 @@ class Timeline extends Component {
 
   handleMouseEnd = () => {
     // Calculate selected times and call callbacks
-    const { onSelect, onDeselect, startTime, endTime, allowedDates } = this.props;
-    const startTimes = getStartTimes(startTime, endTime);
+    const { onSelect, onDeselect, startTime, endTime, allowedDates, interval } = this.props;
+    const startTimes = getStartTimes(startTime, endTime, interval);
     const allStartTimes = getAllStartTimes(startTimes, allowedDates);
     const selectingDates = this.selectingDates(allStartTimes);
     switch (this.state.dragState) {
@@ -240,10 +241,18 @@ class Timeline extends Component {
   };
 
   render() {
-    const { className, allowedDates, startTime, endTime, respondents, maxSelectable } = this.props;
+    const {
+      className,
+      allowedDates,
+      startTime,
+      endTime,
+      interval,
+      respondents,
+      maxSelectable,
+    } = this.props;
     const { dragState } = this.state;
 
-    const startTimes = getStartTimes(startTime, endTime);
+    const startTimes = getStartTimes(startTime, endTime, interval);
     const allStartTimes = getAllStartTimes(startTimes, allowedDates);
     this.renderableResponses = respondentsToDict(respondents);
     const selectingDates = this.selectingDates(allStartTimes);

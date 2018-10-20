@@ -63,7 +63,7 @@ class ShowRespond extends Component {
 
   render() {
     const { show } = this.props;
-    const { dates, startTime, endTime } = show;
+    const { dates, startTime, endTime, interval } = show;
     const userResponseKey = this.userResponseKey();
     const ourRespondents = this.filteredRespondents();
 
@@ -98,6 +98,7 @@ class ShowRespond extends Component {
             allowedDates={dates}
             startTime={startTime}
             endTime={endTime}
+            interval={interval}
             respondents={ourRespondents}
             maxSelectable={1}
             userResponseKey={userResponseKey}

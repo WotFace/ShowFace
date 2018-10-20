@@ -12,7 +12,7 @@ class ShowResults extends Component {
     const { show } = this.props;
     const { selectedTime } = this.state;
 
-    const { dates, startTime, endTime } = show;
+    const { dates, startTime, endTime, interval } = show;
     const respondents = show.respondents || [];
     const renderableRespondents = respondentsToDict(respondents);
 
@@ -34,6 +34,7 @@ class ShowResults extends Component {
           allowedDates={dates}
           startTime={startTime}
           endTime={endTime}
+          interval={interval}
           respondents={respondents}
           maxSelectable={maxSelectable}
           onCellHover={this.handleCellHover}

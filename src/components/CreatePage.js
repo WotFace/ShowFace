@@ -19,8 +19,10 @@ import BottomAppBar from './BottomAppBar';
 class CreatePage extends Component {
   constructor(props) {
     super(props);
+    const locationState = props.location.state;
+    const name = locationState ? locationState.name : '';
     this.state = {
-      name: '',
+      name,
       selectedDays: [],
     };
 

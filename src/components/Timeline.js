@@ -294,9 +294,9 @@ class Timeline extends Component {
     const headerCells = allowedDates.map((date) => <DateHeader date={date} key={date} />);
 
     return (
-      <section id="timeline" className={className}>
+      <div id="timeline" className={classnames(className, styles.timelineWrapper)}>
         <div
-          className={classnames(styles.timeline)}
+          className={styles.timeline}
           style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
           onMouseLeave={this.handleMouseEnd}
         >
@@ -304,7 +304,7 @@ class Timeline extends Component {
           {headerCells}
           {rows}
         </div>
-      </section>
+      </div>
     );
   }
 }

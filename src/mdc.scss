@@ -1,7 +1,7 @@
-$mdc-theme-primary: #193163;
-$mdc-theme-secondary: #F9BA5C;
-$mdc-theme-surface: #F7F6F4;
+// Override standard MDC variables
+@import './mdc-variables';
 
+// MDC imports for the whole app
 @import '@material/react-button/index';
 @import '@material/react-card/index';
 @import '@material/react-text-field/index';

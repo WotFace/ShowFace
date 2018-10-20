@@ -55,7 +55,7 @@ function Tick({ startTime }) {
 function DateHeader({ date }) {
   return (
     <span className={classnames(styles.dateHeading, styles.timelineLabel)}>
-      {format(date, 'DD/MM')}
+      {format(date, 'ddd D MMM')}
     </span>
   );
 }

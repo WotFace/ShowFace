@@ -10,8 +10,6 @@ import { startOfToday, endOfToday } from 'date-fns';
 import gql from 'graphql-tag';
 import { getAuthInput } from '../utils/auth';
 
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
 import styles from './CreatePage.module.scss';
 
 import TextField, { Input } from '@material/react-text-field';

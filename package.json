@@ -27,7 +27,6 @@
     "react-alert": "^4.0.4",
     "react-alert-template-basic": "^1.0.0",
     "react-apollo": "^2.2.4",
-    "react-date-range": "^1.0.0-beta",
     "react-day-picker": "^7.2.4",
     "react-dom": "^16.5.2",
     "react-loading": "^2.0.3",

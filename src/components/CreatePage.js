@@ -62,6 +62,7 @@ class CreatePage extends Component {
     const {
       createShowResult: { loading, data, error },
     } = this.props;
+    const hasSelectedDay = this.state.selectedDays.length === 0;
 
     if (loading) {
       // TODO: Beautify
@@ -113,7 +114,9 @@ class CreatePage extends Component {
                     onDayClick={this.handleDayClick}
                   />
                 </div>
-                <Button raised>Submit</Button>
+                <Button raised disabled={hasSelectedDay}>
+                  Submit
+                </Button>
               </form>
             </div>
           </section>

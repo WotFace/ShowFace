@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { withAlert } from 'react-alert';
-import { DateRange } from 'react-date-range';
+import DayPicker, { DateUtils } from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 import classnames from 'classnames';
 import { Mutation } from 'react-apollo';
 import ReactLoading from 'react-loading';
 import { startOfToday, endOfToday } from 'date-fns';
 import gql from 'graphql-tag';
 import { getAuthInput } from '../utils/auth';
-import { datesFromRange } from '../utils/datetime';
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -22,28 +22,21 @@ class CreatePage extends Component {
     super(props);
     this.state = {
       name: '',
-      dateRanges: {
-        selection: {
-          startDate: new Date(),
-          endDate: new Date(),
-          key: 'selection',
-        },
-      },
+      selectedDays: [],
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDayClick = this.handleDayClick.bind(this);
   }
 
   handleSubmit(event) {
     // TODO: Add interval option to UI and retrieve from state
     const interval = 15;
-    const { name, dateRanges } = this.state;
-    const { startDate, endDate } = dateRanges.selection;
-    const dates = datesFromRange(startDate, endDate);
+    const { name, selectedDays } = this.state;
     const startTime = startOfToday();
     const endTime = endOfToday();
-    this.props.createShow(name, dates, startTime, endTime, interval);
+    this.props.createShow(name, selectedDays, startTime, endTime, interval);
     event.preventDefault();
   }
 
@@ -51,13 +44,17 @@ class CreatePage extends Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  handleRangeChange(which, payload) {
-    this.setState({
-      [which]: {
-        ...this.state[which],
-        ...payload,
-      },
-    });
+  handleDayClick(day, { selected }) {
+    const { selectedDays } = this.state;
+    if (selected) {
+      const selectedIndex = selectedDays.findIndex((selectedDay) =>
+        DateUtils.isSameDay(selectedDay, day),
+      );
+      selectedDays.splice(selectedIndex, 1);
+    } else {
+      selectedDays.push(day);
+    }
+    this.setState({ selectedDays });
   }
 
   renderContent() {
@@ -103,11 +100,9 @@ class CreatePage extends Component {
                   </TextField>
                 </div>
                 <div className="form-group">
-                  <DateRange
-                    onChange={this.handleRangeChange.bind(this, 'dateRanges')}
-                    moveRangeOnFirstSelection={false}
-                    ranges={[this.state.dateRanges.selection]}
-                    minDate={new Date()}
+                  <DayPicker
+                    selectedDays={this.state.selectedDays}
+                    onDayClick={this.handleDayClick}
                   />
                 </div>
                 <Button raised>Submit</Button>

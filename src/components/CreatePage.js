@@ -42,9 +42,12 @@ class CreatePage extends Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  handleDayClick(day, { selected }) {
+  handleDayClick(day, { selected, disabled }) {
     const { selectedDays } = this.state;
-    if (selected) {
+    if (disabled) {
+      return;
+    }
+    if (!disabled && selected) {
       const selectedIndex = selectedDays.findIndex((selectedDay) =>
         DateUtils.isSameDay(selectedDay, day),
       );
@@ -77,6 +80,11 @@ class CreatePage extends Component {
         console.log('Show creation got error', error);
       }
 
+      // TODO: uncomment following lines if want to show last few months
+      // const lastMonth = new Date();
+      // lastMonth.setMonth(lastMonth.getMonth() - 2);
+      const today = new Date();
+
       // TODO: Validate input and disable submit button if necessary
       return (
         <div>
@@ -99,6 +107,8 @@ class CreatePage extends Component {
                 </div>
                 <div className="form-group">
                   <DayPicker
+                    fromMonth={today}
+                    disabledDays={{ before: today }}
                     selectedDays={this.state.selectedDays}
                     onDayClick={this.handleDayClick}
                   />

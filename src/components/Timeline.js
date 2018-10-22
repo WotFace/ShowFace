@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Holdable, defineHold } from 'react-touch';
 import classnames from 'classnames';
 import { isWithinRange, differenceInMinutes, addMinutes, format } from 'date-fns';
 import _ from 'lodash';
@@ -84,10 +85,14 @@ class TimeBox extends Component {
   handlePointerEnter = this.handlePointerEvent(this.props.onPointerEnter);
   handlePointerCancel = this.handlePointerEvent(this.props.onPointerCancel);
 
+  handleLongPress = () => this.props.onLongPress(this.props.startTimeWithDate);
+
   // On some browsers, the component will automatically capture the pointer,
   // but we need the pointer events to be sent to the component that's under
   // the cursor.
   onGotPointerCapture = (e) => e.target.releasePointerCapture(e.pointerId);
+
+  holdConfig = defineHold({ holdFor: 200 });
 
   render() {
     const { responseCount, maxSelectable, isSelecting, isDeselecting, isOddCol } = this.props;
@@ -103,23 +108,24 @@ class TimeBox extends Component {
     // Specifying touch-action none here is necessary as Safari does not
     // support the touch-action CSS attribute.
     return (
-      <div
-        touch-action="none"
-        className={classnames(
-          styles.timeBox,
-          isSelecting && styles.selecting,
-          isDeselecting && styles.deselecting,
-          isOddCol && styles.oddCol,
-        )}
-        style={divStyle}
-        onPointerDown={this.handlePointerDown}
-        onPointerMove={this.handlePointerMove}
-        onPointerUp={this.handlePointerUp}
-        onPointerEnter={this.handlePointerEnter}
-        onPointerLeave={this.handlePointerLeave}
-        onPointerCancel={this.handlePointerCancel}
-        onGotPointerCapture={this.onGotPointerCapture}
-      />
+      <Holdable config={this.holdConfig} onHoldComplete={this.handleLongPress}>
+        <div
+          className={classnames(
+            styles.timeBox,
+            isSelecting && styles.selecting,
+            isDeselecting && styles.deselecting,
+            isOddCol && styles.oddCol,
+          )}
+          style={divStyle}
+          onPointerDown={this.handlePointerDown}
+          onPointerMove={this.handlePointerMove}
+          onPointerUp={this.handlePointerUp}
+          onPointerEnter={this.handlePointerEnter}
+          onPointerLeave={this.handlePointerLeave}
+          onPointerCancel={this.handlePointerCancel}
+          onGotPointerCapture={this.onGotPointerCapture}
+        />
+      </Holdable>
     );
   }
 }
@@ -225,12 +231,21 @@ class Timeline extends Component {
   }
 
   handlePointerDown = (startTimeWithDate, e) => {
-    e.preventDefault();
+    // Ignore touch downs. Handle long touches instead.
+    if (e.pointerType === 'touch') return;
+    e.preventDefault(); // Don't disable touches to enable scroll on mobile
+    this.handlePointerEvent(startTimeWithDate, true);
+  };
+
+  handleLongPress = (startTimeWithDate) => {
     this.handlePointerEvent(startTimeWithDate, true);
   };
 
   handlePointerMove = (startTimeWithDate, e) => {
-    e.preventDefault();
+    // Prevent scroll when dragging, among other things
+    if (this.state.dragState !== DragStateEnum.none) {
+      e.preventDefault();
+    }
     this.handlePointerEvent(startTimeWithDate, false);
   };
 
@@ -302,6 +317,7 @@ class Timeline extends Component {
                 onPointerUp={this.handlePointerEnd}
                 onPointerEnter={this.handlePointerEnter}
                 onPointerCancel={this.handlePointerEnd}
+                onLongPress={this.handleLongPress}
               />
             );
           })}
@@ -310,9 +326,15 @@ class Timeline extends Component {
     });
 
     const headerCells = sortedDates.map((date) => <DateHeader date={date} key={date} />);
+    const touchAction = dragState === DragStateEnum.none ? 'auto' : 'none';
 
     return (
-      <div id="timeline" className={classnames(className, styles.timelineWrapper)}>
+      <div
+        touch-action={touchAction}
+        id="timeline"
+        className={classnames(className, styles.timelineWrapper)}
+        style={{ touchAction }}
+      >
         <div
           className={styles.timeline}
           style={{ gridTemplateColumns: `auto repeat(${sortedDates.length}, 1fr)` }}

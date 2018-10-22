@@ -18,16 +18,14 @@ const getStartTimes = memoize(
   (newTime, oldTime) => newTime === oldTime,
 );
 
-// All start times on all allowedDates
+// All start times on all dates
 const getAllStartTimes = memoize(
-  (startTimes, allowedDates) => {
+  (startTimes, dates) => {
     return new DateMap(
       _.zip(
         startTimes,
         startTimes.map((time) => {
-          return new DateMap(
-            _.zip(allowedDates, allowedDates.map((date) => moveDateTimeToDate(date, time))),
-          );
+          return new DateMap(_.zip(dates, dates.map((date) => moveDateTimeToDate(date, time))));
         }),
       ),
     );
@@ -122,7 +120,7 @@ const DragStateEnum = Object.freeze({
 });
 
 // type Props = {
-//   allowedDates: [Date],
+//   dates: [Date],
 //   startTime: Date,
 //   endTime: Date,
 //   interval: Date,
@@ -232,9 +230,9 @@ class Timeline extends Component {
 
   handleMouseEnd = () => {
     // Calculate selected times and call callbacks
-    const { onSelect, onDeselect, startTime, endTime, allowedDates, interval } = this.props;
+    const { onSelect, onDeselect, startTime, endTime, dates, interval } = this.props;
     const startTimes = getStartTimes(startTime, endTime, interval);
-    const allStartTimes = getAllStartTimes(startTimes, allowedDates);
+    const allStartTimes = getAllStartTimes(startTimes, dates);
     const selectingDates = this.selectingDates(allStartTimes);
     switch (this.state.dragState) {
       case DragStateEnum.dragSelecting:
@@ -257,7 +255,7 @@ class Timeline extends Component {
   render() {
     const {
       className,
-      allowedDates,
+      dates,
       startTime,
       endTime,
       interval,
@@ -266,8 +264,9 @@ class Timeline extends Component {
     } = this.props;
     const { dragState } = this.state;
 
+    const sortedDates = _.sortBy(dates, (d) => d.getTime());
     const startTimes = getStartTimes(startTime, endTime, interval);
-    const allStartTimes = getAllStartTimes(startTimes, allowedDates);
+    const allStartTimes = getAllStartTimes(startTimes, sortedDates);
     this.renderableResponses = respondentsToDict(respondents);
     const selectingDates = this.selectingDates(allStartTimes);
 
@@ -275,7 +274,7 @@ class Timeline extends Component {
       return (
         <React.Fragment key={`row ${time.valueOf()}`}>
           <Tick startTime={time} hideByDefault={idx % 2 !== 0} />
-          {allowedDates.map((date, idx) => {
+          {sortedDates.map((date, idx) => {
             const startTimeWithDate = allStartTimes.get(time).get(date);
             const isSelecting = selectingDates.includes(startTimeWithDate);
             return (
@@ -298,13 +297,13 @@ class Timeline extends Component {
       );
     });
 
-    const headerCells = allowedDates.map((date) => <DateHeader date={date} key={date} />);
+    const headerCells = sortedDates.map((date) => <DateHeader date={date} key={date} />);
 
     return (
       <div id="timeline" className={classnames(className, styles.timelineWrapper)}>
         <div
           className={styles.timeline}
-          style={{ gridTemplateColumns: `auto repeat(${allowedDates.length}, 1fr)` }}
+          style={{ gridTemplateColumns: `auto repeat(${sortedDates.length}, 1fr)` }}
           onMouseLeave={this.handleMouseEnd}
         >
           <span className={classnames(styles.timelineLabel, styles.cornerHeaderCell)} />

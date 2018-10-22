@@ -94,7 +94,7 @@ class ShowRespond extends Component {
 
         {userResponseKey && (
           <Timeline
-            allowedDates={dates}
+            dates={dates}
             startTime={startTime}
             endTime={endTime}
             interval={interval}

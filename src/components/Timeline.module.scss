@@ -38,6 +38,7 @@ $empty-cell-color: white;
   border-width: 0px;
   margin: -1px 0 0 -1px;
   background-color: $empty-cell-color;
+  touch-action: none;
 
   &:hover {
     border-width: 2px 3px 3px 2px;

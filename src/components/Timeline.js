@@ -77,11 +77,17 @@ class TimeBox extends Component {
     return Math.floor(100 - (65 / maxSelectable) * count);
   }
 
-  handleMouseEvent = (callbackFn) => (e) => callbackFn(this.props.startTimeWithDate, e);
-  handleMouseDown = this.handleMouseEvent(this.props.onMouseDown);
-  handleMouseMove = this.handleMouseEvent(this.props.onMouseMove);
-  handleMouseUp = this.handleMouseEvent(this.props.onMouseUp);
-  handleMouseEnter = this.handleMouseEvent(this.props.onMouseEnter);
+  handlePointerEvent = (callbackFn) => (e) => callbackFn(this.props.startTimeWithDate, e);
+  handlePointerDown = this.handlePointerEvent(this.props.onPointerDown);
+  handlePointerMove = this.handlePointerEvent(this.props.onPointerMove);
+  handlePointerUp = this.handlePointerEvent(this.props.onPointerUp);
+  handlePointerEnter = this.handlePointerEvent(this.props.onPointerEnter);
+  handlePointerCancel = this.handlePointerEvent(this.props.onPointerCancel);
+
+  // On some browsers, the component will automatically capture the pointer,
+  // but we need the pointer events to be sent to the component that's under
+  // the cursor.
+  onGotPointerCapture = (e) => e.target.releasePointerCapture(e.pointerId);
 
   render() {
     const { responseCount, maxSelectable, isSelecting, isDeselecting, isOddCol } = this.props;
@@ -94,8 +100,11 @@ class TimeBox extends Component {
           }
         : null;
 
+    // Specifying touch-action none here is necessary as Safari does not
+    // support the touch-action CSS attribute.
     return (
       <div
+        touch-action="none"
         className={classnames(
           styles.timeBox,
           isSelecting && styles.selecting,
@@ -103,11 +112,13 @@ class TimeBox extends Component {
           isOddCol && styles.oddCol,
         )}
         style={divStyle}
-        onMouseDown={this.handleMouseDown}
-        onMouseMove={this.handleMouseMove}
-        onMouseUp={this.handleMouseUp}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
+        onPointerDown={this.handlePointerDown}
+        onPointerMove={this.handlePointerMove}
+        onPointerUp={this.handlePointerUp}
+        onPointerEnter={this.handlePointerEnter}
+        onPointerLeave={this.handlePointerLeave}
+        onPointerCancel={this.handlePointerCancel}
+        onGotPointerCapture={this.onGotPointerCapture}
       />
     );
   }
@@ -200,7 +211,7 @@ class Timeline extends Component {
     return selectings;
   }
 
-  handleMouseEvent(startTime, shouldStart) {
+  handlePointerEvent(startTime, shouldStart) {
     let dragState = this.state.dragState;
     if (shouldStart && this.props.userResponseKey && this.state.dragState === DragStateEnum.none) {
       const isSelected = this.isSelected(startTime);
@@ -213,22 +224,22 @@ class Timeline extends Component {
     }
   }
 
-  handleMouseDown = (startTimeWithDate, e) => {
+  handlePointerDown = (startTimeWithDate, e) => {
     e.preventDefault();
-    this.handleMouseEvent(startTimeWithDate, true);
+    this.handlePointerEvent(startTimeWithDate, true);
   };
 
-  handleMouseMove = (startTimeWithDate, e) => {
+  handlePointerMove = (startTimeWithDate, e) => {
     e.preventDefault();
-    this.handleMouseEvent(startTimeWithDate, false);
+    this.handlePointerEvent(startTimeWithDate, false);
   };
 
-  handleMouseEnter = (startTimeWithDate) => {
+  handlePointerEnter = (startTimeWithDate) => {
     const { onCellHover } = this.props;
     onCellHover && onCellHover(startTimeWithDate);
   };
 
-  handleMouseEnd = () => {
+  handlePointerEnd = () => {
     // Calculate selected times and call callbacks
     const { onSelect, onDeselect, startTime, endTime, dates, interval } = this.props;
     const startTimes = getStartTimes(startTime, endTime, interval);
@@ -286,10 +297,11 @@ class Timeline extends Component {
                 isDeselecting={isSelecting && dragState === DragStateEnum.dragDeselecting}
                 responseCount={this.getResponseCount(startTimeWithDate)}
                 isOddCol={idx % 2 === 1}
-                onMouseDown={this.handleMouseDown}
-                onMouseMove={this.handleMouseMove}
-                onMouseUp={this.handleMouseEnd}
-                onMouseEnter={this.handleMouseEnter}
+                onPointerDown={this.handlePointerDown}
+                onPointerMove={this.handlePointerMove}
+                onPointerUp={this.handlePointerEnd}
+                onPointerEnter={this.handlePointerEnter}
+                onPointerCancel={this.handlePointerEnd}
               />
             );
           })}
@@ -304,7 +316,7 @@ class Timeline extends Component {
         <div
           className={styles.timeline}
           style={{ gridTemplateColumns: `auto repeat(${sortedDates.length}, 1fr)` }}
-          onMouseLeave={this.handleMouseEnd}
+          onPointerLeave={this.handlePointerEnd}
         >
           <span className={classnames(styles.timelineLabel, styles.cornerHeaderCell)} />
           {headerCells}

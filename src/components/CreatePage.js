@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import { withAlert } from 'react-alert';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
-import classnames from 'classnames';
 import { Mutation } from 'react-apollo';
 import ReactLoading from 'react-loading';
 import { startOfToday, endOfToday } from 'date-fns';

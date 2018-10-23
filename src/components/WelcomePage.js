@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
 import Button from '@material/react-button';
 import { NavLink } from 'react-router-dom';
-import { getFirebaseUserInfo } from '../utils/auth';
 import TextField, { Input } from '@material/react-text-field';
 
 import styles from './WelcomePage.module.scss';
 import downwardArrow from '../downward-arrow.svg';
 
 class WelcomePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { name: '' };
+  state = {
+    name: '',
+  };
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-  }
-
-  handleInputChange(event) {
+  handleInputChange = (event) => {
     this.setState({ name: event.target.value });
-  }
+  };
 
   render() {
     return (

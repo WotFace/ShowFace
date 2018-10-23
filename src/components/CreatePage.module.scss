@@ -1,8 +1,4 @@
-// Temporary imports
-$mdc-theme-primary: #193163;
-// $mdc-theme-primary: rgb(80, 151, 207);
-$mdc-theme-secondary: #F9BA5C;
-$mdc-theme-surface: #F7F6F4;
+@import '../mdc-variables';
 
 .create_page_form {
   text-align: center;
@@ -47,7 +43,8 @@ $mdc-theme-surface: #F7F6F4;
     border-radius: 10px 10px 12px 12px;
     padding-top: 10px;
   }
-} 
+}
+
 @media screen and (max-width: 750px) {
   #pageContainer {
     font-size: 10px;

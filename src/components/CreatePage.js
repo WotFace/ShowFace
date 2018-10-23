@@ -32,7 +32,6 @@ class CreatePage extends Component {
   }
 
   handleSubmit(event) {
-    console.log('handling');
     // TODO: Add interval option to UI and retrieve from state
     const interval = 15;
     const { name, selectedDays } = this.state;

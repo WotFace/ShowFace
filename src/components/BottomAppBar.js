@@ -26,8 +26,8 @@ class BottomAppBar extends Component {
     const appBarBottom = document
       .getElementsByClassName(styles.appBarBottom)[0]
       .getBoundingClientRect().bottom;
-    const windoBottom = window.innerHeight;
-    return appBarBottom >= windoBottom - 0.01;
+    const windowBottom = window.innerHeight;
+    return appBarBottom >= windowBottom - 0.01;
   };
 
   render() {

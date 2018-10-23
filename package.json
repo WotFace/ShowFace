@@ -5,6 +5,7 @@
   "dependencies": {
     "@material/react-button": "^0.5.0",
     "@material/react-card": "^0.5.0",
+    "@material/react-material-icon": "^0.5.0",
     "@material/react-tab": "^0.5.0",
     "@material/react-tab-bar": "^0.5.0",
     "@material/react-text-field": "^0.5.1",
@@ -35,7 +36,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.0.5",
     "react-touch": "^0.4.4",
-    "react-transition-group": "^2.5.0",
+    "react-transition-group": "^1.2.1",
     "redux": "^4.0.1",
     "redux-persist": "^5.10.0"
   },

@@ -4,12 +4,24 @@
 
 .timeline {
   flex: 1;
+  margin-right: 1.8em;
 }
 
-.sidebar {
-  margin-left: 1em;
-  width: 17em;
-  top: 1em;
-  position: -webkit-sticky;
-  position: sticky;
+@media all and (max-width: 899px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+@media all and (min-width: 900px) {
+  .sidebar {
+    margin-left: 1em;
+    width: 17em;
+    top: 1em;
+    position: -webkit-sticky;
+    position: sticky;
+  }
+  .bottomBar {
+    display: none;
+  }
 }

@@ -1,42 +1,47 @@
+import React, { Component, createRef } from 'react';
+import classnames from 'classnames';
+
 import styles from './BottomAppBar.module.scss';
 
-import React, { Component } from 'react';
-
 class BottomAppBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isAtBottom: true,
-    };
+  state = {
+    isAtBottom: false,
+  };
+
+  containerRef = createRef();
+
+  isAtBottom() {
+    const appBarBottom = this.containerRef.current.getBoundingClientRect().bottom;
+    const windowBottom = window.innerHeight;
+    return appBarBottom >= windowBottom - 0.01;
   }
 
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('resize', this.handleScroll);
+    this.handleScroll();
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.handleScroll);
   }
 
   handleScroll = () => {
     this.setState({ isAtBottom: this.isAtBottom() });
   };
 
-  isAtBottom = () => {
-    const appBarBottom = document
-      .getElementsByClassName(styles.appBarBottom)[0]
-      .getBoundingClientRect().bottom;
-    const windowBottom = window.innerHeight;
-    return appBarBottom >= windowBottom - 0.01;
-  };
-
   render() {
-    let classes = [styles.appBarBottom];
-    if (this.state.isAtBottom) {
-      classes.push(styles.noBorderRadius);
-    }
-
-    return <div className={classes.join(' ')}>{this.props.children}</div>;
+    const { children } = this.props;
+    const { isAtBottom } = this.state;
+    return (
+      <div
+        className={classnames(styles.barContainer, isAtBottom ? styles.stuck : 'mdc-card')}
+        ref={this.containerRef}
+      >
+        <div className={styles.bar}>{children}</div>
+      </div>
+    );
   }
 }
 

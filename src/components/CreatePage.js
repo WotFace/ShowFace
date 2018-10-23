@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { withAlert } from 'react-alert';
 import DayPicker, { DateUtils } from 'react-day-picker';
+import Card from '@material/react-card';
 import 'react-day-picker/lib/style.css';
 import { Mutation } from 'react-apollo';
 import ReactLoading from 'react-loading';
@@ -97,23 +98,31 @@ class CreatePage extends Component {
           </section>
           <form>
             <section className={styles.formSection}>
-              <TextField label="Meet for what?" className={styles.formInput} disabled>
-                <Input
-                  type="text"
-                  name="name"
-                  value={name}
-                  autoComplete="off"
-                  onChange={this.handleInputChange}
-                />
-              </TextField>
+              <Card>
+                <div>
+                  <TextField label="Meet for what?" className={styles.formInput}>
+                    <Input
+                      type="text"
+                      name="name"
+                      value={name}
+                      autoComplete="off"
+                      onChange={this.handleInputChange}
+                    />
+                  </TextField>
+                </div>
+              </Card>
             </section>
             <section className={styles.formSection}>
-              <DayPicker
-                fromMonth={today}
-                disabledDays={{ before: today }}
-                selectedDays={selectedDays}
-                onDayClick={this.handleDayClick}
-              />
+              <Card>
+                <div>
+                  <DayPicker
+                    fromMonth={today}
+                    disabledDays={{ before: today }}
+                    selectedDays={selectedDays}
+                    onDayClick={this.handleDayClick}
+                  />
+                </div>
+              </Card>
             </section>
             <BottomAppBar>
               <Button

@@ -30,24 +30,17 @@
   background: $mdc-theme-primary;
   display: flex;
   flex-direction: column;
-}
 
-@media screen and (min-width: 750px) {
-  #pageContainer {
-    color: white;
-    background: $mdc-theme-primary;
-    margin: 40px 40px 40px 40px;
+  @media screen and (min-width: 750px) {
+    margin: 40px auto;
     width: 700px;
     -moz-border-radius: 0px;
     -webkit-border-radius: 10px 10px 0px 0px;
     border-radius: 10px 10px 12px 12px;
     padding-top: 10px;
   }
-}
 
-@media screen and (max-width: 750px) {
-  #pageContainer {
+  @media screen and (max-width: 750px) {
     font-size: 10px;
-    width: 100vw;
   }
 }

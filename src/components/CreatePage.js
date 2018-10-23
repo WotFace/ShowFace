@@ -61,7 +61,7 @@ class CreatePage extends Component {
     this.setState({ selectedDays });
   }
 
-  renderContent() {
+  render() {
     const {
       createShowResult: { loading, data, error },
     } = this.props;
@@ -134,17 +134,6 @@ class CreatePage extends Component {
         </div>
       );
     }
-  }
-
-  render() {
-    return (
-      <div className={classnames(styles.container, 'container')}>
-        <section>
-          <div>{this.renderContent()}</div>
-          <div id={styles.appBarBottom} />
-        </section>
-      </div>
-    );
   }
 }
 

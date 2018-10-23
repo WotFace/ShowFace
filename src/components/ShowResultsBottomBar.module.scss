@@ -1,0 +1,75 @@
+.ribbon {
+  background-color: white;
+  padding: 5px 0px 5px 0px;
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  height: 40px;
+  text-align: center;
+}
+
+
+.icon {
+  color: #9e9e9e;
+  position: absolute;
+  top: 13px;
+  left: -15px;
+}
+
+.attendees {
+  
+}
+
+// animations
+.slideForward {
+  animation: slideForward 400ms ease-in forwards;
+}
+
+@keyframes slideForward {
+  from {
+    height: 40px;
+  }
+  to {
+    height: 99%;
+  }
+}
+
+.slideBackward {
+  animation: slideBackward 400ms ease-in forwards;
+}
+
+@keyframes slideBackward {
+  from {
+    height: 99%;
+  }
+  to {
+    height: 40px;
+  }
+}
+
+.rotateOut {
+  animation: rotateOut 400ms ease-in forwards;
+}
+
+@keyframes rotateOut {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+.rotateIn {
+  animation: rotateIn 400ms ease-in forwards;
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-180deg);
+  }
+}
+

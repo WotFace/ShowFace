@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import logo from '../logo.png';
 import { Link } from 'react-router-dom';
 import { withAlert } from 'react-alert';
 import { getFirebaseUserInfo } from '../utils/auth';
-import { getAuthInput } from '../utils/auth';
+import AuthenticatedQuery from './AuthenticatedQuery';
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -18,8 +17,8 @@ class DashboardPage extends Component {
 
   render() {
     const firebaseUser = getFirebaseUserInfo();
-    // const { getUserShowsResult } = this.props;
-    this.props.getUserShowsResult.then((x) => console.log(`Resolved: ${x}`));
+    const { getUserShowsResult } = this.props;
+    console.log('Resolved', getUserShowsResult);
 
     const header = firebaseUser ? (
       <div>
@@ -92,15 +91,10 @@ const GET_USER_SHOW_QUERY = gql`
   ${DashboardPage.fragments.userShows}
 `;
 
-const getUserShowsResult = async (props) => {
-  const auth = await getAuthInput();
-  return (
-    <Query query={GET_USER_SHOW_QUERY} variables={{ auth }}>
-      {(userShows) => <DashboardPage {...props} userShows={userShows} />}
-    </Query>
-  );
-};
-
 export default withAlert((props) => {
-  return <DashboardPage {...props} getUserShowsResult={getUserShowsResult(props).then((x) => x)} />;
+  return (
+    <AuthenticatedQuery query={GET_USER_SHOW_QUERY} requiresAuth>
+      {(getUserShowsResult) => <DashboardPage {...props} getUserShowsResult={getUserShowsResult} />}
+    </AuthenticatedQuery>
+  );
 });

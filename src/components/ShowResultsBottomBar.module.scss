@@ -11,6 +11,12 @@
   overflow-y: scroll;
 }
 
+.sticky {
+  position: sticky;
+  top: 10px;
+  background-color: white;
+}
+
 .interactives {
   position: absolute;
   vertical-align: -webkit-baseline-middle;
@@ -21,7 +27,7 @@
 
 .header {
   text-align: center;
-  margin-right: 80px;
+  margin-right: 56px;
 }
 
 .icon {
@@ -55,7 +61,7 @@
     height: 40px;
   }
   to {
-    height: 99%;
+    height: 100%;
   }
 }
 
@@ -65,7 +71,7 @@
 
 @keyframes slideBackward {
   from {
-    height: 99%;
+    height: 100%;
   }
   to {
     height: 40px;

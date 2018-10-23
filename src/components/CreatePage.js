@@ -65,7 +65,8 @@ class CreatePage extends Component {
     const {
       createShowResult: { loading, data, error },
     } = this.props;
-    const hasSelectedDay = this.state.selectedDays.length === 0;
+    const { selectedDays, name } = this.state;
+    const noSelectedDay = selectedDays.length === 0;
 
     if (loading) {
       // TODO: Beautify
@@ -103,7 +104,7 @@ class CreatePage extends Component {
                     <Input
                       type="text"
                       name="name"
-                      value={this.state.name}
+                      value={name}
                       autoComplete="off"
                       onChange={this.handleInputChange}
                     />
@@ -113,13 +114,18 @@ class CreatePage extends Component {
                   <DayPicker
                     fromMonth={today}
                     disabledDays={{ before: today }}
-                    selectedDays={this.state.selectedDays}
+                    selectedDays={selectedDays}
                     onDayClick={this.handleDayClick}
                   />
                 </div>
               </form>
               <BottomAppBar>
-                <Button className={styles.submitButton} onClick={this.handleSubmit} raised>
+                <Button
+                  className={styles.submitButton}
+                  onClick={this.handleSubmit}
+                  disabled={noSelectedDay || name.length === 0}
+                  raised
+                >
                   Submit
                 </Button>
               </BottomAppBar>

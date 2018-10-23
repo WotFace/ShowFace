@@ -1,24 +1,24 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans');
-@import url('https://fonts.googleapis.com/css?family=Raleway:300,400');
 @import './mdc';
 
 body {
-  color: rgb(28,48,92);
-  font-family: 'Raleway', sans-serif;
-  // font-family: 'Fira Sans', sans-serif;
+  color: rgb(28, 48, 92);
+  font-family: 'Fira Sans', 'Trebuchet MS', 'Helvetica Neue', 'Arial', sans-serif;
 
   font-weight: 300;
 }
 
 body {
-  position: relative
+  position: relative;
 }
 
 h1 {
   font-size: 250%;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: 300;
   margin: inherit, 10px;
 }
@@ -67,8 +67,8 @@ h1, h2, h3 {
 
 .btn-outline-primary:hover {
   color: #fff;
-  background-color: rgb(28,48,92);
-  border-color: rgb(28,48,92);
+  background-color: rgb(28, 48, 92);
+  border-color: rgb(28, 48, 92);
 }
 
 #form-header {
@@ -93,8 +93,8 @@ h1, h2, h3 {
 
 .font-icon {
   height: 1em;
-  left: .125em;
-  bottom: .125em;
+  left: 0.125em;
+  bottom: 0.125em;
   position: relative;
 }
 

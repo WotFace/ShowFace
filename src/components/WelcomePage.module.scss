@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Caveat+Brush');
-
-$mdc-theme-primary: #193163;
-$mdc-theme-secondary: #F9BA5C;
-$mdc-theme-surface: #F7F6F4;
+@import '../mdc-variables';
 
 #halfPage {
   display: flex;
@@ -19,9 +16,6 @@ $mdc-theme-surface: #F7F6F4;
 #subText {
   font-size: 20px;
   line-height: 1.5;
-  font-weight: normal;
-  font-style: normal;
-  font-family: "Fira Sans","Trebuchet MS","Helvetica Neue","Arial",sans-serif;
   -webkit-font-smoothing: antialiased;
   margin-top: 0px;
 }
@@ -32,49 +26,20 @@ $mdc-theme-surface: #F7F6F4;
   margin-bottom: 40px;
 }
 
-#downwardArrow {
-    height: 22px;
-    margin-top: 18px;
-    margin-right: 4px;
-    top: 10px;
-    position: relative;
-}
-
 #pageTitle {
   font-size: 40px;
   line-height: 1.2;
   font-weight: 700;
-  // font-style: italic;
-  font-family: "Fira Sans", "Trebuchet MS", "Helvetica Neue", "Arial", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   display: inline-block;
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
-#titleNoteContainer {
-  text-align: right;
-}
-
-
-#note {
-  font-weight: normal;
-  font-style: normal;
-  font-family: "Caveat Brush","Comic Sans","Helvetica Neue","Arial",sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-size: 28px;
-  line-height: inherit;
-  white-space: nowrap;
-}
-
-.pollNameField  {
+.pollNameField {
   background-color: white;
   width: 400px;
   border-radius: 100px;
 }
-
 
 #formContainer {
   display: flex;
@@ -111,4 +76,3 @@ $mdc-theme-surface: #F7F6F4;
     width: 80vw;
   }
 }
-

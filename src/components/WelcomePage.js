@@ -4,7 +4,6 @@ import { NavLink } from 'react-router-dom';
 import TextField, { Input } from '@material/react-text-field';
 
 import styles from './WelcomePage.module.scss';
-import downwardArrow from '../downward-arrow.svg';
 
 class WelcomePage extends Component {
   state = {
@@ -19,10 +18,6 @@ class WelcomePage extends Component {
     return (
       <div id={styles.halfPage}>
         <div id={styles.titleContainer}>
-          <div id={styles.titleNoteContainer}>
-            <img src={downwardArrow} id={styles.downwardArrow} />
-            <span id={styles.note}> for free</span>
-          </div>
           <h1 id={styles.pageTitle}> Get together with ShowFace</h1>
           <h2 id={styles.subText}>The simple way to decide on dates, places &amp; more.</h2>
         </div>

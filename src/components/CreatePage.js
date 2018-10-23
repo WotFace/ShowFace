@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { withAlert } from 'react-alert';
 import DayPicker, { DateUtils } from 'react-day-picker';
+import Card from '@material/react-card';
 import 'react-day-picker/lib/style.css';
 import { Mutation } from 'react-apollo';
 import ReactLoading from 'react-loading';
@@ -92,14 +93,14 @@ class CreatePage extends Component {
       // TODO: Validate input and disable submit button if necessary
       return (
         <div id={styles.pageContainer}>
-          <section id={styles.form_header}>
+          <section>
             <h1 id={styles.header}>Create a new Meeting</h1>
           </section>
-          <section>
-            <div className={styles.create_page_form}>
-              <form>
-                <div className={styles.formGroup}>
-                  <TextField label="Meet for what?" className={styles.form_input} disabled>
+          <form>
+            <section className={styles.formSection}>
+              <Card>
+                <div>
+                  <TextField label="Meet for what?" className={styles.formInput}>
                     <Input
                       type="text"
                       name="name"
@@ -109,7 +110,11 @@ class CreatePage extends Component {
                     />
                   </TextField>
                 </div>
-                <div className={styles.formGroup}>
+              </Card>
+            </section>
+            <section className={styles.formSection}>
+              <Card>
+                <div>
                   <DayPicker
                     fromMonth={today}
                     disabledDays={{ before: today }}
@@ -117,19 +122,19 @@ class CreatePage extends Component {
                     onDayClick={this.handleDayClick}
                   />
                 </div>
-              </form>
-              <BottomAppBar>
-                <Button
-                  className={styles.submitButton}
-                  onClick={this.handleSubmit}
-                  disabled={noSelectedDay || name.length === 0}
-                  raised
-                >
-                  Submit
-                </Button>
-              </BottomAppBar>
-            </div>
-          </section>
+              </Card>
+            </section>
+            <BottomAppBar>
+              <Button
+                className={styles.submitButton}
+                onClick={this.handleSubmit}
+                disabled={noSelectedDay || name.length === 0}
+                raised
+              >
+                Submit
+              </Button>
+            </BottomAppBar>
+          </form>
         </div>
       );
     }

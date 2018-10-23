@@ -1,19 +1,12 @@
 @import '../mdc-variables';
 
-.create_page_form {
+.formSection {
+  padding-bottom: 20px;
   text-align: center;
 }
 
-.formGroup {
-  padding-bottom: 20px;
-}
-
-.form_input {
+.formInput {
   margin: 40px;
-}
-
-#form_header {
-  margin: 0px;
 }
 
 #header {
@@ -26,8 +19,6 @@
 
 #pageContainer {
   box-shadow: 50px 50px #fff;
-  color: white;
-  background: $mdc-theme-primary;
   display: flex;
   flex-direction: column;
 

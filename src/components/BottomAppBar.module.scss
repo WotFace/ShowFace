@@ -1,26 +1,26 @@
+@import '~@material/elevation/mdc-elevation';
+@import '~@material/card/mdc-card';
 @import '../mdc-variables';
 
-.appBarBottom {
+.stuck {
+  @include mdc-elevation(6);
+}
+
+.barContainer {
   left: 0;
   right: 0;
-  height: 40px;
-  background-color: $mdc-theme-secondary;
+  position: sticky;
   bottom: 0;
+  transition: box-shadow 0.17s;
   z-index: 10;
+}
+
+.bar {
+  height: 40px;
   padding: 5px 20px 5px 0px;
+  background-color: $mdc-theme-secondary;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   margin: 0px;
-  position: sticky;
-}
-
-@media screen and (min-width: 750px) {
-  .appBarBottom {
-    border-radius: 0px 0px 10px 10px;
-  }
-}
-
-.noBorderRadius {
-  border-radius: 0px;
 }

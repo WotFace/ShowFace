@@ -14,12 +14,15 @@ import styles from './CreatePage.module.scss';
 
 import TextField, { Input } from '@material/react-text-field';
 import Button from '@material/react-button';
+import BottomAppBar from './BottomAppBar';
 
 class CreatePage extends Component {
   constructor(props) {
     super(props);
+    const locationState = props.location.state;
+    const name = locationState ? locationState.name : '';
     this.state = {
-      name: '',
+      name,
       selectedDays: [],
     };
 
@@ -58,11 +61,12 @@ class CreatePage extends Component {
     this.setState({ selectedDays });
   }
 
-  renderContent() {
+  render() {
     const {
       createShowResult: { loading, data, error },
     } = this.props;
-    const hasSelectedDay = this.state.selectedDays.length === 0;
+    const { selectedDays, name } = this.state;
+    const noSelectedDay = selectedDays.length === 0;
 
     if (loading) {
       // TODO: Beautify
@@ -88,51 +92,48 @@ class CreatePage extends Component {
 
       // TODO: Validate input and disable submit button if necessary
       return (
-        <div>
+        <div id={styles.pageContainer}>
           <section id={styles.form_header}>
-            <h1 id={styles.header}>Create a new Show</h1>
+            <h1 id={styles.header}>Create a new Meeting</h1>
           </section>
           <section>
             <div className={styles.create_page_form}>
-              <form onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                  <TextField label="Enter Show Name" className={styles.form_input} outlined>
+              <form>
+                <div className={styles.formGroup}>
+                  <TextField label="Meet for what?" className={styles.form_input} disabled>
                     <Input
                       type="text"
                       name="name"
-                      value={this.state.name}
+                      value={name}
                       autoComplete="off"
                       onChange={this.handleInputChange}
                     />
                   </TextField>
                 </div>
-                <div className="form-group">
+                <div className={styles.formGroup}>
                   <DayPicker
                     fromMonth={today}
                     disabledDays={{ before: today }}
-                    selectedDays={this.state.selectedDays}
+                    selectedDays={selectedDays}
                     onDayClick={this.handleDayClick}
                   />
                 </div>
-                <Button raised disabled={hasSelectedDay}>
+              </form>
+              <BottomAppBar>
+                <Button
+                  className={styles.submitButton}
+                  onClick={this.handleSubmit}
+                  disabled={noSelectedDay || name.length === 0}
+                  raised
+                >
                   Submit
                 </Button>
-              </form>
+              </BottomAppBar>
             </div>
           </section>
         </div>
       );
     }
-  }
-
-  render() {
-    return (
-      <div className={classnames(styles.container, 'container')}>
-        <section>
-          <div>{this.renderContent()}</div>
-        </section>
-      </div>
-    );
   }
 }
 

@@ -1,46 +1,66 @@
-@import '~@material/theme/variables';
+@import url('https://fonts.googleapis.com/css?family=Caveat+Brush');
+@import '../mdc-variables';
 
-.landingPage {
-  min-height: 100vh;
-  background: url(../bg.svg);
-  background-size: 100% 100%;
-  overflow: hidden;
-
-  // Prevent oversized content from allowing background to scroll
-  z-index: 1;
+#halfPage {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: $mdc-theme-primary;
+  color: white;
+  text-align: center;
+  padding: 64px 32px 32px;
 }
 
-.content {
-  max-width: 500px;
-  width: 75%;
-  min-width: 270px;
-  padding: 20px;
+#subText {
+  font-size: 20px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  margin-top: 0px;
 }
 
-.logo {
-  width: 80%;
-  margin: 10px auto 20px auto;
+#titleContainer {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.createButton {
+#pageTitle {
+  font-size: 40px;
+  line-height: 1.2;
+  font-weight: 700;
+  display: inline-block;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.pollNameField {
+  background-color: white;
+  width: 400px;
+  border-radius: 100px;
+}
+
+#formContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+#createPollButton {
+  background: $mdc-theme-secondary;
   width: 100%;
 }
 
-.authButtons {
-  display: flex;
-  justify-content: center;
-
-  a {
-    flex: 1;
-
-    button {
-      width: 100%;
-    }
-  }
+#buttonContainer {
+  text-decoration: none;
+  margin: 10px;
 }
 
-.divider {
-  border: 0;
-  height: 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
+@media screen and (max-width: 600px) {
+  #pageTitle {
+    font-size: 32px;
+  }
+
+  .pollNameField {
+    width: 100%;
+  }
 }

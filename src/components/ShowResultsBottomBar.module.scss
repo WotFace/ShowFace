@@ -5,19 +5,44 @@
   bottom: 0px;
   width: 100%;
   height: 40px;
-  text-align: center;
 }
 
+.scrollable {
+  overflow-y: scroll;
+}
+
+.interactives {
+  position: absolute;
+  vertical-align: -webkit-baseline-middle;
+  right: 102px;
+  margin-top: -2px;
+  color: #9e9e9e;
+}
+
+.header {
+  text-align: center;
+  margin-right: 80px;
+}
 
 .icon {
   color: #9e9e9e;
   position: absolute;
-  top: 13px;
-  left: -15px;
+  top: 12px;
+  left: -5px;
 }
 
 .attendees {
-  
+  margin-top: 32px;
+  margin-right: 80px;
+  padding: 4px 8px 16px 16px;
+}
+
+.respondents {
+  border: 2px solid #1A237E;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 // animations

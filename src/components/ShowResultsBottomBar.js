@@ -15,13 +15,23 @@ function renderShortMessage(time, attending, notAttending) {
   notAttendingCount = notAttending.length === 0 ? 0 : notAttending.length;
 
   return (
-    <span className={styles.header}>{format(time, 'Do MMM YYYY hh:mma')} <br /> {attendingCount} attending, {notAttendingCount} not attending</span>
+    <div className={styles.header}>{format(time, 'Do MMM YYYY hh:mma')} <br /> {attendingCount} attending, {notAttendingCount} not attending</div>
   );
 }
 
 function renderRespondent(responder, respondent) {
   const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
-  return <li key={responder}>{displayName}</li>;
+  return (
+    <div className={styles.respondents} key={responder}>
+      {displayName}
+      <MaterialIcon
+        icon="visibility"
+        className={styles.interactives}
+        hasRipple={true}
+        onClick={() => {}}
+      />
+    </div>
+  );
 }
 
 class BottomBar extends Component {
@@ -66,6 +76,7 @@ class BottomBar extends Component {
         <div
           className={classnames(styles.ribbon,
             (isOpen ? styles.slideForward : null),
+            (isOpen ? styles.scrollable : null),
             (isClosed ? styles.slideBackward : null),
           )}
         >
@@ -76,24 +87,20 @@ class BottomBar extends Component {
             onClick={this.handleOpen}
           />
           {renderShortMessage(time, attending, notAttending)}
-          <div>
+          <div className={styles.scrollable}>
             <section className={styles.attendees}>
               <h3>Attending</h3>
-              <ol>
-                {attending.map((responder) => {
-                  const respondent = respondersRespondentsObj[responder]
-                  return renderRespondent(responder, respondent);
-                })}
-              </ol>
+              {attending.map((responder) => {
+                const respondent = respondersRespondentsObj[responder]
+                return renderRespondent(responder, respondent);
+              })}
             </section>
-            <section id="notAttending">
-            <h3>Not Attending</h3>
-              <ol>
-                {notAttending.map((responder) => {
-                  const respondent = respondersRespondentsObj[responder];
-                  return renderRespondent(responder, respondent);
-                })}
-              </ol>
+            <section className={styles.attendees} id="notAttending">
+              <h3>Not Attending</h3>
+              {notAttending.map((responder) => {
+                const respondent = respondersRespondentsObj[responder];
+                return renderRespondent(responder, respondent);
+              })}
             </section>
           </div>
         </div>

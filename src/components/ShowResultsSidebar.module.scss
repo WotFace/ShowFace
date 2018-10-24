@@ -1,16 +1,35 @@
+@import '../mdc-variables';
+
 .attendees {
   margin-top: 32px;
   border-radius: 10px;
   margin-left: 0px;
   padding: 4px 8px 16px 16px;
+  margin-bottom: 60px;
 }
 
 .respondents {
-  border: 2px solid #1A237E;
   border-radius: 8px;
   padding: 12px;
-  margin-top: 24px;
-  margin-bottom: 24px;
+  margin-top: 12px;
+  margin-right: 8px;
+  margin-bottom: 12px;
+}
+
+.icon {
+  position: absolute;
+  vertical-align: -webkit-baseline-middle;
+  right: 32px;
+  margin-top: -2px;
+  color: $mdc-theme-primary;
+}
+
+.borderAccept {
+  border: 1px solid green;
+}
+
+.borderReject {
+  border: 1px solid red;
 }
 
 .pollTime {

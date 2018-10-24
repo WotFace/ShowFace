@@ -3,8 +3,8 @@ import { format } from 'date-fns';
 import classnames from 'classnames';
 import _ from 'lodash';
 import { respondentToEmailOrName } from '../utils/response';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import MaterialIcon from '@material/react-material-icon';
+import Fab from '@material/react-fab';
 import ShowResultsSideBar from './ShowResultsSidebar';
 
 import styles from './ShowResultsBottomBar.module.scss';
@@ -16,7 +16,7 @@ function renderShortMessage(time, attending, notAttending) {
   notAttendingCount = notAttending.length === 0 ? 0 : notAttending.length;
 
   return (
-    <div className={styles.header}>
+    <div>
       {format(time, 'Do MMM YYYY hh:mma')} <br /> {attendingCount} attending, {notAttendingCount} not attending
     </div>
   );
@@ -43,7 +43,7 @@ class ShowResultsBottomBar extends Component {
   }
 
   render() {
-    const { className, respondents, renderableRespondents, time } = this.props;
+    const { className, respondents, renderableRespondents, time, fabOnClick } = this.props;
     const { isOpen, isClosed } = this.state;
 
     // this one might need to change cos it's just copied over
@@ -62,30 +62,36 @@ class ShowResultsBottomBar extends Component {
     // copying ends here
 
     return (
-      <div className={className}>
-        <div
-          className={classnames(styles.ribbon,
-            (isOpen ? styles.slideForward : null),
-            (isOpen ? styles.scrollable : null),
-            (isClosed ? styles.slideBackward : null),
-            (className)
-          )}
-        >
-          <div className={isOpen ? styles.sticky : null}>
-            <MaterialIcon
-              icon={isOpen ? "clear" : "more_vert"}
-              className={classnames(styles.icon, isOpen ? styles.rotateOut : null, isClosed ? styles.rotateIn : null)}
-              hasRipple={true}
-              onClick={this.handleOpen}
-            />
-            {renderShortMessage(time, attending, notAttending)}
-          </div>
-          <ShowResultsSideBar
-            respondents={respondents}
-            renderableRespondents={renderableRespondents}
-            time={time}
+      <div
+        className={classnames(
+          className,
+          (isOpen ? styles.slideForward : null),
+          (isOpen ? styles.scrollable : null),
+          (isClosed ? styles.slideBackward : null)
+        )}
+      >
+        <div className={classnames(styles.header, (isOpen ? styles.sticky : null))}>
+          <MaterialIcon
+            icon={isOpen ? "clear" : "more_vert"}
+            className={classnames(styles.icon, isOpen ? styles.rotateOut : null, isClosed ? styles.rotateIn : null)}
+            onClick={this.handleOpen}
           />
+          {renderShortMessage(time, attending, notAttending)}
         </div>
+        <ShowResultsSideBar
+          respondents={respondents}
+          renderableRespondents={renderableRespondents}
+          time={time}
+        />
+        <Fab
+          className={classnames(
+            styles.bottomBarFab,
+            (isOpen ? styles.scaleIn : null),
+            (isClosed ? styles.scaleOut : null),
+          )}
+          icon={<MaterialIcon className={styles.fabIcon} icon="add" />}
+          onClick={fabOnClick}
+        />
       </div>
     );
   }

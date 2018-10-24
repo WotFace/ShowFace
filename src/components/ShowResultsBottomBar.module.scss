@@ -1,45 +1,63 @@
 @import '../mdc-variables';
 
-.ribbon {
-  background-color: white;
-  padding: 5px 0px 5px 0px;
-  position: fixed;
-  bottom: 0px;
-  width: 100%;
-  height: 40px;
-}
-
 .scrollable {
   overflow-y: scroll;
 }
 
 .sticky {
   position: sticky;
-  top: 10px;
-  background-color: #F9BA5C;
-}
-
-.interactives {
-  position: absolute;
-  vertical-align: -webkit-baseline-middle;
-  right: 102px;
-  margin-top: -2px;
-  color: #9e9e9e;
+  z-index: 10;
+  top: 0px;
 }
 
 .header {
-  background-color: #F9BA5C;
+  background-color: $mdc-theme-secondary;
   text-align: center;
-  margin-right: 56px;
+  display: flex;
+  height: 53px;
+  padding-top: 9px;
+  justify-content: center;
 }
 
 .icon {
-  color: #193163;
+  color: $mdc-theme-primary;
   position: absolute;
-  top: 12px;
-  left: -5
+  left: 16px;
+  top: 15px;
+  margin: auto;
 }
 
+// fab stuff
+.bottomBarFab {
+  height: 56px;
+  width: 56px;
+  border: none;
+  background-color: $mdc-theme-primary;
+  border-radius: 28px;
+  position: fixed;
+  bottom: 1rem;
+  right: 8%;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  background-position: center;
+  transition: background 0.8s;
+  transform: scale(0);
+}
+
+.bottomBarFab:hover {
+  background: $mdc-theme-primary radial-gradient(circle, transparent 1%, $mdc-theme-primary 1%) center/15000%;
+}
+
+.bottomBarFab:active {
+  background-color: $mdc-theme-secondary;
+  background-size: 100%;
+  transition: background 0s;
+}
+
+.fabIcon {
+  color: white;
+}
+
+// utilities
 .hide {
   display: none;
 }
@@ -50,9 +68,6 @@
 }
 
 @keyframes slideForward {
-  from {
-    height: 40px;
-  }
   to {
     height: 100vh;
   }
@@ -67,7 +82,7 @@
     height: 100vh;
   }
   to {
-    height: 40px;
+    height: 53px;
   }
 }
 
@@ -98,25 +113,22 @@
 }
 
 .scaleIn {
-  animation: scaleIn 400ms ease-in-out forwards;
+  animation: scaleIn 400ms ease-in-out 400ms forwards;
 }
 
 @keyframes scaleIn {
-  from {
-    transform: scale(0);
-  }
   to {
     transform: scale(1);
   }
 }
 
 .scaleOut {
-  animation: scaleOut 400ms ease-in-out forwards;
+  animation: scaleOut 300ms ease-in-out forwards;
 }
 
 @keyframes scaleOut {
   from {
-    transform: scale(1);
+    transform: scale(1)
   }
   to {
     transform: scale(0);

@@ -21,15 +21,14 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
 
   // TODO: Display respondents differently depending on whether the user is
   // logged in, has admin rights, and whether the respondent has responded
-  function renderRespondent(responder, respondent) {
+  function renderRespondent(responder, respondent, attending) {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
     return (
-      <div className={styles.respondents} key={responder}>
+      <div className={classnames(styles.respondents, (attending ? styles.borderAccept : styles.borderReject))} key={responder}>
         {displayName}
         <MaterialIcon
-          icon="delete"
-          className={styles.interactives}
-          hasRipple={true}
+          icon="visibility"
+          className={styles.icon}
           onClick={() => {}}
         />
       </div>
@@ -42,21 +41,17 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
         {time ? <h2 className={styles.pollTime}>{format(time, 'Do MMM YYYY hh:mma')}</h2> : null}
         <section id="attending">
           <h3>Attending</h3>
-          <ol>
-            {attending.map((responder) => {
-              const respondent = respondersRespondentsObj[responder];
-              return renderRespondent(responder, respondent);
-            })}
-          </ol>
+          {attending.map((responder) => {
+            const respondent = respondersRespondentsObj[responder];
+            return renderRespondent(responder, respondent, true);
+          })}
         </section>
         <section id="notAttending">
           <h3>Not Attending</h3>
-          <ol>
-            {notAttending.map((responder) => {
-              const respondent = respondersRespondentsObj[responder];
-              return renderRespondent(responder, respondent);
-            })}
-          </ol>
+          {notAttending.map((responder) => {
+            const respondent = respondersRespondentsObj[responder];
+            return renderRespondent(responder, respondent, false);
+          })}
         </section>
       </section>
     </div>

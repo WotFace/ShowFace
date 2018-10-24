@@ -55,6 +55,7 @@ class ShowResults extends Component {
           respondents={respondents}
           renderableRespondents={renderableRespondents}
           time={selectedTime}
+          fabOnClick={() => {console.log("insert func here")}}
         />
       </div>
     );

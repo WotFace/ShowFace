@@ -43,22 +43,22 @@ function moveDateTimeToDate(date, dateTime) {
   return newDate;
 }
 
-function Tick({ startTime, hideByDefault }) {
+const Tick = React.memo(({ startTime, hideByDefault }) => {
   const tickText = !hideByDefault ? format(startTime, 'h:mma') : null;
   return (
     <div className={classnames(styles.tick, styles.timelineLabel)}>
       <div className={styles.tickContent}>{tickText}</div>
     </div>
   );
-}
+});
 
-function DateHeader({ date }) {
+const DateHeader = React.memo(({ date }) => {
   return (
     <span className={classnames(styles.dateHeading, styles.timelineLabel)}>
       {format(date, 'ddd D MMM')}
     </span>
   );
-}
+});
 
 class TimeBox extends Component {
   // Dates can't be compared correctly by React.PureComponent. We subclass

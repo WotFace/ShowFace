@@ -1,28 +1,20 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
+import { connect } from 'react-redux';
 import Timeline from './Timeline';
 import { anonNameToId } from '../utils/response';
 import { getFirebaseUserInfo } from '../utils/auth';
-import TextField, { HelperText, Input } from '@material/react-text-field';
-import styles from './ShowRespond.module.scss';
+import { setRespondName } from '../actions/userData';
+import PollRespondNameForm from './PollRespondNameForm';
 
 class ShowRespond extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: null,
-      placeholderName: '',
-    };
-  }
-
   shouldUseName() {
-    const { name } = this.state;
+    const { name } = this.props;
     return name && name.length > 0;
   }
 
   userResponseKey() {
     const firebaseUser = getFirebaseUserInfo();
-    if (this.shouldUseName()) return anonNameToId(this.state.name);
+    if (this.shouldUseName()) return anonNameToId(this.props.name);
     else if (firebaseUser) return firebaseUser.email;
     return null;
   }
@@ -34,7 +26,7 @@ class ShowRespond extends Component {
     const respondents = show.respondents || [];
 
     if (this.shouldUseName()) {
-      const { name } = this.state;
+      const { name } = this.props;
       return respondents.filter((r) => r.anonymousName === name);
     }
 
@@ -45,69 +37,55 @@ class ShowRespond extends Component {
   }
 
   handleSelect = (startTimes) => {
-    const { name } = this.state;
+    const { name } = this.props;
     this.userResponseKey() && this.props.onSelectTimes(startTimes, name);
   };
   handleDeselect = (startTimes) => {
-    const { name } = this.state;
+    const { name } = this.props;
     this.userResponseKey() && this.props.onDeselectTimes(startTimes, name);
   };
 
-  debouncedSetState = _.debounce((state) => this.setState(state), 250);
-
-  handleNameChange = (e) => {
-    this.setState({ placeholderName: e.target.value });
-    this.debouncedSetState({ name: e.target.value });
+  handleSetName = (name) => {
+    this.props.setRespondName(name);
   };
 
   render() {
-    const { show } = this.props;
+    const { show, name } = this.props;
     const { dates, startTime, endTime, interval } = show;
     const userResponseKey = this.userResponseKey();
     const ourRespondents = this.filteredRespondents();
 
-    return (
-      <React.Fragment>
-        <section id="form">
-          <div className={styles.formGroup}>
-            <TextField
-              label="Enter Your Name"
-              className={styles.formInput}
-              helperText={
-                <HelperText className={styles.formHelperText}>
-                  Enter your name so that you can select your availability
-                </HelperText>
-              }
-              onChange={this.handleNameChange}
-              outlined
-            >
-              <Input
-                type="text"
-                name="name"
-                value={this.state.placeholderName}
-                onChange={this.handleNameChange}
-                autoComplete="off"
-              />
-            </TextField>
-          </div>
-        </section>
+    // Ask for name if logged out and we don't have a cached name.
+    // TODO: With a 2 step flow, if user is logged out, prompt user with
+    // prefilled name box, else only prompt if user presses back button in
+    // the bottom bar. Store an isAskingForName state field.
+    if (!userResponseKey) {
+      return <PollRespondNameForm name={name} onSetName={this.handleSetName} />;
+    }
 
-        {userResponseKey && (
-          <Timeline
-            dates={dates}
-            startTime={startTime}
-            endTime={endTime}
-            interval={interval}
-            respondents={ourRespondents}
-            maxSelectable={1}
-            userResponseKey={userResponseKey}
-            onSelect={this.handleSelect}
-            onDeselect={this.handleDeselect}
-          />
-        )}
-      </React.Fragment>
+    return (
+      <Timeline
+        dates={dates}
+        startTime={startTime}
+        endTime={endTime}
+        interval={interval}
+        respondents={ourRespondents}
+        maxSelectable={1}
+        userResponseKey={userResponseKey}
+        onSelect={this.handleSelect}
+        onDeselect={this.handleDeselect}
+      />
     );
   }
 }
 
-export default ShowRespond;
+function mapStateToProps(state) {
+  return {
+    name: state.userData.name,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  { setRespondName },
+)(ShowRespond);

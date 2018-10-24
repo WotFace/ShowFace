@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { respondentToEmailOrName } from '../utils/response';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import MaterialIcon from '@material/react-material-icon';
+import ShowResultsSideBar from './ShowResultsSidebar';
 
 import styles from './ShowResultsBottomBar.module.scss';
 
@@ -21,22 +22,7 @@ function renderShortMessage(time, attending, notAttending) {
   );
 }
 
-function renderRespondent(responder, respondent) {
-  const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
-  return (
-    <div className={styles.respondents} key={responder}>
-      {displayName}
-      <MaterialIcon
-        icon="delete"
-        className={styles.interactives}
-        hasRipple={true}
-        onClick={() => {}}
-      />
-    </div>
-  );
-}
-
-class BottomBar extends Component {
+class ShowResultsBottomBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,6 +46,7 @@ class BottomBar extends Component {
     const { className, respondents, renderableRespondents, time } = this.props;
     const { isOpen, isClosed } = this.state;
 
+    // this one might need to change cos it's just copied over
     const respondersRespondentsObj = _.zipObject(
       respondents.map(respondentToEmailOrName),
       respondents,
@@ -70,8 +57,9 @@ class BottomBar extends Component {
     const [attending, possiblyNotAttending] = _.partition(responders, (r) =>
       respondersAtTime.has(r),
     );
-    // TODO: Partition possiblyNotAttending further into non-responses and not attendings
+
     const notAttending = possiblyNotAttending;
+    // copying ends here
 
     return (
       <div className={className}>
@@ -80,6 +68,7 @@ class BottomBar extends Component {
             (isOpen ? styles.slideForward : null),
             (isOpen ? styles.scrollable : null),
             (isClosed ? styles.slideBackward : null),
+            (className)
           )}
         >
           <div className={isOpen ? styles.sticky : null}>
@@ -91,26 +80,15 @@ class BottomBar extends Component {
             />
             {renderShortMessage(time, attending, notAttending)}
           </div>
-          <div className={styles.scrollable}>
-            <section className={styles.attendees}>
-              <h3>Attending</h3>
-              {attending.map((responder) => {
-                const respondent = respondersRespondentsObj[responder]
-                return renderRespondent(responder, respondent);
-              })}
-            </section>
-            <section className={styles.attendees} id="notAttending">
-              <h3>Not Attending</h3>
-              {notAttending.map((responder) => {
-                const respondent = respondersRespondentsObj[responder];
-                return renderRespondent(responder, respondent);
-              })}
-            </section>
-          </div>
+          <ShowResultsSideBar
+            respondents={respondents}
+            renderableRespondents={renderableRespondents}
+            time={time}
+          />
         </div>
       </div>
     );
   }
 }
 
-export default BottomBar;
+export default ShowResultsBottomBar;

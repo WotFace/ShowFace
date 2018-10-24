@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '@material/react-button';
+import MaterialIcon from '@material/react-material-icon';
+import { auth } from '../firebase';
 import { anonNameToId } from '../utils/response';
-import { getFirebaseUserInfo } from '../utils/auth';
+import { getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import { setRespondName } from '../actions/userData';
 import BottomAppBar from './BottomAppBar';
 import Timeline from './Timeline';
@@ -10,6 +12,30 @@ import PollRespondNameForm from './PollRespondNameForm';
 import styles from './ShowRespond.module.scss';
 
 class ShowRespond extends Component {
+  constructor(props) {
+    super(props);
+    this.state = this.getInitState();
+  }
+
+  // Return initialized state. Does not set state as this method will be used
+  // in the constructor.
+  getInitState() {
+    return {
+      // If user is logged out, prompt user with prefilled name box, else only
+      // prompt if user presses back button in the bottom bar. Store an
+      // isAskingForName state field.
+      isAskingForName: !isSignedIn(),
+    };
+  }
+
+  componentDidMount() {
+    // Reinitialize state if auth state changes.
+    auth().onAuthStateChanged(() => {
+      this.setState(this.getInitState());
+      this.props.setRespondName(null);
+    });
+  }
+
   shouldUseName() {
     const { name } = this.props;
     return name && name.length > 0;
@@ -20,6 +46,18 @@ class ShowRespond extends Component {
     if (this.shouldUseName()) return anonNameToId(this.props.name);
     else if (firebaseUser) return firebaseUser.email;
     return null;
+  }
+
+  loggedInUserName() {
+    const firebaseUser = getFirebaseUserInfo();
+    if (!firebaseUser) return null;
+    // TODO: Use display name from user's User record
+    return firebaseUser.displayName || firebaseUser.email;
+  }
+
+  responseName() {
+    if (this.shouldUseName()) return this.props.name;
+    return this.loggedInUserName();
   }
 
   filteredRespondents() {
@@ -50,20 +88,35 @@ class ShowRespond extends Component {
 
   handleSetName = (name) => {
     this.props.setRespondName(name);
+    this.setState({ isAskingForName: false });
+  };
+
+  handleContinueAsSignedInUser = () => {
+    this.props.setRespondName(null);
+    this.setState({ isAskingForName: false });
+  };
+
+  handleBackClick = () => {
+    this.setState({ isAskingForName: true });
   };
 
   render() {
     const { show, name } = this.props;
+    const { isAskingForName } = this.state;
     const { dates, startTime, endTime, interval } = show;
     const userResponseKey = this.userResponseKey();
     const ourRespondents = this.filteredRespondents();
 
-    // Ask for name if logged out and we don't have a cached name.
-    // TODO: With a 2 step flow, if user is logged out, prompt user with
-    // prefilled name box, else only prompt if user presses back button in
-    // the bottom bar. Store an isAskingForName state field.
-    if (!userResponseKey) {
-      return <PollRespondNameForm name={name} onSetName={this.handleSetName} />;
+    if (isAskingForName) {
+      return (
+        <PollRespondNameForm
+          name={name}
+          onSetName={this.handleSetName}
+          signedInName={this.loggedInUserName()}
+          canContinueAsSignedInUser={isSignedIn()}
+          onContinueAsSignedInUser={this.handleContinueAsSignedInUser}
+        />
+      );
     }
 
     return (
@@ -81,11 +134,14 @@ class ShowRespond extends Component {
         />
         <BottomAppBar>
           <div className={styles.bottomBarContent}>
-            <Button onClick={this.handleBackClick} outlined>
-              ←
-            </Button>
+            <MaterialIcon
+              icon="arrow_back"
+              className={styles.backButton}
+              onClick={this.handleBackClick}
+              hasRipple
+            />
             <span className={styles.mainText}>
-              Responding as <strong>{name}</strong>
+              Responding as <strong>{this.responseName()}</strong>
             </span>
             <Button onClick={this.handleSubmit} raised>
               Submit

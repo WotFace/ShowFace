@@ -1,9 +1,16 @@
 .attendees {
-  background-color: #F5F5F5;
   margin-top: 32px;
   border-radius: 10px;
   margin-left: 0px;
   padding: 4px 8px 16px 16px;
+}
+
+.respondents {
+  border: 2px solid #1A237E;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .pollTime {

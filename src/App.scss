@@ -3,14 +3,9 @@
 @import './mdc';
 
 body {
-  color: rgb(28, 48, 92);
-  font-family: 'Fira Sans', 'Trebuchet MS', 'Helvetica Neue', 'Arial', sans-serif;
-
-  font-weight: 300;
-}
-
-body {
-  position: relative;
+  margin: 0;
+  padding: 0;
+  font-family: $mdc-typography-font-family;
 }
 
 h1 {
@@ -24,13 +19,6 @@ h3 {
   margin: inherit, 10px;
 }
 
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
 .full-page {
   height: 100vh;
   width: 100vw;
@@ -41,22 +29,6 @@ h3 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.poll-input {
-  box-sizing: border-box;
-  outline: none;
-  background-color: #fff;
-  height: 60px;
-  vertical-align: top;
-  border: none;
-  border-radius: 2px;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  width: 484px;
-  padding: 5px 9px;
-  padding-left: 16px;
-  margin-bottom: 20px;
 }
 
 .btn-outline-primary {
@@ -86,12 +58,6 @@ h3 {
   font-size: 64px;
 }
 
-.link {
-  color: #ccc;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 .font-icon {
   height: 1em;
   left: 0.125em;
@@ -101,8 +67,4 @@ h3 {
 
 #notAttending {
   margin-top: 40px;
-}
-
-.nav-item {
-  outline: none;
 }

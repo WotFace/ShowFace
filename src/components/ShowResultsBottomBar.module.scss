@@ -1,3 +1,5 @@
+@import '../mdc-variables';
+
 .ribbon {
   background-color: white;
   padding: 5px 0px 5px 0px;
@@ -14,7 +16,7 @@
 .sticky {
   position: sticky;
   top: 10px;
-  background-color: white;
+  background-color: #F9BA5C;
 }
 
 .interactives {
@@ -26,29 +28,20 @@
 }
 
 .header {
+  background-color: #F9BA5C;
   text-align: center;
   margin-right: 56px;
 }
 
 .icon {
-  color: #9e9e9e;
+  color: #193163;
   position: absolute;
   top: 12px;
-  left: -5px;
+  left: -5
 }
 
-.attendees {
-  margin-top: 32px;
-  margin-right: 80px;
-  padding: 4px 8px 16px 16px;
-}
-
-.respondents {
-  border: 2px solid #1A237E;
-  border-radius: 8px;
-  padding: 12px;
-  margin-top: 24px;
-  margin-bottom: 24px;
+.hide {
+  display: none;
 }
 
 // animations
@@ -101,6 +94,32 @@
   }
   to {
     transform: rotate(-180deg);
+  }
+}
+
+.scaleIn {
+  animation: scaleIn 400ms ease-in-out forwards;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.scaleOut {
+  animation: scaleOut 400ms ease-in-out forwards;
+}
+
+@keyframes scaleOut {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
   }
 }
 

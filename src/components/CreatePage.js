@@ -9,6 +9,7 @@ import ReactLoading from 'react-loading';
 import { startOfToday, endOfToday } from 'date-fns';
 import gql from 'graphql-tag';
 import { getAuthInput } from '../utils/auth';
+import { cleanName } from '../utils/string';
 
 import styles from './CreatePage.module.scss';
 
@@ -37,7 +38,7 @@ class CreatePage extends Component {
     const { name, selectedDays } = this.state;
     const startTime = startOfToday();
     const endTime = endOfToday();
-    this.props.createShow(name, selectedDays, startTime, endTime, interval);
+    this.props.createShow(cleanName(name), selectedDays, startTime, endTime, interval);
     event.preventDefault();
   }
 
@@ -129,7 +130,7 @@ class CreatePage extends Component {
                 <Button
                   className={styles.submitButton}
                   onClick={this.handleSubmit}
-                  disabled={noSelectedDay || name.length === 0}
+                  disabled={noSelectedDay || cleanName(name).length === 0}
                   raised
                 >
                   Submit

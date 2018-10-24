@@ -1,0 +1,20 @@
+$divider-color: rgba(0, 0, 0, 0.12);
+$text-color: rgba(0, 0, 0, 0.4);
+
+.dividerLine {
+  border: 0;
+  height: 0;
+  border-top: 1px solid $divider-color;
+  width: 100%;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .text {
+    color: $text-color;
+    margin: 0 1em;
+  }
+}

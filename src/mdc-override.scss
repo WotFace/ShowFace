@@ -2,3 +2,12 @@
   display: flex;
   justify-content: center;
 }
+
+// Workaround for what seems to be a bug - outlined text fields take up too
+// much width for some reason. Our temporary solution (obtained by trial and
+// error) is to remove the width OR height from before/after elements in text
+// fields. Restricted to outlined text fields as it'll break normal ones.
+.mdc-text-field--outlined.mdc-text-field::before,
+.mdc-text-field--outlined.mdc-text-field::after {
+  width: 100%;
+}

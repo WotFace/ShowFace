@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import classnames from 'classnames';
 import _ from 'lodash';
 import { respondentToEmailOrName } from '../utils/response';
+import MaterialIcon from '@material/react-material-icon';
 
 import styles from './ShowResultsSidebar.module.scss';
 
@@ -22,7 +23,17 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
   // logged in, has admin rights, and whether the respondent has responded
   function renderRespondent(responder, respondent) {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
-    return <li key={responder}>{displayName}</li>;
+    return (
+      <div className={styles.respondents} key={responder}>
+        {displayName}
+        <MaterialIcon
+          icon="delete"
+          className={styles.interactives}
+          hasRipple={true}
+          onClick={() => {}}
+        />
+      </div>
+    );
   }
 
   return (

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Timeline from './Timeline';
 import { respondentsToDict } from '../utils/response';
 import ShowResultsSidebar from './ShowResultsSidebar';
-import BottomBar from './ShowResultsBottomBar';
+import ShowResultsBottomBar from './ShowResultsBottomBar';
 import styles from './ShowResults.module.scss';
 
 class ShowResults extends Component {
@@ -50,7 +50,7 @@ class ShowResults extends Component {
             />
           </div>
         </div>
-        <BottomBar
+        <ShowResultsBottomBar
           className={styles.bottomBar}
           respondents={respondents}
           renderableRespondents={renderableRespondents}

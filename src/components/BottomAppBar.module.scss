@@ -16,11 +16,6 @@
 }
 
 .bar {
-  height: 40px;
-  padding: 5px 20px 5px 0px;
   background-color: $mdc-theme-secondary;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0px;
+  padding: 0.5em 1em;
 }

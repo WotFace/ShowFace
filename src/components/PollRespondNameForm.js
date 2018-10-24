@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@material/react-button';
 import TextField, { HelperText, Input } from '@material/react-text-field';
+import { cleanName } from '../utils/string';
 import styles from './PollRespondNameForm.module.scss';
 
 export default class PollRespondNameForm extends Component {
@@ -17,7 +18,7 @@ export default class PollRespondNameForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onSetName(this.state.name);
+    this.props.onSetName(cleanName(this.state.name));
   };
 
   handleContinueAsUser = () => {
@@ -48,7 +49,10 @@ export default class PollRespondNameForm extends Component {
             />
           </TextField>
         </div>
-        <Button type="submit" disabled={!this.state.name || this.state.name.length === 0}>
+        <Button
+          type="submit"
+          disabled={!this.state.name || cleanName(this.state.name).length === 0}
+        >
           Continue
         </Button>
         {canContinueAsSignedInUser && (

@@ -85,7 +85,6 @@ class ShowRespond extends Component {
 
   handleSetName = (name) => {
     this.props.setRespondName(name);
-    // TODO: Trim input and remove double spaces
     this.setState({ isAskingForName: false });
   };
 

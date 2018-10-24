@@ -1062,6 +1062,16 @@
     prop-types "^15.6.1"
     react "^16.4.2"
 
+"@material/react-material-icon@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@material/react-material-icon/-/react-material-icon-0.5.0.tgz#0711c264c6136709fef3ebe4b02521a64325823b"
+  integrity sha512-x9vLDLNhDDZBNY6I8tW1MDFa9hAdmgh/qDBB0CpoggPw9z5iNCN4spxPEBOHj6Y+Kf0+d7frQqUrNpPery9kpA==
+  dependencies:
+    "@material/react-ripple" "^0.5.0"
+    classnames "^2.2.5"
+    prop-types "^15.6.1"
+    react "^16.4.2"
+
 "@material/react-notched-outline@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@material/react-notched-outline/-/react-notched-outline-0.5.0.tgz#c15a75ccacba41180380fdb076351dca3426142b"

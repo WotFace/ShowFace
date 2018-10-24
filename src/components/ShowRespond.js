@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Timeline from './Timeline';
+import Button from '@material/react-button';
 import { anonNameToId } from '../utils/response';
 import { getFirebaseUserInfo } from '../utils/auth';
 import { setRespondName } from '../actions/userData';
+import BottomAppBar from './BottomAppBar';
+import Timeline from './Timeline';
 import PollRespondNameForm from './PollRespondNameForm';
+import styles from './ShowRespond.module.scss';
 
 class ShowRespond extends Component {
   shouldUseName() {
@@ -64,17 +67,32 @@ class ShowRespond extends Component {
     }
 
     return (
-      <Timeline
-        dates={dates}
-        startTime={startTime}
-        endTime={endTime}
-        interval={interval}
-        respondents={ourRespondents}
-        maxSelectable={1}
-        userResponseKey={userResponseKey}
-        onSelect={this.handleSelect}
-        onDeselect={this.handleDeselect}
-      />
+      <>
+        <Timeline
+          dates={dates}
+          startTime={startTime}
+          endTime={endTime}
+          interval={interval}
+          respondents={ourRespondents}
+          maxSelectable={1}
+          userResponseKey={userResponseKey}
+          onSelect={this.handleSelect}
+          onDeselect={this.handleDeselect}
+        />
+        <BottomAppBar>
+          <div className={styles.bottomBarContent}>
+            <Button onClick={this.handleBackClick} outlined>
+              ←
+            </Button>
+            <span className={styles.mainText}>
+              Responding as <strong>{name}</strong>
+            </span>
+            <Button onClick={this.handleSubmit} raised>
+              Submit
+            </Button>
+          </div>
+        </BottomAppBar>
+      </>
     );
   }
 }

@@ -125,14 +125,16 @@ class CreatePage extends Component {
               </Card>
             </section>
             <BottomAppBar>
-              <Button
-                className={styles.submitButton}
-                onClick={this.handleSubmit}
-                disabled={noSelectedDay || name.length === 0}
-                raised
-              >
-                Submit
-              </Button>
+              <div className={styles.bottomBarContent}>
+                <Button
+                  className={styles.submitButton}
+                  onClick={this.handleSubmit}
+                  disabled={noSelectedDay || name.length === 0}
+                  raised
+                >
+                  Submit
+                </Button>
+              </div>
             </BottomAppBar>
           </form>
         </div>

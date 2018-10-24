@@ -31,10 +31,12 @@
     "react-day-picker": "^7.2.4",
     "react-dom": "^16.6.0",
     "react-loading": "^2.0.3",
+    "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.0.5",
     "react-touch": "^0.4.4",
-    "react-transition-group": "^2.5.0"
+    "react-transition-group": "^2.5.0",
+    "redux": "^4.0.1"
   },
   "devDependencies": {
     "classnames": "^2.2.6",

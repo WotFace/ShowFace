@@ -9,7 +9,7 @@ export default function userDataReducer(state = defaultState, action) {
     case SET_RESPOND_NAME: {
       return {
         ...state,
-        name: action.name,
+        name: action.payload.name,
       };
     }
     default:

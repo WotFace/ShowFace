@@ -20,7 +20,12 @@ export default class PollRespondNameForm extends Component {
     this.props.onSetName(this.state.name);
   };
 
+  handleContinueAsUser = () => {
+    this.props.onContinueAsSignedInUser();
+  };
+
   render() {
+    const { signedInName, canContinueAsSignedInUser } = this.props;
     return (
       <form onSubmit={this.handleSubmit}>
         <div className={styles.formGroup}>
@@ -46,6 +51,11 @@ export default class PollRespondNameForm extends Component {
         <Button type="submit" disabled={!this.state.name || this.state.name.length === 0}>
           Continue
         </Button>
+        {canContinueAsSignedInUser && (
+          <Button onClick={this.handleContinueAsUser}>
+            {`Continue as ${signedInName || 'signed in user'}`}
+          </Button>
+        )}
       </form>
     );
   }

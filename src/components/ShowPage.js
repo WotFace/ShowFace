@@ -137,7 +137,8 @@ class ShowPage extends Component {
       );
     }
 
-    const show = this.latestShow(true); // TODO: Show non-latest in Results
+    const show = this.latestShow(true);
+    const latestSavedShow = this.latestShow(false);
 
     return (
       <div className={styles.container}>
@@ -191,7 +192,10 @@ class ShowPage extends Component {
                   />
                 )}
               />
-              <Route path={match.url + '/results'} render={() => <ShowResults show={show} />} />
+              <Route
+                path={match.url + '/results'}
+                render={() => <ShowResults show={latestSavedShow} />}
+              />
             </React.Fragment>
           )}
         </section>

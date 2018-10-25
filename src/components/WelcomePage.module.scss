@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Caveat+Brush');
+@import '~@material/button/mdc-button';
 @import '../mdc-variables';
 
 #halfPage {
@@ -46,7 +46,7 @@
 }
 
 #createPollButton {
-  background: $mdc-theme-secondary;
+  @include mdc-button-filled-accessible($mdc-theme-secondary);
   width: 100%;
 }
 

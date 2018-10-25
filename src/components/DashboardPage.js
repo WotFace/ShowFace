@@ -59,11 +59,8 @@ class DashboardPage extends Component {
       );
     }
 
-    const userShows = getUserShowsResult.data
-      ? userShowsToDict(
-          getUserShowsResult.data && getUserShowsResult.data.userShows,
-          firebaseUser.email,
-        )
+    const userShows = getUserShowsResult.data.userShows
+      ? userShowsToDict(getUserShowsResult.data.userShows, firebaseUser.email)
       : {};
 
     const header = firebaseUser ? (

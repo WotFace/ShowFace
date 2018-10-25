@@ -19,11 +19,11 @@ class DashboardPage extends Component {
   userShowItems(userShows, tab) {
     return (
       <ul>
-        {userShows.map(function(userShow, tab) {
+        {userShows.map(function(userShow) {
           return (
             <>
               <Link
-                to={'/show/' + userShow.slug + tab}
+                to={`/show/${userShow.slug}/${tab}`}
                 className="btn btn-outline-primary btn-lg btn-block"
               >
                 {userShow.slug}
@@ -85,72 +85,27 @@ class DashboardPage extends Component {
             Create New Poll
           </Link>
         </section>
-        <section id="admin">
-          {userShows.admin !== undefined || userShows.admin.length > 0 ? (
-            <>
-              <h3>Shows you created</h3>
-              <ul>
-                {userShows.admin.map(function(userShow) {
-                  return (
-                    <>
-                      <Link
-                        to={'/show/' + userShow.slug + '/results'}
-                        className="btn btn-outline-primary btn-lg btn-block"
-                      >
-                        {userShow.slug}
-                      </Link>
-                      <br />
-                    </>
-                  );
-                })}
-              </ul>
-            </>
-          ) : null}
-        </section>
-        <section id="pending">
-          {userShows.pending !== undefined || userShows.pending.length > 0 ? (
-            <>
-              <h3>Shows pending your response</h3>
-              <ul>
-                {userShows.pending.map(function(userShow) {
-                  return (
-                    <>
-                      <Link
-                        to={'/show/' + userShow.slug + '/respond'}
-                        className="btn btn-outline-primary btn-lg btn-block"
-                      >
-                        {userShow.slug}
-                      </Link>
-                      <br />
-                    </>
-                  );
-                })}
-              </ul>
-            </>
-          ) : null}
-        </section>
-        <section id="responded">
-          {userShows.responded !== undefined || userShows.responded.length > 0 ? (
-            <>
-              <h3>Shows you responded to</h3>
-              <ul>
-                {userShows.responded.map(function(userShow) {
-                  return (
-                    <>
-                      <Link
-                        to={'/show/' + userShow.slug + '/results'}
-                        className="btn btn-outline-primary btn-lg btn-block"
-                      >
-                        {userShow.slug}
-                      </Link>
-                      <br />
-                    </>
-                  );
-                })}
-              </ul>
-            </>
-          ) : null}
-        </section>
+
+        {userShows.admin.length > 0 ? (
+          <section id="admin">
+            <h3>Shows created by you</h3>
+            {this.userShowItems(userShows.admin, 'results')}
+          </section>
+        ) : null}
+
+        {userShows.pending.length > 0 ? (
+          <section id="pending">
+            <h3>Shows pending your response</h3>
+            {this.userShowItems(userShows.pending, 'respond')}
+          </section>
+        ) : null}
+
+        {userShows.responded.length > 0 ? (
+          <section id="responded">
+            <h3>Shows you responded to</h3>
+            {this.userShowItems(userShows.responded, 'results')}
+          </section>
+        ) : null}
       </div>
     );
   }

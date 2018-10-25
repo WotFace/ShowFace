@@ -59,10 +59,12 @@ class DashboardPage extends Component {
       );
     }
 
-    const userShows = userShowsToDict(
-      getUserShowsResult.data && getUserShowsResult.data.userShows,
-      firebaseUser.email,
-    );
+    const userShows = getUserShowsResult.data
+      ? userShowsToDict(
+          getUserShowsResult.data && getUserShowsResult.data.userShows,
+          firebaseUser.email,
+        )
+      : {};
 
     const header = firebaseUser ? (
       <div>
@@ -86,21 +88,21 @@ class DashboardPage extends Component {
           </Link>
         </section>
 
-        {userShows.admin.length > 0 ? (
+        {userShows.admin !== undefined && userShows.admin.length > 0 ? (
           <section id="admin">
             <h3>Shows created by you</h3>
             {this.userShowItems(userShows.admin, 'results')}
           </section>
         ) : null}
 
-        {userShows.pending.length > 0 ? (
+        {userShows.pending !== undefined && userShows.pending.length > 0 ? (
           <section id="pending">
             <h3>Shows pending your response</h3>
             {this.userShowItems(userShows.pending, 'respond')}
           </section>
         ) : null}
 
-        {userShows.responded.length > 0 ? (
+        {userShows.responded !== undefined && userShows.responded.length > 0 ? (
           <section id="responded">
             <h3>Shows you responded to</h3>
             {this.userShowItems(userShows.responded, 'results')}

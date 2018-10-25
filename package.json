@@ -25,6 +25,7 @@
     "lodash": "^4.17.11",
     "memoize-one": "^4.0.2",
     "pepjs": "^0.4.3",
+    "query-string": "^6.2.0",
     "quickselect": "^2.0.0",
     "react": "^16.6.0",
     "react-alert": "^4.0.4",

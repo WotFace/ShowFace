@@ -20,6 +20,10 @@ import TextField, { Input } from '@material/react-text-field';
 import Button from '@material/react-button';
 
 class ShowPage extends Component {
+  state = {
+    hasSetName: false,
+  };
+
   copyUrlToClipboard = () => {
     copyToClipboard(window.location.href);
     this.props.alert.show('Url copied to clipboard.', {
@@ -38,13 +42,9 @@ class ShowPage extends Component {
     return null;
   }
 
-  handleTabChange(index) {
-    if (index === 0) {
-    }
-
-    if (index === 1) {
-    }
-  }
+  handleSetName = (isSet) => {
+    this.setState({ hasSetName: isSet });
+  };
 
   handleSelectDeselectTimes(startTimes, name, isSelect) {
     const user = getFirebaseUserInfo();
@@ -79,6 +79,7 @@ class ShowPage extends Component {
 
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
+    const { hasSetName } = this.state;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
     const { error: upsertResponsesError } = upsertResponsesResult;
     if (getShowLoading) {
@@ -151,6 +152,8 @@ class ShowPage extends Component {
                 render={() => (
                   <ShowRespond
                     show={show}
+                    hasSetName={hasSetName}
+                    onSetName={this.handleSetName}
                     onSelectTimes={this.handleSelectTimes}
                     onDeselectTimes={this.handleDeselectTimes}
                   />

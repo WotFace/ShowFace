@@ -24,7 +24,7 @@ class ShowRespond extends Component {
       // If user is logged out, prompt user with prefilled name box, else only
       // prompt if user presses back button in the bottom bar. Store an
       // isAskingForName state field.
-      isAskingForName: !isSignedIn(),
+      isAskingForName: !isSignedIn() && !this.props.hasSetName,
     };
   }
 
@@ -91,6 +91,7 @@ class ShowRespond extends Component {
   handleSetName = (name) => {
     this.props.setRespondName(name);
     this.setState({ isAskingForName: false });
+    this.props.onSetName(true);
   };
 
   handleContinueAsSignedInUser = () => {
@@ -100,6 +101,7 @@ class ShowRespond extends Component {
 
   handleBackClick = () => {
     this.setState({ isAskingForName: true });
+    this.props.onSetName(false);
   };
 
   render() {

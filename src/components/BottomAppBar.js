@@ -32,11 +32,15 @@ class BottomAppBar extends Component {
   };
 
   render() {
-    const { children } = this.props;
+    const { children, className } = this.props;
     const { isAtBottom } = this.state;
     return (
       <div
-        className={classnames(styles.barContainer, isAtBottom ? styles.stuck : 'mdc-card')}
+        className={classnames(
+          className,
+          styles.barContainer,
+          isAtBottom ? styles.stuck : 'mdc-card',
+        )}
         ref={this.containerRef}
       >
         <div className={styles.bar}>{children}</div>

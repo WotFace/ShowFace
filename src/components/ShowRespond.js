@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
+import ReactLoading from 'react-loading';
 import { auth } from '../firebase';
 import { anonNameToId } from '../utils/response';
 import { getFirebaseUserInfo, isSignedIn } from '../utils/auth';
@@ -110,7 +111,7 @@ class ShowRespond extends Component {
   };
 
   render() {
-    const { show, name, hasPendingSubmissions } = this.props;
+    const { show, name, hasPendingSubmissions, isSaving } = this.props;
     const { isAskingForName } = this.state;
     const { dates, startTime, endTime, interval } = show;
     const userResponseKey = this.userResponseKey();
@@ -137,7 +138,7 @@ class ShowRespond extends Component {
           interval={interval}
           respondents={ourRespondents}
           maxSelectable={1}
-          userResponseKey={userResponseKey}
+          userResponseKey={isSaving ? null : userResponseKey}
           onSelect={this.handleSelect}
           onDeselect={this.handleDeselect}
         />
@@ -152,7 +153,11 @@ class ShowRespond extends Component {
             <span className={styles.mainText}>
               Responding as <strong>{this.responseName()}</strong>
             </span>
-            <Button onClick={this.handleSubmit} disabled={!hasPendingSubmissions} raised>
+            <Button
+              onClick={this.handleSubmit}
+              disabled={!hasPendingSubmissions || isSaving}
+              raised
+            >
               Submit
             </Button>
           </div>

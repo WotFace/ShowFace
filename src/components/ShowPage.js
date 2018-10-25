@@ -110,7 +110,7 @@ class ShowPage extends Component {
     const { hasSetName, pendingSubmission } = this.state;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
     // TODO: Display something when saving
-    const { error: upsertResponsesError } = upsertResponsesResult;
+    const { loading: upsertResponsesLoading, error: upsertResponsesError } = upsertResponsesResult;
 
     if (getShowLoading) {
       return (
@@ -186,6 +186,7 @@ class ShowPage extends Component {
                     onSelectTimes={this.handleSelectTimes}
                     onDeselectTimes={this.handleDeselectTimes}
                     hasPendingSubmissions={!!pendingSubmission}
+                    isSaving={upsertResponsesLoading}
                     onSubmit={this.handleSubmit}
                   />
                 )}

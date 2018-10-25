@@ -32,7 +32,9 @@ class ShowRespond extends Component {
     // Reinitialize state if auth state changes.
     auth().onAuthStateChanged(() => {
       this.setState(this.getInitState());
-      this.props.setRespondName(null);
+      if (isSignedIn()) {
+        this.props.setRespondName(null);
+      }
     });
   }
 

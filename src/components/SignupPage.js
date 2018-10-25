@@ -3,6 +3,9 @@ import logo from '../logo.png';
 import { withAlert } from 'react-alert';
 import { auth } from '../firebase';
 import SocialLogin from './SocialLogin';
+import { Mutation } from 'react-apollo';
+import gql from 'graphql-tag';
+import { getAuthInput } from '../utils/auth';
 
 class SignupPage extends Component {
   constructor(props) {
@@ -14,11 +17,12 @@ class SignupPage extends Component {
   createUserWithEmailAndPassword(event) {
     const email = this.emailInput.value;
     const password = this.passwordInput.value;
+    const name = this.nameInput.value;
     event.preventDefault();
     auth()
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
-        console.log('Credentials', result);
+        this.props.createUser(name, email);
         this.setState({ user: result });
       })
       .catch((error) => {
@@ -49,6 +53,16 @@ class SignupPage extends Component {
                   this.signupForm = form;
                 }}
               >
+                <input
+                  style={{ width: '100%', margin: '10px auto' }}
+                  className="form-control"
+                  name="name"
+                  type="name"
+                  ref={(input) => {
+                    this.nameInput = input;
+                  }}
+                  placeholder="Name"
+                />
                 <input
                   style={{ width: '100%', margin: '10px auto' }}
                   className="form-control"
@@ -88,4 +102,25 @@ class SignupPage extends Component {
   }
 }
 
-export default withAlert(SignupPage);
+const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($name: String!, $email: String!, $auth: AuthInput!) {
+    createUser(auth: $auth, data: { name: $name, email: $email }) {
+      id
+    }
+  }
+`;
+
+export default withAlert((props) => (
+  <Mutation mutation={CREATE_USER_MUTATION}>
+    {(createUser, result) => (
+      <SignupPage
+        {...props}
+        createUser={async (name, email) => {
+          const auth = await getAuthInput();
+          createUser({ variables: { name, email, auth } });
+        }}
+        createUserResult={result}
+      />
+    )}
+  </Mutation>
+));

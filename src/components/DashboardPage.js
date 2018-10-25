@@ -50,7 +50,7 @@ class DashboardPage extends Component {
         </section>
       );
     } else if (getUserShowsError) {
-      console.log('Show page load got getUserShowsError', getUserShowsError);
+      console.log('Dashboard page load got getUserShowsError', getUserShowsError);
       return (
         <section className="full-page flex">
           <h2>That didn&#39;t work</h2>

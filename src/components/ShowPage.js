@@ -21,6 +21,7 @@ import Button from '@material/react-button';
 
 class ShowPage extends Component {
   state = {
+    pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
     hasSetName: false,
   };
 
@@ -31,8 +32,18 @@ class ShowPage extends Component {
     });
   };
 
-  latestShow() {
+  canSubmit(name) {
+    const show = this.latestShow(true);
+    if ((!name && !isSignedIn()) || !show) return false;
+    return true;
+  }
+
+  latestShow(includePending) {
     const { getShowResult, upsertResponsesResult } = this.props;
+    const { pendingSubmission } = this.state;
+    if (includePending && pendingSubmission) {
+      return pendingSubmission.show;
+    }
     if (upsertResponsesResult.data && upsertResponsesResult.data._upsertResponse) {
       return upsertResponsesResult.data._upsertResponse;
     }
@@ -47,12 +58,12 @@ class ShowPage extends Component {
   };
 
   handleSelectDeselectTimes(startTimes, name, isSelect) {
+    if (!this.canSubmit(name)) return;
+
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
-    const show = this.latestShow();
-    if ((!name && !isSignedIn()) || !show) return;
-
-    const { slug, respondents } = show;
+    const show = this.latestShow(true);
+    const { respondents } = show;
     // Find current respondent by anonymousName if name is supplied,
     // if not find by current user's email
     const currentRespondent = name
@@ -70,18 +81,37 @@ class ShowPage extends Component {
     }
 
     const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
-    this.props.upsertResponses(slug, name, email, newResponses);
+    const showToSave = getOptimisticResponseForShow(name, email, newResponses, show);
+    this.setState({
+      pendingSubmission: {
+        show: showToSave,
+        name,
+        email,
+        responses: newResponses,
+      },
+    });
   }
 
   handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
   handleDeselectTimes = (startTimes, name) =>
     this.handleSelectDeselectTimes(startTimes, name, false);
 
+  handleSubmit = () => {
+    const { pendingSubmission } = this.state;
+    if (!pendingSubmission) return;
+    const { name, email, responses, show } = pendingSubmission;
+    const { slug } = show;
+    this.props.upsertResponses(slug, name, email, responses);
+    this.setState({ pendingSubmission: null });
+  };
+
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
-    const { hasSetName } = this.state;
+    const { hasSetName, pendingSubmission } = this.state;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
+    // TODO: Display something when saving
     const { error: upsertResponsesError } = upsertResponsesResult;
+
     if (getShowLoading) {
       return (
         <section className="full-page flex">
@@ -98,21 +128,20 @@ class ShowPage extends Component {
         </section>
       );
     } else if (upsertResponsesError) {
-      console.log('Show page load got upsertResponsesError', upsertResponsesError);
+      console.log('Show upsert responses got upsertResponsesError', upsertResponsesError);
       return (
         <section className="full-page flex">
-          <h2>We couldn&apos;t save your changes didn&#39;t work</h2>
+          <h2>We couldn&apos;t save your changes</h2>
           <div>{upsertResponsesError.message}</div>
         </section>
       );
     }
 
-    const show = this.latestShow();
+    const show = this.latestShow(true); // TODO: Show non-latest in Results
 
     return (
       <div className={styles.container}>
         <section id="form-header">
-          {/* <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} /> */}
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
             <div className={styles.copyUrlInputContainer}>
@@ -156,6 +185,8 @@ class ShowPage extends Component {
                     onSetName={this.handleSetName}
                     onSelectTimes={this.handleSelectTimes}
                     onDeselectTimes={this.handleDeselectTimes}
+                    hasPendingSubmissions={!!pendingSubmission}
+                    onSubmit={this.handleSubmit}
                   />
                 )}
               />
@@ -224,8 +255,7 @@ const UPSERT_RESPONSES_MUTATION = gql`
   ${ShowPage.fragments.show}
 `;
 
-function getOptimisticResponseForUpsertResponses(name, email, responses, getShowResult) {
-  const show = getShowResult.data && getShowResult.data.show;
+function getOptimisticResponseForShow(name, email, responses, show) {
   if (!show) return null;
   const { respondents } = show;
   const index = name
@@ -262,12 +292,18 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
   }
 
   return {
+    __typename: 'Show',
+    ...show,
+    respondents: newRespondents,
+  };
+}
+
+function getOptimisticResponseForUpsertResponses(name, email, responses, getShowResult) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  return {
     __typename: 'Mutation',
-    _upsertResponse: {
-      __typename: 'Show',
-      ...show,
-      respondents: newRespondents,
-    },
+    _upsertResponse: getOptimisticResponseForShow(name, email, responses, show),
   };
 }
 

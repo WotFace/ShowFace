@@ -104,8 +104,13 @@ class ShowRespond extends Component {
     this.props.onSetName(false);
   };
 
+  handleSubmit = () => {
+    // TODO: Add submitting bool
+    this.props.onSubmit();
+  };
+
   render() {
-    const { show, name } = this.props;
+    const { show, name, hasPendingSubmissions } = this.props;
     const { isAskingForName } = this.state;
     const { dates, startTime, endTime, interval } = show;
     const userResponseKey = this.userResponseKey();
@@ -147,7 +152,7 @@ class ShowRespond extends Component {
             <span className={styles.mainText}>
               Responding as <strong>{this.responseName()}</strong>
             </span>
-            <Button onClick={this.handleSubmit} raised>
+            <Button onClick={this.handleSubmit} disabled={!hasPendingSubmissions} raised>
               Submit
             </Button>
           </div>

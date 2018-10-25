@@ -142,7 +142,7 @@ class ShowRespond extends Component {
           onSelect={this.handleSelect}
           onDeselect={this.handleDeselect}
         />
-        <BottomAppBar>
+        <BottomAppBar className={styles.bottomBar}>
           <div className={styles.bottomBarContent}>
             <MaterialIcon
               icon="arrow_back"

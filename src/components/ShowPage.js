@@ -158,12 +158,24 @@ class ShowPage extends Component {
             </div>
           </div>
           <div className={styles.tabsContainer}>
-            <NavLink to={`${match.url}/respond`} className={styles.noUnderline}>
-              <Button>Respond</Button>
+            <NavLink
+              to={`${match.url}/respond`}
+              className={styles.linkTab}
+              activeClassName={styles.activeLink}
+            >
+              <Button className={styles.linkTabButton} outlined>
+                Respond
+              </Button>
             </NavLink>
 
-            <NavLink to={`${match.url}/results`} className={styles.noUnderline}>
-              <Button>Results</Button>
+            <NavLink
+              to={`${match.url}/results`}
+              className={styles.linkTab}
+              activeClassName={styles.activeLink}
+            >
+              <Button className={styles.linkTabButton} outlined>
+                Results
+              </Button>
             </NavLink>
           </div>
         </section>

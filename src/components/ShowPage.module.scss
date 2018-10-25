@@ -1,11 +1,14 @@
+@import '~@material/button/mdc-button';
+@import '../mdc-variables';
+
 .container {
-  margin-bottom: 30px;
+  margin-bottom: 1em;
   padding: 0 5%;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 1em;
 }
 
 .contentLogo {
@@ -27,11 +30,27 @@
   height: 30px !important;
 }
 
-.noUnderline {
-  text-decoration: none
+.linkTab {
+  text-decoration: none;
+
+  .linkTabButton {
+    @include mdc-button-corner-radius($mdc-button-height / 2);
+    @include mdc-button-horizontal-padding(1.5em);
+    @include mdc-button-outline-color($mdc-theme-primary);
+  }
+
+  &.activeLink {
+    .linkTabButton {
+      @include mdc-button-filled-accessible($mdc-theme-primary);
+    }
+  }
 }
 
 .tabsContainer {
   display: flex;
-  justify-content: space-evenly ;
+  justify-content: center;
+
+  :not(:last-child) {
+    margin-right: 0.5em;
+  }
 }

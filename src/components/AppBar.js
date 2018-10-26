@@ -81,11 +81,15 @@ export default class AppBar extends Component {
     // TODO: Change buttons on login/signup/dashboard pages
     // TODO: Consider putting AppBar in every page instead, and allow pages to provide buttons
 
+    const signedIn = isSignedIn();
+
     return (
       <div className={styles.container}>
-        <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
+        <Link to={signedIn ? '/dashboard' : '/'}>
+          <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
+        </Link>
         <div className={styles.buttonContainer}>
-          {isSignedIn()
+          {signedIn
             ? this.renderDefaultSignedInButtonSet()
             : this.renderDefaultSignedOutButtonSet()}
         </div>
@@ -103,7 +107,7 @@ export default class AppBar extends Component {
             onClose={this.closeMenu}
             anchorElement={this.menuAnchorRef.current}
           >
-            {isSignedIn()
+            {signedIn
               ? this.renderDefaultSignedInMenuList()
               : this.renderDefaultSignedOutMenuList()}
           </MenuSurface>

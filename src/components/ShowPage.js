@@ -7,12 +7,14 @@ import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
+import classnames from 'classnames';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import { datifyShowResponse } from '../utils/datetime';
 import copyToClipboard from '../utils/copyToClipboard';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 
+import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
@@ -160,7 +162,7 @@ class ShowPage extends Component {
           <div className={styles.tabsContainer}>
             <NavLink
               to={`${match.url}/respond`}
-              className={styles.linkTab}
+              className={classnames(styles.linkTab, sharedStyles.buttonLink)}
               activeClassName={styles.activeLink}
             >
               <Button className={styles.linkTabButton} outlined>
@@ -170,7 +172,7 @@ class ShowPage extends Component {
 
             <NavLink
               to={`${match.url}/results`}
-              className={styles.linkTab}
+              className={classnames(styles.linkTab, sharedStyles.buttonLink)}
               activeClassName={styles.activeLink}
             >
               <Button className={styles.linkTabButton} outlined>

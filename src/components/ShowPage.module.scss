@@ -31,8 +31,6 @@
 }
 
 .linkTab {
-  text-decoration: none;
-
   .linkTabButton {
     @include mdc-button-shape-radius($mdc-button-height / 2);
     @include mdc-button-horizontal-padding(1.5em);

@@ -7,7 +7,6 @@ import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import TextField, { Input } from '@material/react-text-field';
 import { withAlert } from 'react-alert';
-import ReactLoading from 'react-loading';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
@@ -15,6 +14,7 @@ import update from 'immutability-helper';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import { datifyShowResponse } from '../utils/datetime';
 import copyToClipboard from '../utils/copyToClipboard';
+import Loading from './Loading';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 
@@ -142,12 +142,7 @@ class ShowPageComponent extends Component {
     const { loading: upsertResponsesLoading, error: upsertResponsesError } = upsertResponsesResult;
 
     if (getShowLoading) {
-      return (
-        <section className="full-page flex">
-          <h2>Loading</h2>
-          <ReactLoading type="bubbles" color="#111" />
-        </section>
-      );
+      return <Loading />;
     } else if (getShowError) {
       console.log('Show page load got getShowError', getShowError);
       return (

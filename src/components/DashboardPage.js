@@ -3,10 +3,10 @@ import gql from 'graphql-tag';
 import logo from '../logo.png';
 import { Link } from 'react-router-dom';
 import { withAlert } from 'react-alert';
-import ReactLoading from 'react-loading';
 import { getFirebaseUserInfo } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
 import { userShowsToDict } from '../utils/userShows';
+import Loading from './Loading';
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -43,12 +43,7 @@ class DashboardPage extends Component {
     const { loading: getUserShowsLoading, error: getUserShowsError } = getUserShowsResult;
 
     if (getUserShowsLoading) {
-      return (
-        <section className="full-page flex">
-          <h2>Loading</h2>
-          <ReactLoading type="bubbles" color="#111" />
-        </section>
-      );
+      return <Loading />;
     } else if (getUserShowsError) {
       console.log('Dashboard page load got getUserShowsError', getUserShowsError);
       return (

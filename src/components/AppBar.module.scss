@@ -1,0 +1,36 @@
+@import '../mdc';
+
+$menu-breakpoint: largephone;
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.5em 5% 1em 5%;
+
+  @media (min-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
+    margin-top: 3em;
+    margin-bottom: 3em;
+  }
+}
+
+.contentLogo {
+  height: 100%;
+  width: 195px;
+}
+
+.menuContainer {
+  @media (min-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
+    display: none;
+  }
+}
+
+.buttonContainer {
+  :not(:last-child) {
+    margin-right: 1em;
+  }
+
+  @media (max-width: mdc-layout-grid-breakpoint-min($menu-breakpoint) - 1) {
+    display: none;
+  }
+}

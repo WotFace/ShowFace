@@ -34,7 +34,7 @@
   text-decoration: none;
 
   .linkTabButton {
-    @include mdc-button-corner-radius($mdc-button-height / 2);
+    @include mdc-button-shape-radius($mdc-button-height / 2);
     @include mdc-button-horizontal-padding(1.5em);
     @include mdc-button-outline-color($mdc-theme-primary);
   }

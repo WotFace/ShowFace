@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
-import ReactLoading from 'react-loading';
 import { auth } from '../firebase';
 import { anonNameToId } from '../utils/response';
 import { getFirebaseUserInfo, isSignedIn } from '../utils/auth';

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Button from '@material/react-button';
+import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import TextField, { Input } from '@material/react-text-field';
@@ -109,14 +110,15 @@ class ShowPageComponent extends Component {
   renderTabBar = () => {
     const { match, location, history } = this.props;
     const links = [
-      { text: 'Respond', path: `${match.url}/respond` },
-      { text: 'Results', path: `${match.url}/results` },
+      { text: 'Respond', icon: 'add', path: `${match.url}/respond` },
+      { text: 'Results', icon: 'list', path: `${match.url}/results` },
     ];
 
     const { pathname } = location;
     const activeIndex = links.findIndex(({ path }) => path === pathname);
-    const tabs = links.map(({ text }) => (
+    const tabs = links.map(({ text, icon }) => (
       <Tab key={text}>
+        <MaterialIcon className="mdc-tab__icon" icon={icon} />
         <span className="mdc-tab__text-label">{text}</span>
       </Tab>
     ));

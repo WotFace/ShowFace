@@ -153,6 +153,7 @@ class ShowRespond extends Component {
             <Button
               onClick={this.handleSubmit}
               disabled={!hasPendingSubmissions || isSaving}
+              icon={<MaterialIcon icon="send" />}
               raised
             >
               Submit

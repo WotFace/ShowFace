@@ -3,13 +3,14 @@
 
 // MDC imports for the whole app
 @import '~@material/typography/mdc-typography';
-@import '~@material/react-layout-grid/index';
 @import '~@material/react-button/index';
 @import '~@material/react-card/index';
-@import '~@material/react-text-field/index';
-@import '~@material/react-tab-bar/index';
-@import '~@material/react-tab/index';
+@import '~@material/react-icon-button/index';
+@import '~@material/react-layout-grid/index';
 @import '~@material/react-material-icon/index';
+@import '~@material/react-tab/index';
+@import '~@material/react-tab-bar/index';
+@import '~@material/react-text-field/index';
 
 // Override standard MDC classes
 @import './mdc-override';

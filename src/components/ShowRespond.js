@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '@material/react-button';
+import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { auth } from '../firebase';
 import { anonNameToId } from '../utils/response';
@@ -143,12 +144,9 @@ class ShowRespond extends Component {
         />
         <BottomAppBar className={styles.bottomBar}>
           <div className={styles.bottomBarContent}>
-            <MaterialIcon
-              icon="arrow_back"
-              className={styles.backButton}
-              onClick={this.handleBackClick}
-              hasRipple
-            />
+            <IconButton onClick={this.handleBackClick}>
+              <MaterialIcon icon="arrow_back" />
+            </IconButton>
             <span className={styles.mainText}>
               Responding as <strong>{this.responseName()}</strong>
             </span>

@@ -5,6 +5,7 @@
   "dependencies": {
     "@material/react-button": "^0.6.1",
     "@material/react-card": "^0.6.1",
+    "@material/react-icon-button": "^0.6.1",
     "@material/react-layout-grid": "^0.6.1",
     "@material/react-material-icon": "^0.6.1",
     "@material/react-tab": "^0.6.1",

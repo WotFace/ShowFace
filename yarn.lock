@@ -1004,6 +1004,15 @@
     "@material/theme" "^0.40.1"
     "@material/typography" "^0.40.1"
 
+"@material/icon-button@^0.40.1":
+  version "0.40.1"
+  resolved "https://registry.yarnpkg.com/@material/icon-button/-/icon-button-0.40.1.tgz#6c00bb25a905b0cd686468dde95f4cc45c6585ee"
+  integrity sha512-SCi9Czx2kCH3ApdVdQPWN5cU4EQNjZjBniksm1ML2RgHQDx/aEiNl6kmhtn7oEca+TFc5B7eXlIty9eyuHr/fw==
+  dependencies:
+    "@material/base" "^0.40.1"
+    "@material/ripple" "^0.40.1"
+    "@material/theme" "^0.40.1"
+
 "@material/layout-grid@^0.40.1":
   version "0.40.1"
   resolved "https://registry.yarnpkg.com/@material/layout-grid/-/layout-grid-0.40.1.tgz#66bbcae895f8650ee48157a770c8cff1b314755c"
@@ -1060,6 +1069,17 @@
     classnames "^2.2.5"
     prop-types "^15.6.1"
     react "^16.4.2"
+
+"@material/react-icon-button@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@material/react-icon-button/-/react-icon-button-0.6.1.tgz#fcc7f5e2a8abb13497200b8ea086768a604d101a"
+  integrity sha512-YmRNRTGagjBmG+JQJQ0NDIZDd4breV4k1ZFvuh7ElQ/xHNnPbz9CHu5Iq6VROSGlzRSVI1EbDSbhHuysKltYLA==
+  dependencies:
+    "@material/icon-button" "^0.40.1"
+    "@material/react-ripple" "^0.6.1"
+    classnames "^2.2.5"
+    prop-types "^15.6.1"
+    react "^16.3.2"
 
 "@material/react-layout-grid@^0.6.1":
   version "0.6.1"

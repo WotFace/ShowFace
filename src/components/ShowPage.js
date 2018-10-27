@@ -126,7 +126,7 @@ class ShowPageComponent extends Component {
     return (
       <TabBar
         className={styles.tabBar}
-        activeIndex={activeIndex}
+        activeIndex={activeIndex === -1 ? undefined : activeIndex}
         handleActiveIndexUpdate={(activeIndex) => history.push(links[activeIndex].path)}
       >
         {tabs}

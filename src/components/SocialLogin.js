@@ -33,16 +33,48 @@ class SocialLogin extends Component {
       }
       ${fragments.user}
     `;
+
+    const CREATE_USER_MUTATION = gql`
+      mutation CreateUser($name: String!, $email: String!, $auth: AuthInput!) {
+        createUser(auth: $auth, data: { name: $name, email: $email }) {
+          id
+        }
+      }
+    `;
+
+    var authInput = {};
+    var name = '';
+    var email = '';
+
     auth()
       .signInWithPopup(provider)
       .then(async (result) => {
-        const auth = await getAuthInput();
+        authInput = await getAuthInput();
         const { data } = await client.query({
           query: GET_USER_QUERY,
-          variables: { auth: auth },
+          variables: { auth: authInput },
         });
-        console.log(data.user);
+        name = result.user.displayName;
+        email = result.user.email;
+        console.log(result);
+        return data.user;
       })
+      .then(async (result) => {
+        if (result) {
+          console.log('There is result!', result);
+          return;
+        }
+        console.log('No result, gonna try creating user now');
+        const auth = authInput;
+        const { data } = await client.mutate({
+          mutation: CREATE_USER_MUTATION,
+          variables: { name, email, auth },
+        });
+        console.log(authInput);
+      })
+      // .then(async () => {
+      //   console.log(name, email);
+      // })
       .catch((error) => {
         console.log('Error', error);
       });

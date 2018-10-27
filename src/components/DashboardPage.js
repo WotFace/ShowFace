@@ -7,6 +7,7 @@ import { getFirebaseUserInfo } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
 import { userShowsToDict } from '../utils/userShows';
 import Loading from './Loading';
+import Error from './Error';
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -46,12 +47,7 @@ class DashboardPage extends Component {
       return <Loading />;
     } else if (getUserShowsError) {
       console.log('Dashboard page load got getUserShowsError', getUserShowsError);
-      return (
-        <section className="full-page flex">
-          <h2>That didn&#39;t work</h2>
-          <div>{getUserShowsError.message}</div>
-        </section>
-      );
+      return <Error title="That didn&#39;t work" message={getUserShowsError.message} />;
     }
 
     const userShows = getUserShowsResult.data.userShows

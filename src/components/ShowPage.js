@@ -15,6 +15,7 @@ import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import { datifyShowResponse } from '../utils/datetime';
 import copyToClipboard from '../utils/copyToClipboard';
 import Loading from './Loading';
+import Error from './Error';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 
@@ -145,19 +146,11 @@ class ShowPageComponent extends Component {
       return <Loading />;
     } else if (getShowError) {
       console.log('Show page load got getShowError', getShowError);
-      return (
-        <section className="full-page flex">
-          <h2>That didn&#39;t work</h2>
-          <div>{getShowError.message}</div>
-        </section>
-      );
+      return <Error title="That didn&#39;t work" message={getShowError.message} />;
     } else if (upsertResponsesError) {
       console.log('Show upsert responses got upsertResponsesError', upsertResponsesError);
       return (
-        <section className="full-page flex">
-          <h2>We couldn&apos;t save your changes</h2>
-          <div>{upsertResponsesError.message}</div>
-        </section>
+        <Error title="We couldn&apos;t save your changes" message={upsertResponsesError.message} />
       );
     }
 

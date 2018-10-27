@@ -18,6 +18,7 @@ import Loading from './Loading';
 import Error from './Error';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
+import ShareModal from './ShareModal'
 
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
@@ -174,15 +175,7 @@ class ShowPageComponent extends Component {
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
             <div className={styles.copyUrlInputContainer}>
-              <TextField outlined className={styles.copyUrlInput} label="">
-                <Input type="text" value={window.location.href} />
-              </TextField>
-
-              <Button
-                className={styles.clipboardButton}
-                onClick={this.copyUrlToClipboard}
-                icon={<img src={clipboardIcon} className="font-icon" alt="Clipboard icon" />}
-              />
+              <ShareModal link={window.location.href}/>
             </div>
           </div>
         </section>

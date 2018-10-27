@@ -15,6 +15,13 @@ import TelegramIcon from '../icons/telegram.svg' // https://fontawesome.com/icon
 
 
 class ShareModal extends Component {
+    state = {activeIndex: 0};
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {tabIndex: 0}
+    //     this.handleInputChange = this.handleInputChange.bind(this);
+
+    // }
 
 copyUrlToClipboard = () => {
   copyToClipboard(this.props.link);
@@ -34,26 +41,9 @@ openTelegram = () => {
   window.open(url, '_blank')
 }
 
-openMessenger = () => {
-  window.open('fb-messenger://share/?link=' +  encodeURIComponent(this.props.link), '_blank')
-}
-
   render() {
-    return (
-      <Card className={styles.container}>
-        <div className="mdc-typography--headline6">Invite your respondents via...</div>
-        <div>
-            <TabBar
-                activeIndex={0}
-            >
-                <Tab>
-                    <span>Link</span>
-                </Tab>
-                <Tab>
-                    <span>Email</span>
-                </Tab>
-            </TabBar>
-        </div>
+
+    const linkShareDiv = <div>        
         <div className={classnames(styles.descText, 'mdc-typography--caption')}>
             Everyone with the link can vote– no account required.
         </div>
@@ -70,22 +60,41 @@ openMessenger = () => {
         </div>
 
         <div className={styles.shareRow}>
-        <Button 
-            icon={<img className={styles.socialIcon} src={TelegramIcon}/> }
-            onClick={this.openTelegram}
-        >
-            Telegram
-        </Button>
-        <Button 
-            icon={<img className={styles.socialIcon} src={WhatsappIcon}/>}
-            onClick={this.openWhatsapp}
-        >
-            Whatsapp
-        </Button>
-        <Button icon={<img className={styles.socialIcon} src={MessengerIcon}/>}>
-            Messenger
-        </Button>
+            <Button 
+                icon={<img className={styles.socialIcon} src={TelegramIcon}/> }
+                onClick={this.openTelegram}
+            > Telegram </Button>
+            
+            <Button 
+                icon={<img className={styles.socialIcon} src={WhatsappIcon}/>}
+                onClick={this.openWhatsapp}
+            > Whatsapp </Button>
         </div>
+        </div>
+
+    const inputEmailDiv = <div>
+
+
+    </div>
+
+
+    return (
+      <Card className={styles.container}>
+        <div>
+            <div className="mdc-typography--headline6">Invite your respondents via...</div>
+            <TabBar
+                activeIndex={this.state.activeIndex}
+                handleActiveIndexUpdate={(activeIndex) => this.setState({activeIndex})}
+            >
+                <Tab>
+                    <span>Link</span>
+                </Tab>
+                <Tab>
+                    <span>Email</span>
+                </Tab>
+            </TabBar>
+        </div>
+        {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
       </Card>
     );
   }

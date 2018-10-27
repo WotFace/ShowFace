@@ -15,8 +15,11 @@ $menu-breakpoint: largephone;
 }
 
 .contentLogo {
-  height: 100%;
-  width: 195px;
+  width: 150px;
+
+  @media (min-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
+    width: 195px;
+  }
 }
 
 .menuContainer {

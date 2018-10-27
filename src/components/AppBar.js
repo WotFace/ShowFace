@@ -34,7 +34,13 @@ export default class AppBar extends Component {
   renderDefaultSignedInMenuList() {
     // Use raw MDC Web list as MDC React doesn't have dividers and support for Links.
     return (
-      <ul className="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
+      <ul
+        className="mdc-list"
+        role="menu"
+        aria-hidden="true"
+        aria-orientation="vertical"
+        onClick={this.closeMenu}
+      >
         <Link to="/dashboard" className={sharedStyles.buttonLink}>
           <li className="mdc-list-item" role="menuitem">
             <span className="mdc-list-item__text">Dashboard</span>
@@ -62,7 +68,13 @@ export default class AppBar extends Component {
 
   renderDefaultSignedOutMenuList() {
     return (
-      <ul className="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
+      <ul
+        className="mdc-list"
+        role="menu"
+        aria-hidden="true"
+        aria-orientation="vertical"
+        onClick={this.closeMenu}
+      >
         <Link to="/login" className={classnames(sharedStyles.buttonLink, 'mdc-list-item__text')}>
           <li className="mdc-list-item" role="menuitem">
             <span className="mdc-list-item__text">Log In</span>

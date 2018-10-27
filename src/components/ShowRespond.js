@@ -110,8 +110,40 @@ class ShowRespond extends Component {
     this.props.onSubmit();
   };
 
+  renderBottomBar() {
+    const { hasPendingSubmissions, isSaving } = this.props;
+
+    const mainText = hasPendingSubmissions ? (
+      <>
+        Responding as <strong>{this.responseName()}</strong>
+      </>
+    ) : (
+      'Hold and drag on the timeline to select your availability.'
+    );
+
+    return (
+      <BottomAppBar className={styles.bottomBar}>
+        <div className={styles.bottomBarContent}>
+          <IconButton onClick={this.handleBackClick}>
+            <MaterialIcon icon="arrow_back" />
+          </IconButton>
+          <span className={styles.mainText}>{mainText}</span>
+          <Button
+            className={styles.submitButton}
+            onClick={this.handleSubmit}
+            disabled={!hasPendingSubmissions || isSaving}
+            icon={<MaterialIcon icon="send" />}
+            raised
+          >
+            Submit
+          </Button>
+        </div>
+      </BottomAppBar>
+    );
+  }
+
   render() {
-    const { show, name, hasPendingSubmissions, isSaving } = this.props;
+    const { show, name, isSaving } = this.props;
     const { isAskingForName } = this.state;
     const { dates, startTime, endTime, interval } = show;
     const userResponseKey = this.userResponseKey();
@@ -142,24 +174,7 @@ class ShowRespond extends Component {
           onSelect={this.handleSelect}
           onDeselect={this.handleDeselect}
         />
-        <BottomAppBar className={styles.bottomBar}>
-          <div className={styles.bottomBarContent}>
-            <IconButton onClick={this.handleBackClick}>
-              <MaterialIcon icon="arrow_back" />
-            </IconButton>
-            <span className={styles.mainText}>
-              Responding as <strong>{this.responseName()}</strong>
-            </span>
-            <Button
-              onClick={this.handleSubmit}
-              disabled={!hasPendingSubmissions || isSaving}
-              icon={<MaterialIcon icon="send" />}
-              raised
-            >
-              Submit
-            </Button>
-          </div>
-        </BottomAppBar>
+        {this.renderBottomBar()}
       </>
     );
   }

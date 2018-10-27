@@ -157,6 +157,15 @@ class ShowPageComponent extends Component {
     const show = this.latestShow(true);
     const latestSavedShow = this.latestShow(false);
 
+    if (!latestSavedShow) {
+      return (
+        <Error
+          title="We couldn&apos;t find this poll"
+          message="Check if you entered the correct link."
+        />
+      );
+    }
+
     return (
       <div className={styles.container}>
         <section id="form-header">

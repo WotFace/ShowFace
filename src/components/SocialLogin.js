@@ -56,25 +56,19 @@ class SocialLogin extends Component {
         });
         name = result.user.displayName;
         email = result.user.email;
-        console.log(result);
         return data.user;
       })
       .then(async (result) => {
         if (result) {
-          console.log('There is result!', result);
           return;
         }
-        console.log('No result, gonna try creating user now');
         const auth = authInput;
         const { data } = await client.mutate({
           mutation: CREATE_USER_MUTATION,
           variables: { name, email, auth },
         });
-        console.log(authInput);
+        return data;
       })
-      // .then(async () => {
-      //   console.log(name, email);
-      // })
       .catch((error) => {
         console.log('Error', error);
       });

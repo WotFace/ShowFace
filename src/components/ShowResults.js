@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { format } from 'date-fns';
@@ -13,12 +13,33 @@ class ShowResults extends Component {
   state = {
     selectedTime: null,
     isShowingDetails: false, // Only has effect on mobile
+
+    // State to restore scroll position when back button pressed
+    bodyScrollTop: 0,
   };
+
+  sidebarRef = createRef();
 
   handleCellHover = (selectedTime) => this.setState({ selectedTime });
 
   handleDetailToggleClick = () => {
-    this.setState({ isShowingDetails: !this.state.isShowingDetails });
+    const { isShowingDetails, bodyScrollTop } = this.state;
+    const shouldShowDetails = !isShowingDetails;
+
+    // Store scroll positions
+    if (shouldShowDetails) {
+      this.setState({ bodyScrollTop: window.pageYOffset || document.documentElement.scrollTop });
+    }
+
+    this.setState({ isShowingDetails: shouldShowDetails });
+
+    // Scroll appropriate elems into position
+    if (shouldShowDetails) {
+      this.sidebarRef.current.scrollIntoView(true);
+    } else {
+      // Hack to scroll body after rerender, otherwise the document might not be at its final height
+      setTimeout(() => (document.documentElement.scrollTop = bodyScrollTop), 0);
+    }
   };
 
   renderBottomBar(partitionedRespondents) {
@@ -70,7 +91,6 @@ class ShowResults extends Component {
     };
     const maxSelectable = calcMaxSelectable();
 
-    // TODO: Pass startTime and endTime in from show, and make Timeline handle them.
     // TODO: Deduplicate dates, startTime, endTime between ShowResults and ShowRespond
     return (
       <div>
@@ -85,7 +105,7 @@ class ShowResults extends Component {
             maxSelectable={maxSelectable}
             onCellHover={this.handleCellHover}
           />
-          <div>
+          <div ref={this.sidebarRef}>
             <ShowResultsSidebar
               className={classnames(
                 styles.sidebar,

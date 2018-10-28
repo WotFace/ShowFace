@@ -9,7 +9,7 @@ $empty-cell-color: white;
 
 .timeline {
   display: inline-grid;
-  width: 100%;
+  min-width: 100%;
 }
 
 .cornerHeaderCell {

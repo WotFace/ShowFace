@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from '../logo.png';
 import { withAlert } from 'react-alert';
 import { auth } from '../firebase';
 import SocialLogin from './SocialLogin';
@@ -41,7 +40,6 @@ class SignupPage extends Component {
     return (
       <div className="container Welcome-content">
         <section id="form-header">
-          <img className="content-logo" alt="" src={logo} />
           <h1 id="header">Sign up</h1>
         </section>
         <section id="form" className="row">

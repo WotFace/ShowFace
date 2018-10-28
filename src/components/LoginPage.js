@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from '../logo.png';
 import { withAlert } from 'react-alert';
 import { auth } from '../firebase';
 import SocialLogin from './SocialLogin';
@@ -37,7 +36,6 @@ class LoginPage extends Component {
     return !auth().currentUser ? (
       <div className="container Welcome-content">
         <section id="form-header">
-          <img className="content-logo" alt="" src={logo} />
           <h1 id="header">Log in</h1>
         </section>
         <section id="form" className="row">
@@ -84,28 +82,7 @@ class LoginPage extends Component {
           </div>
         </section>
       </div>
-    ) : (
-      <div className="container Welcome-content">
-        <section id="form-header">
-          <img className="content-logo" alt="" src={logo} />
-          <h1 id="header">Log in</h1>
-        </section>
-        <section id="form" className="row">
-          <div className="col">
-            <button
-              style={{ width: '100%' }}
-              className="btn btn-outline-primary btn-lg btn-block"
-              value="Log out"
-              onClick={() => {
-                auth().signOut();
-              }}
-            >
-              Log out
-            </button>
-          </div>
-        </section>
-      </div>
-    );
+    ) : null;
   }
 }
 

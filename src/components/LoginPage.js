@@ -6,6 +6,9 @@ import SignupForm from './SignupForm';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import styles from './ShowPage.module.scss';
+import Button from '@material/react-button';
+import MaterialIcon from '@material/react-material-icon';
+import TextField, { Input } from '@material/react-text-field';
 
 class LoginPage extends Component {
   constructor(props) {
@@ -33,9 +36,6 @@ class LoginPage extends Component {
     const { selectedTab } = this.state;
     return (
       <div className="container Welcome-content">
-        <section id="form-header">
-          <h1 id="header">Log in</h1>
-        </section>
         <section id="form" className="row">
           <div className="col">
             <TabBar
@@ -52,7 +52,6 @@ class LoginPage extends Component {
             </TabBar>
             {selectedTab === 0 ? (
               <div>
-                <SocialLogin />
                 <div
                   ref={(form) => {
                     this.loginForm = form;
@@ -78,17 +77,20 @@ class LoginPage extends Component {
                     }}
                     placeholder="Password"
                   />
-                  <button
-                    style={{ width: '100%' }}
-                    className="btn btn-outline-primary btn-lg btn-block"
+                  <Button
+                    className={styles.submitButton}
                     value="Log in"
                     onClick={(event) => {
                       this.authWithEmailPassword(event);
                     }}
+                    icon={<MaterialIcon icon="send" />}
+                    raised
                   >
                     Log in
-                  </button>
+                  </Button>
                 </div>
+                <hr style={{ marginTop: '10px', marginBottom: '10px' }} />
+                <SocialLogin />
               </div>
             ) : (
               <SignupForm />

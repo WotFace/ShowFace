@@ -4,6 +4,9 @@ import { auth } from '../firebase';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { getAuthInput } from '../utils/auth';
+import Button from '@material/react-button';
+import MaterialIcon from '@material/react-material-icon';
+import styles from './ShowPage.module.scss';
 
 class SignupForm extends Component {
   constructor(props) {
@@ -66,16 +69,17 @@ class SignupForm extends Component {
                 }}
                 placeholder="Display Name"
               />
-              <button
-                style={{ width: '100%' }}
-                className="btn btn-outline-primary btn-lg btn-block"
+              <Button
+                className={styles.submitButton}
                 value="Sign up"
                 onClick={(event) => {
                   this.createUserWithEmailAndPassword(event);
                 }}
+                icon={<MaterialIcon icon="send" />}
+                raised
               >
-                Sign up
-              </button>
+                Submit
+              </Button>
             </div>
           </div>
         </section>

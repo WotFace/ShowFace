@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import classnames from 'classnames';
 import _ from 'lodash';
 import { respondentToEmailOrName } from '../utils/response';
+import MaterialIcon from '@material/react-material-icon';
 
 import styles from './ShowResultsSidebar.module.scss';
 
@@ -20,9 +21,20 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
 
   // TODO: Display respondents differently depending on whether the user is
   // logged in, has admin rights, and whether the respondent has responded
-  function renderRespondent(responder, respondent) {
+  function renderRespondent(responder, respondent, attending) {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
-    return <li key={responder}>{displayName}</li>;
+    return (
+      <div
+        className={classnames(
+          styles.respondents,
+          attending ? styles.borderAccept : styles.borderReject,
+        )}
+        key={responder}
+      >
+        {displayName}
+        <MaterialIcon icon="visibility" className={styles.icon} onClick={() => {}} />
+      </div>
+    );
   }
 
   return (
@@ -31,21 +43,17 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
         {time ? <h2 className={styles.pollTime}>{format(time, 'Do MMM YYYY hh:mma')}</h2> : null}
         <section id="attending">
           <h3>Attending</h3>
-          <ol>
-            {attending.map((responder) => {
-              const respondent = respondersRespondentsObj[responder];
-              return renderRespondent(responder, respondent);
-            })}
-          </ol>
+          {attending.map((responder) => {
+            const respondent = respondersRespondentsObj[responder];
+            return renderRespondent(responder, respondent, true);
+          })}
         </section>
         <section id="notAttending">
           <h3>Not Attending</h3>
-          <ol>
-            {notAttending.map((responder) => {
-              const respondent = respondersRespondentsObj[responder];
-              return renderRespondent(responder, respondent);
-            })}
-          </ol>
+          {notAttending.map((responder) => {
+            const respondent = respondersRespondentsObj[responder];
+            return renderRespondent(responder, respondent, false);
+          })}
         </section>
       </section>
     </div>

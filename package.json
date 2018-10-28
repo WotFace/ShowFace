@@ -6,6 +6,7 @@
     "@material/menu": "^0.40.1",
     "@material/react-button": "^0.6.1",
     "@material/react-card": "^0.6.1",
+    "@material/react-fab": "^0.6.1",
     "@material/react-icon-button": "^0.6.1",
     "@material/react-layout-grid": "^0.6.1",
     "@material/react-list": "^0.6.1",
@@ -43,7 +44,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.0.5",
     "react-touch": "^0.4.4",
-    "react-transition-group": "^2.5.0",
+    "react-transition-group": "^1.2.1",
     "redux": "^4.0.1",
     "redux-persist": "^5.10.0"
   },

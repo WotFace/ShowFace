@@ -1,0 +1,141 @@
+@import '../mdc-variables';
+
+.scrollable {
+  overflow-y: scroll;
+}
+
+.sticky {
+  position: sticky;
+  z-index: 10;
+  top: 0px;
+}
+
+.header {
+  background-color: $mdc-theme-secondary;
+  text-align: center;
+  display: flex;
+  height: 53px;
+  padding-top: 9px;
+  justify-content: center;
+}
+
+.icon {
+  color: $mdc-theme-primary;
+  position: absolute;
+  left: 16px;
+  top: 15px;
+  margin: auto;
+}
+
+// utilities
+.hide {
+  display: none;
+}
+
+// animations
+.slideForward {
+  animation: slideForward 400ms ease-in forwards;
+}
+
+@keyframes slideForward {
+  to {
+    height: 100vh;
+  }
+}
+
+.slideBackward {
+  animation: slideBackward 400ms ease-in forwards;
+}
+
+@keyframes slideBackward {
+  from {
+    height: 100vh;
+  }
+  to {
+    height: 53px;
+  }
+}
+
+.rotateOut {
+  animation: rotateOut 400ms ease-in forwards;
+}
+
+@keyframes rotateOut {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+.rotateIn {
+  animation: rotateIn 400ms ease-in forwards;
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-180deg);
+  }
+}
+
+.scaleIn {
+  animation: scaleIn 400ms ease-in-out 400ms forwards;
+}
+
+@keyframes scaleIn {
+  to {
+    transform: scale(1);
+  }
+}
+
+.scaleOut {
+  animation: scaleOut 300ms ease-in-out forwards;
+}
+
+@keyframes scaleOut {
+  from {
+    transform: scale(1)
+  }
+  to {
+    transform: scale(0);
+  }
+}
+
+
+// fab stuff
+.bottomBarFab {
+  height: 56px;
+  width: 56px;
+  border: none;
+  background-color: $mdc-theme-primary;
+  border-radius: 28px;
+  position: fixed;
+  bottom: 1rem;
+  right: 8%;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  background-position: center;
+  transition: background 0.8s;
+  transform: scale(0);
+}
+
+.bottomBarFab:hover {
+  background: $mdc-theme-primary radial-gradient(circle, transparent 1%, $mdc-theme-primary 1%) center/15000%;
+}
+
+.bottomBarFab:focus {
+  outline-style: none;
+}
+
+.bottomBarFab:active {
+  background-color: $mdc-theme-secondary;
+  background-size: 100%;
+  transition: background 0s;
+}
+
+.fabIcon {
+  color: white;
+}

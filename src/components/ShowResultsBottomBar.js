@@ -17,7 +17,8 @@ function renderShortMessage(time, attending, notAttending) {
 
   return (
     <div>
-      {format(time, 'Do MMM YYYY hh:mma')} <br /> {attendingCount} attending, {notAttendingCount} not attending
+      {format(time, 'Do MMM YYYY hh:mma')} <br /> {attendingCount} attending, {notAttendingCount}{' '}
+      not attending
     </div>
   );
 }
@@ -65,15 +66,19 @@ class ShowResultsBottomBar extends Component {
       <div
         className={classnames(
           className,
-          (isOpen ? styles.slideForward : null),
-          (isOpen ? styles.scrollable : null),
-          (isClosed ? styles.slideBackward : null)
+          isOpen ? styles.slideForward : null,
+          isOpen ? styles.scrollable : null,
+          isClosed ? styles.slideBackward : null,
         )}
       >
-        <div className={classnames(styles.header, (isOpen ? styles.sticky : null))}>
+        <div className={classnames(styles.header, isOpen ? styles.sticky : null)}>
           <MaterialIcon
-            icon={isOpen ? "clear" : "more_vert"}
-            className={classnames(styles.icon, isOpen ? styles.rotateOut : null, isClosed ? styles.rotateIn : null)}
+            icon={isOpen ? 'clear' : 'more_vert'}
+            className={classnames(
+              styles.icon,
+              isOpen ? styles.rotateOut : null,
+              isClosed ? styles.rotateIn : null,
+            )}
             onClick={this.handleOpen}
           />
           {renderShortMessage(time, attending, notAttending)}
@@ -86,8 +91,8 @@ class ShowResultsBottomBar extends Component {
         <Fab
           className={classnames(
             styles.bottomBarFab,
-            (isOpen ? styles.scaleIn : null),
-            (isClosed ? styles.scaleOut : null),
+            isOpen ? styles.scaleIn : null,
+            isClosed ? styles.scaleOut : null,
           )}
           icon={<MaterialIcon className={styles.fabIcon} icon="add" />}
           onClick={fabOnClick}

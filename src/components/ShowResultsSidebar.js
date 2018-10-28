@@ -24,13 +24,15 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
   function renderRespondent(responder, respondent, attending) {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
     return (
-      <div className={classnames(styles.respondents, (attending ? styles.borderAccept : styles.borderReject))} key={responder}>
+      <div
+        className={classnames(
+          styles.respondents,
+          attending ? styles.borderAccept : styles.borderReject,
+        )}
+        key={responder}
+      >
         {displayName}
-        <MaterialIcon
-          icon="visibility"
-          className={styles.icon}
-          onClick={() => {}}
-        />
+        <MaterialIcon icon="visibility" className={styles.icon} onClick={() => {}} />
       </div>
     );
   }

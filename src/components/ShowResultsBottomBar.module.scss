@@ -1,4 +1,7 @@
 @import '../mdc';
+@import '~@material/animation/functions';
+
+$animation-time: 375ms;
 
 .scrollable {
   overflow-y: scroll;
@@ -19,6 +22,16 @@
   justify-content: center;
 }
 
+.bar {
+  transition: mdc-animation-exit-permanent(height, $animation-time);
+  height: 53px;
+
+  &.open {
+    transition: mdc-animation-enter(height, $animation-time);
+    height: 100vh;
+  }
+}
+
 .icon {
   color: $mdc-theme-primary;
   position: absolute;
@@ -27,62 +40,16 @@
   margin: auto;
 }
 
-// utilities
-.hide {
-  display: none;
-}
+.openCloseButton {
+  transition: mdc-animation-exit-permanent(transform, $animation-time);
+  transform: rotate(0deg);
 
-// animations
-.slideForward {
-  animation: slideForward 400ms ease-in forwards;
-}
-
-@keyframes slideForward {
-  to {
-    height: 100vh;
-  }
-}
-
-.slideBackward {
-  animation: slideBackward 400ms ease-in forwards;
-}
-
-@keyframes slideBackward {
-  from {
-    height: 100vh;
-  }
-  to {
-    height: 53px;
-  }
-}
-
-.rotateOut {
-  animation: rotateOut 400ms ease-in forwards;
-}
-
-@keyframes rotateOut {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
+  &.open {
+    transition: mdc-animation-enter(transform, $animation-time);
     transform: rotate(180deg);
   }
 }
 
-.rotateIn {
-  animation: rotateIn 400ms ease-in forwards;
-}
-
-@keyframes rotateIn {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-180deg);
-  }
-}
-
-// fab stuff
 button.bottomBarFab {
   @include mdc-fab-accessible($mdc-theme-primary);
   position: fixed;

@@ -51,16 +51,15 @@ class ShowResultsBottomBar extends Component {
 
     return (
       <div
-        className={classnames(className, {
-          [styles.slideForward]: isOpen,
+        className={classnames(className, styles.bar, {
+          [styles.open]: isOpen,
           [styles.scrollable]: isOpen,
-          [styles.slideBackward]: !isOpen,
         })}
       >
         <div className={classnames(styles.header, isOpen ? styles.sticky : null)}>
           <MaterialIcon
             icon={isOpen ? 'clear' : 'more_vert'}
-            className={classnames(styles.icon, isOpen ? styles.rotateOut : styles.rotateIn)}
+            className={classnames(styles.icon, styles.openCloseButton, { [styles.open]: isOpen })}
             onClick={this.handleOpen}
           />
           {renderShortMessage(time, attending, notAttending)}

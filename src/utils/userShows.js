@@ -11,7 +11,6 @@ export function userShowsToDict(userShows, email) {
 
   userShows.forEach((userShow) => {
     const respondents = userShow.respondents;
-    console.log(userShow.respondents);
     if (respondents && respondents.length !== 0) {
       respondents.forEach((respondent) => {
         if (respondent.user.email !== email) {

@@ -107,8 +107,7 @@ class DashboardPage extends Component {
   }
 
   render() {
-    const firebaseUser = getFirebaseUserInfo();
-    const { getUserShowsResult } = this.props;
+    const { getUserShowsResult, getUserResult } = this.props;
 
     const { loading: getUserShowsLoading, error: getUserShowsError } = getUserShowsResult;
 
@@ -120,12 +119,15 @@ class DashboardPage extends Component {
     }
 
     const { userShows } = getUserShowsResult.data;
+    const welcomeText = getUserResult.data
+      ? `Welcome, ${getUserResult.data.user.name}!`
+      : 'Welcome!';
 
     // TODO: Use our server's display name
     return (
       <div className={styles.pageContainer}>
         <section>
-          <h1 className={styles.header}>Welcome, {firebaseUser.displayName}!</h1>
+          <h1 className={styles.header}>{welcomeText}</h1>
         </section>
         {this.renderContent(userShows)}
       </div>
@@ -134,6 +136,11 @@ class DashboardPage extends Component {
 }
 
 DashboardPage.fragments = {
+  user: gql`
+    fragment DashboardUser on User {
+      name
+    }
+  `,
   userShows: gql`
     fragment DashboardPageShow on Show {
       id
@@ -161,6 +168,15 @@ DashboardPage.fragments = {
   `,
 };
 
+const GET_USER_QUERY = gql`
+  query user($auth: AuthInput!) {
+    user(auth: $auth) {
+      ...DashboardUser
+    }
+  }
+  ${DashboardPage.fragments.user}
+`;
+
 const GET_USER_SHOW_QUERY = gql`
   query userShows($auth: AuthInput!) {
     userShows(auth: $auth) {
@@ -174,10 +190,15 @@ export default withAlert((props) => {
   return (
     <AuthenticatedQuery query={GET_USER_SHOW_QUERY} requiresAuth>
       {(getUserShowsResult) => (
-        <DashboardPage
-          {...props}
-          getUserShowsResult={datifyShowsResponse(getUserShowsResult, 'data.userShows')}
-        />
+        <AuthenticatedQuery query={GET_USER_QUERY} requiresAuth>
+          {(getUserResult) => (
+            <DashboardPage
+              {...props}
+              getUserShowsResult={datifyShowsResponse(getUserShowsResult, 'data.userShows')}
+              getUserResult={getUserResult}
+            />
+          )}
+        </AuthenticatedQuery>
       )}
     </AuthenticatedQuery>
   );

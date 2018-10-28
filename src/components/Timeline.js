@@ -44,7 +44,7 @@ function moveDateTimeToDate(date, dateTime) {
 }
 
 const Tick = React.memo(({ startTime, hideByDefault }) => {
-  const tickText = !hideByDefault ? format(startTime, 'h:mma') : null;
+  const tickText = !hideByDefault ? format(startTime, 'h:mmA') : null;
   return (
     <div className={classnames(styles.tick, styles.timelineLabel)}>
       <div className={styles.tickContent}>{tickText}</div>

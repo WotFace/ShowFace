@@ -36,6 +36,7 @@ $sidebar-hidden-breakpoint: largephone;
   justify-content: space-between;
 
   .mainText {
+    flex: 1;
     margin: 0 1rem;
     text-align: center;
     word-break: break-word;

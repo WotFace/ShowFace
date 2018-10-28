@@ -49,8 +49,6 @@ class ShowResults extends Component {
     const attendingCount = attending.length === 0 ? 0 : attending.length;
     const notAttendingCount = notAttending.length === 0 ? 0 : notAttending.length;
 
-    const pluralize = (count) => (count === 1 ? '' : 's');
-
     return (
       <BottomAppBar className={styles.bottomBar}>
         <div className={styles.bottomBarContent}>
@@ -60,9 +58,7 @@ class ShowResults extends Component {
           <span className={styles.mainText}>
             {format(selectedTime, 'D MMM hh:mmA')}
             <br />
-            {attendingCount} show
-            {pluralize(attendingCount)}, {notAttendingCount} no show
-            {pluralize(notAttendingCount)}
+            {attendingCount} attending, {notAttendingCount} not attending
           </span>
         </div>
       </BottomAppBar>

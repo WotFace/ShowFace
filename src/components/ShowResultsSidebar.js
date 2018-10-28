@@ -31,14 +31,14 @@ function ShowAttendees({ partitionedRespondents, time }) {
       <section className={styles.attendees}>
         {time ? <h2 className={styles.pollTime}>{format(time, 'D MMM hh:mmA')}</h2> : null}
         <section className={styles.attendeeListSection}>
-          <h3>Shows</h3>
+          <h3>Attending</h3>
           {attending.map((responder) => {
             const respondent = respondersRespondentsObj[responder];
             return renderRespondent(responder, respondent, true);
           })}
         </section>
         <section className={styles.attendeeListSection}>
-          <h3>No Shows</h3>
+          <h3>Not Attending</h3>
           {notAttending.map((responder) => {
             const respondent = respondersRespondentsObj[responder];
             return renderRespondent(responder, respondent, false);

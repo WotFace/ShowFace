@@ -4,6 +4,7 @@ $mdc-theme-surface: #F7F6F4;
 
 
 .container {
+  width: 475px;
   margin-bottom: 5px;
   display: flex;
   flex-direction: column;
@@ -25,17 +26,19 @@ $mdc-theme-surface: #F7F6F4;
   color: white;
   height: 30px !important;
   width: 375px;
-  margin: 0px 10px;
+  margin: 10px 10px;
 }
 
 .clipboardButton {
+  margin-top: 10px;
   margin-right: 10px;
   height: 30px !important;
 }
 
 .shareRow {
     display: flex;
-    justify-content: space-evenly;
+    flex-direction: row;
+    justify-content: center;
 
 }
 
@@ -43,7 +46,17 @@ $mdc-theme-surface: #F7F6F4;
     margin-top: 10px;
 }
 
-
 #linkShareRow {
-    margin: 3px 0px 10px 0px;
+    display: flex;
+    flex-direction: row;
+    margin: 0px 0px 10px 0px;
+}
+
+.tabDiv {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center
 }

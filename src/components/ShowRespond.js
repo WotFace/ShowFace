@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '@material/react-button';
+import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { auth } from '../firebase';
 import { anonNameToId } from '../utils/response';
@@ -24,7 +25,7 @@ class ShowRespond extends Component {
       // If user is logged out, prompt user with prefilled name box, else only
       // prompt if user presses back button in the bottom bar. Store an
       // isAskingForName state field.
-      isAskingForName: !isSignedIn(),
+      isAskingForName: !isSignedIn() && !this.props.hasSetName,
     };
   }
 
@@ -32,7 +33,9 @@ class ShowRespond extends Component {
     // Reinitialize state if auth state changes.
     auth().onAuthStateChanged(() => {
       this.setState(this.getInitState());
-      this.props.setRespondName(null);
+      if (isSignedIn()) {
+        this.props.setRespondName(null);
+      }
     });
   }
 
@@ -89,6 +92,7 @@ class ShowRespond extends Component {
   handleSetName = (name) => {
     this.props.setRespondName(name);
     this.setState({ isAskingForName: false });
+    this.props.onSetName(true);
   };
 
   handleContinueAsSignedInUser = () => {
@@ -98,10 +102,48 @@ class ShowRespond extends Component {
 
   handleBackClick = () => {
     this.setState({ isAskingForName: true });
+    this.props.onSetName(false);
   };
 
+  handleSubmit = () => {
+    // TODO: Add submitting bool
+    this.props.onSubmit();
+  };
+
+  renderBottomBar() {
+    const { hasPendingSubmissions, isSaving } = this.props;
+
+    const mainText = hasPendingSubmissions ? (
+      <>
+        Responding as <strong>{this.responseName()}</strong>
+      </>
+    ) : (
+      'Hold and drag on the timeline to select your availability.'
+    );
+
+    return (
+      <BottomAppBar className={styles.bottomBar}>
+        <div className={styles.bottomBarContent}>
+          <IconButton onClick={this.handleBackClick}>
+            <MaterialIcon icon="arrow_back" />
+          </IconButton>
+          <span className={styles.mainText}>{mainText}</span>
+          <Button
+            className={styles.submitButton}
+            onClick={this.handleSubmit}
+            disabled={!hasPendingSubmissions || isSaving}
+            icon={<MaterialIcon icon="send" />}
+            raised
+          >
+            Submit
+          </Button>
+        </div>
+      </BottomAppBar>
+    );
+  }
+
   render() {
-    const { show, name } = this.props;
+    const { show, name, isSaving } = this.props;
     const { isAskingForName } = this.state;
     const { dates, startTime, endTime, interval } = show;
     const userResponseKey = this.userResponseKey();
@@ -128,26 +170,11 @@ class ShowRespond extends Component {
           interval={interval}
           respondents={ourRespondents}
           maxSelectable={1}
-          userResponseKey={userResponseKey}
+          userResponseKey={isSaving ? null : userResponseKey}
           onSelect={this.handleSelect}
           onDeselect={this.handleDeselect}
         />
-        <BottomAppBar>
-          <div className={styles.bottomBarContent}>
-            <MaterialIcon
-              icon="arrow_back"
-              className={styles.backButton}
-              onClick={this.handleBackClick}
-              hasRipple
-            />
-            <span className={styles.mainText}>
-              Responding as <strong>{this.responseName()}</strong>
-            </span>
-            <Button onClick={this.handleSubmit} raised>
-              Submit
-            </Button>
-          </div>
-        </BottomAppBar>
+        {this.renderBottomBar()}
       </>
     );
   }

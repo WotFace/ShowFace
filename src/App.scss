@@ -19,18 +19,6 @@ h3 {
   margin: inherit, 10px;
 }
 
-.full-page {
-  height: 100vh;
-  width: 100vw;
-}
-
-.flex {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 .btn-outline-primary {
   color: #555;
   background-color: #fff;
@@ -45,13 +33,7 @@ h3 {
 }
 
 #form-header {
-  padding-top: 50px;
-  padding-bottom: 20px;
-}
-
-.content-logo {
-  width: 195px;
-  margin-bottom: 30px;
+  margin-bottom: 3em;
 }
 
 #form-header #header {

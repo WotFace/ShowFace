@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono:500');
 @import '../mdc-variables.scss';
 
 $empty-cell-color: white;
@@ -66,7 +67,8 @@ $empty-cell-color: white;
 
 .timelineLabel {
   background-color: $mdc-theme-surface;
-  font-family: monospace;
+  font-family: 'Fira Mono', monospace;
+  font-size: 12px;
 }
 
 ol {

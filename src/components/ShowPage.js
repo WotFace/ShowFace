@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { Route, NavLink } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
+import Button from '@material/react-button';
+import MaterialIcon from '@material/react-material-icon';
+import Tab from '@material/react-tab';
+import TabBar from '@material/react-tab-bar';
+import TextField, { Input } from '@material/react-text-field';
 import { withAlert } from 'react-alert';
-import ReactLoading from 'react-loading';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
@@ -10,16 +14,20 @@ import update from 'immutability-helper';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import { datifyShowResponse } from '../utils/datetime';
 import copyToClipboard from '../utils/copyToClipboard';
+import Loading from './Loading';
+import Error from './Error';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
-import TextField, { Input } from '@material/react-text-field';
-import Button from '@material/react-button';
+class ShowPageComponent extends Component {
+  state = {
+    pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
+    hasSetName: false,
+  };
 
-class ShowPage extends Component {
   copyUrlToClipboard = () => {
     copyToClipboard(window.location.href);
     this.props.alert.show('Url copied to clipboard.', {
@@ -27,8 +35,18 @@ class ShowPage extends Component {
     });
   };
 
-  latestShow() {
+  canSubmit(name) {
+    const show = this.latestShow(true);
+    if ((!name && !isSignedIn()) || !show) return false;
+    return true;
+  }
+
+  latestShow(includePending) {
     const { getShowResult, upsertResponsesResult } = this.props;
+    const { pendingSubmission } = this.state;
+    if (includePending && pendingSubmission) {
+      return pendingSubmission.show;
+    }
     if (upsertResponsesResult.data && upsertResponsesResult.data._upsertResponse) {
       return upsertResponsesResult.data._upsertResponse;
     }
@@ -38,21 +56,17 @@ class ShowPage extends Component {
     return null;
   }
 
-  handleTabChange(index) {
-    if (index === 0) {
-    }
-
-    if (index === 1) {
-    }
-  }
+  handleSetName = (isSet) => {
+    this.setState({ hasSetName: isSet });
+  };
 
   handleSelectDeselectTimes(startTimes, name, isSelect) {
+    if (!this.canSubmit(name)) return;
+
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
-    const show = this.latestShow();
-    if ((!name && !isSignedIn()) || !show) return;
-
-    const { slug, respondents } = show;
+    const show = this.latestShow(true);
+    const { respondents } = show;
     // Find current respondent by anonymousName if name is supplied,
     // if not find by current user's email
     const currentRespondent = name
@@ -70,48 +84,91 @@ class ShowPage extends Component {
     }
 
     const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
-    this.props.upsertResponses(slug, name, email, newResponses);
+    const showToSave = getOptimisticResponseForShow(name, email, newResponses, show);
+    this.setState({
+      pendingSubmission: {
+        show: showToSave,
+        name,
+        email,
+        responses: newResponses,
+      },
+    });
   }
 
   handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
   handleDeselectTimes = (startTimes, name) =>
     this.handleSelectDeselectTimes(startTimes, name, false);
 
+  handleSubmit = () => {
+    const { pendingSubmission } = this.state;
+    if (!pendingSubmission) return;
+    const { name, email, responses, show } = pendingSubmission;
+    const { slug } = show;
+    this.props.upsertResponses(slug, name, email, responses);
+    this.setState({ pendingSubmission: null });
+  };
+
+  renderTabBar = () => {
+    const { match, location, history } = this.props;
+    const links = [
+      { text: 'Respond', icon: 'add', path: `${match.url}/respond` },
+      { text: 'Results', icon: 'list', path: `${match.url}/results` },
+    ];
+
+    const { pathname } = location;
+    const activeIndex = links.findIndex(({ path }) => path === pathname);
+    const tabs = links.map(({ text, icon }) => (
+      <Tab key={text}>
+        <MaterialIcon className="mdc-tab__icon" icon={icon} />
+        <span className="mdc-tab__text-label">{text}</span>
+      </Tab>
+    ));
+
+    return (
+      <TabBar
+        className={styles.tabBar}
+        activeIndex={activeIndex === -1 ? undefined : activeIndex}
+        handleActiveIndexUpdate={(activeIndex) => history.push(links[activeIndex].path)}
+      >
+        {tabs}
+      </TabBar>
+    );
+  };
+
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
+    const { hasSetName, pendingSubmission } = this.state;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
-    const { error: upsertResponsesError } = upsertResponsesResult;
+    // TODO: Display something when saving
+    const { loading: upsertResponsesLoading, error: upsertResponsesError } = upsertResponsesResult;
+
     if (getShowLoading) {
-      return (
-        <section className="full-page flex">
-          <h2>Loading</h2>
-          <ReactLoading type="bubbles" color="#111" />
-        </section>
-      );
+      return <Loading />;
     } else if (getShowError) {
       console.log('Show page load got getShowError', getShowError);
-      return (
-        <section className="full-page flex">
-          <h2>That didn&#39;t work</h2>
-          <div>{getShowError.message}</div>
-        </section>
-      );
+      return <Error title="That didn&#39;t work" message={getShowError.message} />;
     } else if (upsertResponsesError) {
-      console.log('Show page load got upsertResponsesError', upsertResponsesError);
+      console.log('Show upsert responses got upsertResponsesError', upsertResponsesError);
       return (
-        <section className="full-page flex">
-          <h2>We couldn&apos;t save your changes didn&#39;t work</h2>
-          <div>{upsertResponsesError.message}</div>
-        </section>
+        <Error title="We couldn&apos;t save your changes" message={upsertResponsesError.message} />
       );
     }
 
-    const show = this.latestShow();
+    const show = this.latestShow(true);
+    const latestSavedShow = this.latestShow(false);
+
+    if (!latestSavedShow) {
+      return (
+        <Error
+          title="We couldn&apos;t find this poll"
+          message="Check if you entered the correct link."
+        />
+      );
+    }
 
     return (
       <div className={styles.container}>
         <section id="form-header">
-          {/* <img className={classnames(styles.contentLogo, 'content-logo')} alt="" src={logo} /> */}
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
             <div className={styles.copyUrlInputContainer}>
@@ -126,15 +183,7 @@ class ShowPage extends Component {
               />
             </div>
           </div>
-          <div className={styles.tabsContainer}>
-            <NavLink to={`${match.url}/respond`} className={styles.noUnderline}>
-              <Button>Respond</Button>
-            </NavLink>
-
-            <NavLink to={`${match.url}/results`} className={styles.noUnderline}>
-              <Button>Results</Button>
-            </NavLink>
-          </div>
+          {this.renderTabBar()}
         </section>
         <section id="show">
           {show && (
@@ -151,12 +200,20 @@ class ShowPage extends Component {
                 render={() => (
                   <ShowRespond
                     show={show}
+                    hasSetName={hasSetName}
+                    onSetName={this.handleSetName}
                     onSelectTimes={this.handleSelectTimes}
                     onDeselectTimes={this.handleDeselectTimes}
+                    hasPendingSubmissions={!!pendingSubmission}
+                    isSaving={upsertResponsesLoading}
+                    onSubmit={this.handleSubmit}
                   />
                 )}
               />
-              <Route path={match.url + '/results'} render={() => <ShowResults show={show} />} />
+              <Route
+                path={match.url + '/results'}
+                render={() => <ShowResults show={latestSavedShow} />}
+              />
             </React.Fragment>
           )}
         </section>
@@ -165,7 +222,7 @@ class ShowPage extends Component {
   }
 }
 
-ShowPage.fragments = {
+ShowPageComponent.fragments = {
   show: gql`
     fragment ShowPageShow on Show {
       id
@@ -199,7 +256,7 @@ const GET_SHOW_QUERY = gql`
       ...ShowPageShow
     }
   }
-  ${ShowPage.fragments.show}
+  ${ShowPageComponent.fragments.show}
 `;
 
 const UPSERT_RESPONSES_MUTATION = gql`
@@ -218,11 +275,10 @@ const UPSERT_RESPONSES_MUTATION = gql`
       ...ShowPageShow
     }
   }
-  ${ShowPage.fragments.show}
+  ${ShowPageComponent.fragments.show}
 `;
 
-function getOptimisticResponseForUpsertResponses(name, email, responses, getShowResult) {
-  const show = getShowResult.data && getShowResult.data.show;
+function getOptimisticResponseForShow(name, email, responses, show) {
   if (!show) return null;
   const { respondents } = show;
   const index = name
@@ -259,23 +315,29 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
   }
 
   return {
-    __typename: 'Mutation',
-    _upsertResponse: {
-      __typename: 'Show',
-      ...show,
-      respondents: newRespondents,
-    },
+    __typename: 'Show',
+    ...show,
+    respondents: newRespondents,
   };
 }
 
-export default withAlert((props) => {
+function getOptimisticResponseForUpsertResponses(name, email, responses, getShowResult) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  return {
+    __typename: 'Mutation',
+    _upsertResponse: getOptimisticResponseForShow(name, email, responses, show),
+  };
+}
+
+function ShowPageWithQueries(props) {
   const slug = props.match.params.showId;
   return (
     <Query query={GET_SHOW_QUERY} variables={{ slug }}>
       {(getShowResult) => (
         <Mutation mutation={UPSERT_RESPONSES_MUTATION}>
           {(upsertResponses, upsertResponsesResult) => (
-            <ShowPage
+            <ShowPageComponent
               {...props}
               getShowResult={datifyShowResponse(getShowResult, 'data.show')}
               upsertResponses={async (slug, name, email, responses) => {
@@ -300,4 +362,6 @@ export default withAlert((props) => {
       )}
     </Query>
   );
-});
+}
+
+export default withRouter(withAlert(ShowPageWithQueries));

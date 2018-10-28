@@ -52,7 +52,7 @@ export default class PollRespondNameForm extends Component {
           {canContinueAsSignedInUser ? 'Respond as yourself' : 'Already have an account?'}
         </div>
         <div className={classnames(styles.descText, 'mdc-typography--caption')}>
-          With an account, your responses can only be changed by you.
+          With an account, only you will be able to edit your responses.
         </div>
         {canContinueAsSignedInUser ? (
           <Button onClick={this.handleContinueAsUser} unelevated>
@@ -111,11 +111,17 @@ export default class PollRespondNameForm extends Component {
 
   render() {
     return (
-      <Card className={styles.container}>
-        {this.renderWithAccountSection()}
-        <Divider className={styles.divider} text="OR" />
-        {this.renderNameSection()}
-      </Card>
+      <div className={styles.container}>
+        <div className={styles.titleContainer}>
+          <div className="mdc-typography--headline4">Welcome to ShowFace!</div>
+          <p className="mdc-typography--body1">Let the organizers of this poll know who you are.</p>
+        </div>
+        <Card className={styles.card}>
+          {this.renderWithAccountSection()}
+          <Divider className={styles.divider} text="OR" />
+          {this.renderNameSection()}
+        </Card>
+      </div>
     );
   }
 }

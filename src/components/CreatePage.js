@@ -5,11 +5,12 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import Card from '@material/react-card';
 import 'react-day-picker/lib/style.css';
 import { Mutation } from 'react-apollo';
-import ReactLoading from 'react-loading';
+import queryString from 'query-string';
 import { startOfToday, endOfToday } from 'date-fns';
 import gql from 'graphql-tag';
 import { getAuthInput } from '../utils/auth';
 import { cleanName } from '../utils/string';
+import Loading from './Loading';
 
 import styles from './CreatePage.module.scss';
 
@@ -20,10 +21,9 @@ import BottomAppBar from './BottomAppBar';
 class CreatePage extends Component {
   constructor(props) {
     super(props);
-    const locationState = props.location.state;
-    const name = locationState ? locationState.name : '';
+    const { name } = queryString.parse(props.location.search);
     this.state = {
-      name,
+      name: name || '',
       selectedDays: [],
     };
 
@@ -71,12 +71,7 @@ class CreatePage extends Component {
 
     if (loading) {
       // TODO: Beautify
-      return (
-        <section className="full-page flex">
-          <h2>Creating</h2>
-          <ReactLoading type="bubbles" color="#111" />
-        </section>
-      );
+      return <Loading text="Creating" />;
     } else if (data) {
       return <Redirect to={`/show/${data.createNewShow.slug}`} />;
     } else {

@@ -29,7 +29,7 @@ export function datifyShowResponse(result, path) {
   const show = _.get(result, path);
   if (!show) return result;
 
-  const valKeys = ['startTime', 'endjime'];
+  const valKeys = ['startTime', 'endTime'];
   const arrKeys = ['dates'];
   const datifiedShow = datifiedEntity(show, valKeys, arrKeys);
   // datifiedShow.respondents = datifiedShow.respondents.map((r) => datifiedEntity(r, ['updatedAt']));

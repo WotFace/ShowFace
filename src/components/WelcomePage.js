@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from '@material/react-button';
 import { NavLink } from 'react-router-dom';
 import TextField, { Input } from '@material/react-text-field';
+import queryString from 'query-string';
 
 import styles from './WelcomePage.module.scss';
 
@@ -15,6 +16,7 @@ class WelcomePage extends Component {
   };
 
   render() {
+    const { name } = this.state;
     return (
       <div id={styles.halfPage}>
         <div id={styles.titleContainer}>
@@ -22,11 +24,11 @@ class WelcomePage extends Component {
           <h2 id={styles.subText}>The simple way to decide on dates, places &amp; more.</h2>
         </div>
         <div id={styles.formContainer}>
-          <TextField label="What's the ocassion?" className={styles.pollNameField}>
+          <TextField label="Meet for what?" className={styles.pollNameField}>
             <Input
               type="text"
               name="name"
-              value={this.state.name}
+              value={name}
               autoComplete="off"
               onChange={this.handleInputChange}
             />
@@ -35,7 +37,7 @@ class WelcomePage extends Component {
             id={styles.buttonContainer}
             to={{
               pathname: '/new',
-              state: { name: this.state.name },
+              search: queryString.stringify({ name }),
             }}
           >
             <Button id={styles.createPollButton} raised>

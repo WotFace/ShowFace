@@ -6,6 +6,7 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import classnames from 'classnames';
 import { isSignedIn } from '../utils/auth';
+import { auth } from '../firebase';
 
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './AppBar.module.scss';
@@ -27,6 +28,13 @@ export default class AppBar extends Component {
         <Link to="/dashboard" className={sharedStyles.buttonLink}>
           <Button>Dashboard</Button>
         </Link>
+        <Button
+          onClick={() => {
+            auth().signOut();
+          }}
+        >
+          Log out
+        </Button>
       </>
     );
   }

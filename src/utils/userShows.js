@@ -19,13 +19,13 @@ export function userShowsToDict(userShows, email) {
         }
 
         if (respondent.role === 'admin') {
-          adminShows.push({ slug: userShow.slug });
+          adminShows.push(userShow);
         }
 
         if (respondent.response.length === 0) {
-          pendingShows.push({ slug: userShow.slug });
+          pendingShows.push(userShow);
         } else {
-          respondedShows.push({ slug: userShow.slug, anonymousName: respondent.anonymousName });
+          respondedShows.push(userShow);
         }
       });
     }

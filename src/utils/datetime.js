@@ -29,9 +29,16 @@ export function datifyShowResponse(result, path) {
   const show = _.get(result, path);
   if (!show) return result;
 
-  const valKeys = ['startTime', 'endTime'];
+  const valKeys = ['createdAt', 'updatedAt', 'startTime', 'endTime'];
   const arrKeys = ['dates'];
   const datifiedShow = datifiedEntity(show, valKeys, arrKeys);
   // datifiedShow.respondents = datifiedShow.respondents.map((r) => datifiedEntity(r, ['updatedAt']));
   return _.set(result, path, datifiedShow);
+}
+
+export function datifyShowsResponse(result, path) {
+  const shows = _.get(result, path);
+  if (!shows) return result;
+  const datifiedShows = shows.map((show) => datifyShowResponse({ show }, 'show').show);
+  return _.set(result, path, datifiedShows);
 }

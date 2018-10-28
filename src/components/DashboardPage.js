@@ -4,8 +4,12 @@ import { Link } from 'react-router-dom';
 import { withAlert } from 'react-alert';
 import Button from '@material/react-button';
 import Card from '@material/react-card';
+import classnames from 'classnames';
+import { format } from 'date-fns';
+import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
+import { datifyShowsResponse } from '../utils/datetime';
 import { userShowsToDict } from '../utils/userShows';
 import Loading from './Loading';
 import Error from './Error';
@@ -22,19 +26,31 @@ class DashboardPage extends Component {
   }
 
   userShowItems(userShows, tab) {
+    // Sort polls from latest to oldest
+    // TODO: Sort by updatedAt
+    const sortedShows = _.sortBy(userShows, (s) => -s.createdAt.getTime());
+    const dateFormat = 'D MMM YYYY hh:mmA';
     return (
-      <ul>
-        {userShows.map(function(userShow) {
+      <ul className="mdc-list mdc-list--two-line">
+        {sortedShows.map(function(userShow) {
+          const { id, slug, name, createdAt, updatedAt, respondents } = userShow;
+
+          const totalNumRespondents = respondents.length;
+          const numRespondents = respondents.filter((r) => r.response.length !== 0).length;
+
           return (
-            <>
-              <Link
-                to={`/show/${userShow.slug}/${tab}`}
-                className="btn btn-outline-primary btn-lg btn-block"
-              >
-                {userShow.slug}
-              </Link>
-              <br />
-            </>
+            <Link key={id} to={`/show/${slug}/${tab}`} className={sharedStyles.buttonLink}>
+              <li className="mdc-list-item">
+                <span className="mdc-list-item__text">
+                  <span className="mdc-list-item__primary-text">{name}</span>
+                  <span className="mdc-list-item__secondary-text">
+                    Created {format(createdAt, dateFormat)} and updated{' '}
+                    {format(updatedAt, dateFormat)}. {numRespondents}/{totalNumRespondents}{' '}
+                    responded.
+                  </span>
+                </span>
+              </li>
+            </Link>
           );
         })}
       </ul>
@@ -61,24 +77,30 @@ class DashboardPage extends Component {
     return (
       <>
         {admin.length > 0 && (
-          <section>
-            <h3>Shows created by you</h3>
+          <Card className={styles.card}>
+            <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
+              Polls created by you
+            </div>
             {this.userShowItems(admin, 'results')}
-          </section>
+          </Card>
         )}
 
         {pending.length > 0 && (
-          <section>
-            <h3>Shows pending your response</h3>
+          <Card className={styles.card}>
+            <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
+              Polls pending your response
+            </div>
             {this.userShowItems(pending, 'respond')}
-          </section>
+          </Card>
         )}
 
         {responded.length > 0 && (
-          <section>
-            <h3>Shows you responded to</h3>
+          <Card className={styles.card}>
+            <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
+              Polls you responded to
+            </div>
             {this.userShowItems(responded, 'results')}
-          </section>
+          </Card>
         )}
       </>
     );
@@ -151,7 +173,12 @@ const GET_USER_SHOW_QUERY = gql`
 export default withAlert((props) => {
   return (
     <AuthenticatedQuery query={GET_USER_SHOW_QUERY} requiresAuth>
-      {(getUserShowsResult) => <DashboardPage {...props} getUserShowsResult={getUserShowsResult} />}
+      {(getUserShowsResult) => (
+        <DashboardPage
+          {...props}
+          getUserShowsResult={datifyShowsResponse(getUserShowsResult, 'data.userShows')}
+        />
+      )}
     </AuthenticatedQuery>
   );
 });

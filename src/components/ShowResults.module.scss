@@ -1,36 +1,43 @@
+@import '../mdc';
+
+$sidebar-hidden-breakpoint: largephone;
+
 .resultsContainer {
   display: flex;
 }
 
 .timeline {
   flex: 1;
-  margin-right: 1.8em;
 }
 
-@media all and (max-width: 899px) {
-  .sidebar {
+@media (max-width: mdc-layout-grid-breakpoint-min($sidebar-hidden-breakpoint) - 1) {
+  .hiddenOnMobile {
     display: none;
   }
-  .bottomBar {
-    background-color: white;
-    position: fixed;
-    bottom: 0px;
-    left: 5%;
-    right: 5%;
-    height: 53px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.16), 0 5px 10px rgba(0,0,0,0.23);
-  }
 }
 
-@media all and (min-width: 900px) {
+@media (min-width: mdc-layout-grid-breakpoint-min($sidebar-hidden-breakpoint)) {
   .sidebar {
-    margin-left: 1em;
     width: 17em;
     top: 1em;
+    margin-left: 1.8em;
     position: -webkit-sticky;
     position: sticky;
   }
-  .bottomBar {
+
+  div.bottomBar {
     display: none;
+  }
+}
+
+.bottomBarContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .mainText {
+    margin: 0 1rem;
+    text-align: center;
+    word-break: break-word;
   }
 }

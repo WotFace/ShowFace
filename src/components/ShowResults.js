@@ -1,17 +1,67 @@
 import React, { Component } from 'react';
+import IconButton from '@material/react-icon-button';
+import MaterialIcon from '@material/react-material-icon';
+import { format } from 'date-fns';
+import classnames from 'classnames';
+import _ from 'lodash';
 import Timeline from './Timeline';
-import { respondentsToDict } from '../utils/response';
+import BottomAppBar from './BottomAppBar';
+import { respondentsToDict, respondentToEmailOrName } from '../utils/response';
 import ShowResultsSidebar from './ShowResultsSidebar';
-import ShowResultsBottomBar from './ShowResultsBottomBar';
 import styles from './ShowResults.module.scss';
 
 class ShowResults extends Component {
-  state = {};
+  state = {
+    selectedTime: null,
+    isShowingDetails: false, // Only has effect on mobile
+  };
+
   handleCellHover = (selectedTime) => this.setState({ selectedTime });
+
+  handleDetailToggleClick = () => {
+    this.setState({ isShowingDetails: !this.state.isShowingDetails });
+  };
+
+  renderBottomBar(respondents, renderableRespondents) {
+    const { selectedTime, isShowingDetails } = this.state;
+
+    // this one might need to change cos it's just copied over
+    const respondersRespondentsObj = _.zipObject(
+      respondents.map(respondentToEmailOrName),
+      respondents,
+    );
+    const responders = Object.keys(respondersRespondentsObj);
+    const respondersAtTime = new Set(renderableRespondents.get(selectedTime));
+
+    const [attending, possiblyNotAttending] = _.partition(responders, (r) =>
+      respondersAtTime.has(r),
+    );
+
+    const notAttending = possiblyNotAttending;
+    // copying ends here
+
+    const attendingCount = attending.length === 0 ? 0 : attending.length;
+    const notAttendingCount = notAttending.length === 0 ? 0 : notAttending.length;
+
+    return (
+      <BottomAppBar className={styles.bottomBar}>
+        <div className={styles.bottomBarContent}>
+          <IconButton onClick={this.handleDetailToggleClick}>
+            <MaterialIcon icon={isShowingDetails ? 'arrow_back' : 'more_vert'} />
+          </IconButton>
+          <span className={styles.mainText}>
+            {format(selectedTime, 'Do MMM YYYY hh:mma')}
+            <br />
+            {attendingCount} attending, {notAttendingCount} not attending
+          </span>
+        </div>
+      </BottomAppBar>
+    );
+  }
 
   render() {
     const { show } = this.props;
-    const { selectedTime } = this.state;
+    const { selectedTime, isShowingDetails } = this.state;
 
     const { dates, startTime, endTime, interval } = show;
     const respondents = show.respondents || [];
@@ -32,7 +82,7 @@ class ShowResults extends Component {
       <div>
         <div className={styles.resultsContainer}>
           <Timeline
-            className={styles.timeline}
+            className={classnames(styles.timeline, isShowingDetails ? styles.hiddenOnMobile : null)}
             dates={dates}
             startTime={startTime}
             endTime={endTime}
@@ -43,22 +93,17 @@ class ShowResults extends Component {
           />
           <div>
             <ShowResultsSidebar
-              className={styles.sidebar}
+              className={classnames(
+                styles.sidebar,
+                isShowingDetails ? null : styles.hiddenOnMobile,
+              )}
               respondents={respondents}
               renderableRespondents={renderableRespondents}
               time={selectedTime}
             />
           </div>
         </div>
-        <ShowResultsBottomBar
-          className={styles.bottomBar}
-          respondents={respondents}
-          renderableRespondents={renderableRespondents}
-          time={selectedTime}
-          fabOnClick={() => {
-            console.log('insert func here');
-          }}
-        />
+        {this.renderBottomBar(respondents, renderableRespondents)}
       </div>
     );
   }

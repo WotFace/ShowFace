@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
-import logo from '../logo.png';
 import { Link } from 'react-router-dom';
 import { withAlert } from 'react-alert';
+import Button from '@material/react-button';
+import Card from '@material/react-card';
 import { getFirebaseUserInfo } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
 import { userShowsToDict } from '../utils/userShows';
 import Loading from './Loading';
 import Error from './Error';
+
+import sharedStyles from './SharedStyles.module.scss';
+import styles from './DashboardPage.module.scss';
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -37,6 +41,49 @@ class DashboardPage extends Component {
     );
   }
 
+  renderContent(userShows) {
+    // Invite user to create poll if they don't have any
+    if (!userShows || userShows.length === 0) {
+      // TODO: Beautify
+      return (
+        <section className={styles.cardSection}>
+          <p>You don&apos;t have any polls yet.</p>
+          <Link to="/new" className={sharedStyles.buttonLink}>
+            <Button>Create Poll</Button>
+          </Link>
+        </section>
+      );
+    }
+
+    const firebaseUser = getFirebaseUserInfo();
+    const { admin, pending, responded } = userShowsToDict(userShows, firebaseUser.email);
+
+    return (
+      <>
+        {admin.length > 0 && (
+          <section>
+            <h3>Shows created by you</h3>
+            {this.userShowItems(admin, 'results')}
+          </section>
+        )}
+
+        {pending.length > 0 && (
+          <section>
+            <h3>Shows pending your response</h3>
+            {this.userShowItems(pending, 'respond')}
+          </section>
+        )}
+
+        {responded.length > 0 && (
+          <section>
+            <h3>Shows you responded to</h3>
+            {this.userShowItems(responded, 'results')}
+          </section>
+        )}
+      </>
+    );
+  }
+
   render() {
     const firebaseUser = getFirebaseUserInfo();
     const { getUserShowsResult } = this.props;
@@ -50,52 +97,15 @@ class DashboardPage extends Component {
       return <Error title="That didn&#39;t work" message={getUserShowsError.message} />;
     }
 
-    const userShows = getUserShowsResult.data.userShows
-      ? userShowsToDict(getUserShowsResult.data.userShows, firebaseUser.email)
-      : {};
+    const { userShows } = getUserShowsResult.data;
 
-    const header = firebaseUser ? (
-      <div>
-        <h1>Welcome, {firebaseUser.displayName}!</h1>
-      </div>
-    ) : (
-      <div>
-        <Link to="/login" className="btn btn-outline-primary btn-lg btn-block">
-          Log in
-        </Link>
-      </div>
-    );
-
+    // TODO: Use our server's display name
     return (
-      <div className="container">
-        <section id="form-header">
-          <img className="content-logo" alt="" src={logo} />
-          {header}
-          <Link to="/new" className="btn btn-outline-primary btn-lg btn-block">
-            Create New Poll
-          </Link>
+      <div className={styles.pageContainer}>
+        <section>
+          <h1 className={styles.header}>Welcome, {firebaseUser.displayName}!</h1>
         </section>
-
-        {userShows.admin !== undefined && userShows.admin.length > 0 ? (
-          <section id="admin">
-            <h3>Shows created by you</h3>
-            {this.userShowItems(userShows.admin, 'results')}
-          </section>
-        ) : null}
-
-        {userShows.pending !== undefined && userShows.pending.length > 0 ? (
-          <section id="pending">
-            <h3>Shows pending your response</h3>
-            {this.userShowItems(userShows.pending, 'respond')}
-          </section>
-        ) : null}
-
-        {userShows.responded !== undefined && userShows.responded.length > 0 ? (
-          <section id="responded">
-            <h3>Shows you responded to</h3>
-            {this.userShowItems(userShows.responded, 'results')}
-          </section>
-        ) : null}
+        {this.renderContent(userShows)}
       </div>
     );
   }

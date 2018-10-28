@@ -20,6 +20,8 @@ import BottomAppBar from './BottomAppBar';
 import Loading from './Loading';
 
 import styles from './CreatePage.module.scss';
+import 'rc-time-picker/assets/index.css';
+import TimePicker from 'rc-time-picker';
 
 class CreatePage extends Component {
   constructor(props) {
@@ -28,19 +30,20 @@ class CreatePage extends Component {
     this.state = {
       name: name || '',
       selectedDays: [],
+      interval: 15,
+      startTime: startOfToday(),
+      endTime: endOfToday(),
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDayClick = this.handleDayClick.bind(this);
+    this.setStartTime = this.setStartTime.bind(this);
+    this.setEndTime = this.setEndTime.bind(this);
   }
 
   handleSubmit(event) {
-    // TODO: Add interval option to UI and retrieve from state
-    const interval = 15;
-    const { name, selectedDays } = this.state;
-    const startTime = startOfToday();
-    const endTime = endOfToday();
+    const { name, selectedDays, interval, startTime, endTime } = this.state;
     this.props.createShow(cleanName(name), selectedDays, startTime, endTime, interval);
     event.preventDefault();
   }
@@ -63,6 +66,23 @@ class CreatePage extends Component {
       selectedDays.push(day);
     }
     this.setState({ selectedDays });
+  }
+
+  setStartTime(value) {
+    if (value) {
+      this.setState({startTime: value.toDate()});
+    }
+  }
+
+  setEndTime(value) {
+    if (value) {
+      this.setState({endTime: value.toDate()});
+    }
+  }
+
+  setInterval(value) {
+    this.setState({interval: value})
+    console.log("Set to" + value)
   }
 
   render() {
@@ -123,13 +143,90 @@ class CreatePage extends Component {
                 </div>
               </Card>
             </section>
+            <section className={styles.formSection}>
+              <Card>
+                 Select Time Interval
+                <div className={styles.radioRow}>
+                    
+                    <div className={styles.radioGroup}>
+                      <div className="mdc-radio" onChange={() => this.setInterval(15)}>
+                        <input className="mdc-radio__native-control" 
+                          type="radio"
+                          name="radios"
+                          id = "radio-1"
+                          readOnly
+                          checked={this.state.interval === 15} />
+                        <div className="mdc-radio__background">
+                          <div className="mdc-radio__outer-circle"></div>
+                          <div className="mdc-radio__inner-circle"></div>
+                        </div>
+                      </div>
+                      <label>15 mins</label>
+                    </div>
+
+                    <div className={styles.radioGroup}>
+                      <div className="mdc-radio" onChange={() => this.setInterval(30)}>
+                        <input className="mdc-radio__native-control" 
+                          type="radio"
+                          name="radios"
+                          id = "radio-2"
+                          readOnly
+                          checked={this.state.interval === 30} />
+                        <div className="mdc-radio__background">
+                          <div className="mdc-radio__outer-circle"></div>
+                          <div className="mdc-radio__inner-circle"></div>
+                        </div>
+                      </div>
+                      <label>30 mins</label>
+                    </div>
+
+                  </div>
+              </Card>
+            </section>
+            <section className={styles.formSection}>
+              <Card>
+                <div className={styles.timePickerRow}>
+                    <div> Select Start and End Times</div>
+                    <TimePicker className="mdc"
+                      showSecond={false}
+                      placeholder="No meeting earlier than..."
+                      className={styles.timePicker}
+                      onChange={this.setStartTime}
+                      format={'h:mm a'}
+                      minuteStep={this.state.interval}
+                      use12Hours
+                      inputReadOnly
+                    />
+
+                    <TimePicker className="mdc"
+                      showSecond={false}
+                      placeholder="No meeting after..."
+                      className={styles.timePicker}
+                      onChange={this.setEndTime}
+                      format={'h:mm a'}
+                      minuteStep={this.state.interval}                      
+                      use12Hours
+                      // TODO: Validation for end time
+                      // disabledHours={(hour) => {hour <= this.state.startTime.getHours()}}
+                      inputReadOnly
+                    />
+                </div>
+              </Card>
+            </section>
             <BottomAppBar>
               <div className={styles.bottomBarContent}>
                 <Button
                   className={styles.submitButton}
                   onClick={this.handleSubmit}
+<<<<<<< HEAD
                   disabled={noSelectedDay || cleanName(name).length === 0}
                   icon={<MaterialIcon icon="arrow_forward" />}
+=======
+                  disabled={noSelectedDay || 
+                            cleanName(name).length === 0 || 
+                            this.state.startTime === null || 
+                            this.state.endTime === null}
+>>>>>>> Add more options to create page
                   raised
                 >
                   Create

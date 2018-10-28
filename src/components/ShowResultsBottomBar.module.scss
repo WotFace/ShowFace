@@ -1,4 +1,4 @@
-@import '../mdc-variables';
+@import '../mdc';
 
 .scrollable {
   overflow-y: scroll;
@@ -82,60 +82,14 @@
   }
 }
 
-.scaleIn {
-  animation: scaleIn 400ms ease-in-out 400ms forwards;
-}
-
-@keyframes scaleIn {
-  to {
-    transform: scale(1);
-  }
-}
-
-.scaleOut {
-  animation: scaleOut 300ms ease-in-out forwards;
-}
-
-@keyframes scaleOut {
-  from {
-    transform: scale(1)
-  }
-  to {
-    transform: scale(0);
-  }
-}
-
-
 // fab stuff
-.bottomBarFab {
-  height: 56px;
-  width: 56px;
-  border: none;
-  background-color: $mdc-theme-primary;
-  border-radius: 28px;
+button.bottomBarFab {
+  @include mdc-fab-accessible($mdc-theme-primary);
   position: fixed;
   bottom: 1rem;
   right: 8%;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  background-position: center;
-  transition: background 0.8s;
-  transform: scale(0);
-}
 
-.bottomBarFab:hover {
-  background: $mdc-theme-primary radial-gradient(circle, transparent 1%, $mdc-theme-primary 1%) center/15000%;
-}
-
-.bottomBarFab:focus {
-  outline-style: none;
-}
-
-.bottomBarFab:active {
-  background-color: $mdc-theme-secondary;
-  background-size: 100%;
-  transition: background 0s;
-}
-
-.fabIcon {
-  color: white;
+  &.hidden {
+    transform: scale(0);
+  }
 }

@@ -24,28 +24,15 @@ function renderShortMessage(time, attending, notAttending) {
 }
 
 class ShowResultsBottomBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: false,
-      isClosed: false,
-    };
-    this.handleOpen = this.handleOpen.bind(this);
-  }
+  state = {
+    isOpen: false,
+  };
 
-  handleOpen() {
-    if (this.state.isOpen) {
-      this.setState({ isOpen: false });
-      this.setState({ isClosed: true });
-    } else {
-      this.setState({ isOpen: true });
-      this.setState({ isClosed: false });
-    }
-  }
+  handleOpen = () => this.setState({ isOpen: !this.state.isOpen });
 
   render() {
     const { className, respondents, renderableRespondents, time, fabOnClick } = this.props;
-    const { isOpen, isClosed } = this.state;
+    const { isOpen } = this.state;
 
     // this one might need to change cos it's just copied over
     const respondersRespondentsObj = _.zipObject(
@@ -64,21 +51,16 @@ class ShowResultsBottomBar extends Component {
 
     return (
       <div
-        className={classnames(
-          className,
-          isOpen ? styles.slideForward : null,
-          isOpen ? styles.scrollable : null,
-          isClosed ? styles.slideBackward : null,
-        )}
+        className={classnames(className, {
+          [styles.slideForward]: isOpen,
+          [styles.scrollable]: isOpen,
+          [styles.slideBackward]: !isOpen,
+        })}
       >
         <div className={classnames(styles.header, isOpen ? styles.sticky : null)}>
           <MaterialIcon
             icon={isOpen ? 'clear' : 'more_vert'}
-            className={classnames(
-              styles.icon,
-              isOpen ? styles.rotateOut : null,
-              isClosed ? styles.rotateIn : null,
-            )}
+            className={classnames(styles.icon, isOpen ? styles.rotateOut : styles.rotateIn)}
             onClick={this.handleOpen}
           />
           {renderShortMessage(time, attending, notAttending)}
@@ -89,12 +71,8 @@ class ShowResultsBottomBar extends Component {
           time={time}
         />
         <Fab
-          className={classnames(
-            styles.bottomBarFab,
-            isOpen ? styles.scaleIn : null,
-            isClosed ? styles.scaleOut : null,
-          )}
-          icon={<MaterialIcon className={styles.fabIcon} icon="add" />}
+          className={classnames(styles.bottomBarFab, { [styles.hidden]: !isOpen })}
+          icon={<MaterialIcon icon="add" />}
           onClick={fabOnClick}
         />
       </div>

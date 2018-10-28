@@ -83,9 +83,6 @@ export default class AppBar extends Component {
         <Link to="/login" className={sharedStyles.buttonLink}>
           <Button>Log In</Button>
         </Link>
-        <Link to="/signup" className={sharedStyles.buttonLink}>
-          <Button>Sign Up</Button>
-        </Link>
       </>
     );
   }

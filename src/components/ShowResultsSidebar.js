@@ -1,23 +1,12 @@
 import React from 'react';
 import { format } from 'date-fns';
 import classnames from 'classnames';
-import _ from 'lodash';
-import { respondentToEmailOrName } from '../utils/response';
 import MaterialIcon from '@material/react-material-icon';
 
 import styles from './ShowResultsSidebar.module.scss';
 
-function ShowAttendees({ respondents, renderableRespondents, time }) {
-  const respondersRespondentsObj = _.zipObject(
-    respondents.map(respondentToEmailOrName),
-    respondents,
-  );
-  const responders = Object.keys(respondersRespondentsObj);
-  const respondersAtTime = new Set(renderableRespondents.get(time));
-
-  const [attending, possiblyNotAttending] = _.partition(responders, (r) => respondersAtTime.has(r));
-  // TODO: Partition possiblyNotAttending further into non-responses and not attendings
-  const notAttending = possiblyNotAttending;
+function ShowAttendees({ partitionedRespondents, time }) {
+  const { attending, notAttending, respondersRespondentsObj } = partitionedRespondents;
 
   // TODO: Display respondents differently depending on whether the user is
   // logged in, has admin rights, and whether the respondent has responded
@@ -60,19 +49,10 @@ function ShowAttendees({ respondents, renderableRespondents, time }) {
   );
 }
 
-export default function ShowResultsSidebar({
-  className,
-  respondents,
-  renderableRespondents,
-  time,
-}) {
+export default function ShowResultsSidebar({ className, partitionedRespondents, time }) {
   return (
     <div className={className}>
-      <ShowAttendees
-        respondents={respondents}
-        renderableRespondents={renderableRespondents}
-        time={time}
-      />
+      <ShowAttendees partitionedRespondents={partitionedRespondents} time={time} />
     </div>
   );
 }

@@ -3,10 +3,9 @@ import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { format } from 'date-fns';
 import classnames from 'classnames';
-import _ from 'lodash';
 import Timeline from './Timeline';
 import BottomAppBar from './BottomAppBar';
-import { respondentsToDict, respondentToEmailOrName } from '../utils/response';
+import { respondentsToDict, partitionRespondentsByAttendance } from '../utils/response';
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';
 
@@ -22,23 +21,9 @@ class ShowResults extends Component {
     this.setState({ isShowingDetails: !this.state.isShowingDetails });
   };
 
-  renderBottomBar(respondents, renderableRespondents) {
+  renderBottomBar(partitionedRespondents) {
     const { selectedTime, isShowingDetails } = this.state;
-
-    // this one might need to change cos it's just copied over
-    const respondersRespondentsObj = _.zipObject(
-      respondents.map(respondentToEmailOrName),
-      respondents,
-    );
-    const responders = Object.keys(respondersRespondentsObj);
-    const respondersAtTime = new Set(renderableRespondents.get(selectedTime));
-
-    const [attending, possiblyNotAttending] = _.partition(responders, (r) =>
-      respondersAtTime.has(r),
-    );
-
-    const notAttending = possiblyNotAttending;
-    // copying ends here
+    const { attending, notAttending } = partitionedRespondents;
 
     const attendingCount = attending.length === 0 ? 0 : attending.length;
     const notAttendingCount = notAttending.length === 0 ? 0 : notAttending.length;
@@ -66,6 +51,11 @@ class ShowResults extends Component {
     const { dates, startTime, endTime, interval } = show;
     const respondents = show.respondents || [];
     const renderableRespondents = respondentsToDict(respondents);
+    const partitionedRespondents = partitionRespondentsByAttendance(
+      respondents,
+      renderableRespondents,
+      selectedTime,
+    );
 
     const calcMaxSelectable = () => {
       let max = 0;
@@ -97,13 +87,12 @@ class ShowResults extends Component {
                 styles.sidebar,
                 isShowingDetails ? null : styles.hiddenOnMobile,
               )}
-              respondents={respondents}
-              renderableRespondents={renderableRespondents}
+              partitionedRespondents={partitionedRespondents}
               time={selectedTime}
             />
           </div>
         </div>
-        {this.renderBottomBar(respondents, renderableRespondents)}
+        {this.renderBottomBar(partitionedRespondents)}
       </div>
     );
   }

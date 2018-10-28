@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import DateMap from './DateMap';
 
 export function anonNameToId(anonName) {
@@ -27,4 +28,33 @@ export function respondentsToDict(respondents) {
     });
   });
   return hm;
+}
+
+/**
+ * Partitions respondents into those who can and cannot make it at time, and in
+ * the future, those who have not responded.
+ *
+ * In this function, we define a Responder as a User's email or anonymous name
+ * as returned by anonNameToId.
+ *
+ * @param {Respondent[]} respondents - A poll's Respondents.
+ * @param {DateMap} respondentsDict - A mapping of start times to Responders.
+ * @param {Date} time - Respondents will be partitioned by this time.
+ * @return An object with 4 keys. 3 of those keys, `attending`,
+ * `possiblyNotAttending`, and `notAttending`, point to Responder arrays. The
+ * last key, `respondersRespondentsObj`, points to an object associating
+ * Responders with Respondents.
+ */
+export function partitionRespondentsByAttendance(respondents, respondentsDict, time) {
+  const respondersRespondentsObj = _.zipObject(
+    respondents.map(respondentToEmailOrName),
+    respondents,
+  );
+  const responders = Object.keys(respondersRespondentsObj);
+  const respondersAtTime = new Set(respondentsDict.get(time));
+
+  const [attending, possiblyNotAttending] = _.partition(responders, (r) => respondersAtTime.has(r));
+  // TODO: Partition possiblyNotAttending further into non-responses and not attendings
+  const notAttending = possiblyNotAttending;
+  return { attending, possiblyNotAttending, notAttending, respondersRespondentsObj };
 }

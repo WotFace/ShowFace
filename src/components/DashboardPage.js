@@ -7,7 +7,7 @@ import Card from '@material/react-card';
 import classnames from 'classnames';
 import { format } from 'date-fns';
 import _ from 'lodash';
-import { getFirebaseUserInfo } from '../utils/auth';
+import { getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
 import { datifyShowsResponse } from '../utils/datetime';
 import { userShowsToDict } from '../utils/userShows';
@@ -58,6 +58,13 @@ class DashboardPage extends Component {
   }
 
   renderContent(userShows) {
+    // Invite user to log in user is not logged in
+    if (!isSignedIn()) {
+      // TODO: redirect to login,
+      // for now keep here to avoid error when calling logged out firebaseUser's email
+      return;
+    }
+
     // Invite user to create poll if they don't have any
     if (!userShows || userShows.length === 0) {
       // TODO: Beautify

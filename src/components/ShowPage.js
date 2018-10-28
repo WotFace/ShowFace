@@ -168,7 +168,7 @@ class ShowPageComponent extends Component {
 
     return (
       <div className={styles.container}>
-        <section id="form-header">
+        <section className={styles.headerSection}>
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
             <div className={styles.copyUrlInputContainer}>

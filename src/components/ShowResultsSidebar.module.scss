@@ -1,11 +1,9 @@
 @import '../mdc-variables';
 
 .attendees {
-  margin-top: 32px;
-  border-radius: 10px;
-  margin-left: 0px;
-  padding: 4px 8px 16px 16px;
-  margin-bottom: 60px;
+  .attendeeListSection {
+    margin-bottom: 2em;
+  }
 }
 
 .respondents {
@@ -34,28 +32,4 @@
 
 .pollTime {
   margin-bottom: 1em;
-}
-
-@media all and (min-width: 900px) {
-  .resultsContainer {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-} else {
-  .resultsContainer {
-    position: sticky;
-    bottom:0;
-  }
-}
-
-.timelineContainer {
-  flex: 3.5;
-  padding: 15px;
-}
-
-.sidebarResultsContainer {
-  flex: 1;
-  padding: 10px;
 }

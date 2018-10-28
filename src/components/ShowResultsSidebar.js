@@ -28,16 +28,16 @@ function ShowAttendees({ partitionedRespondents, time }) {
 
   return (
     <div>
-      <section className={classnames(styles.attendees, 'flex-item')}>
+      <section className={styles.attendees}>
         {time ? <h2 className={styles.pollTime}>{format(time, 'D MMM hh:mmA')}</h2> : null}
-        <section id="attending">
+        <section className={styles.attendeeListSection}>
           <h3>Shows</h3>
           {attending.map((responder) => {
             const respondent = respondersRespondentsObj[responder];
             return renderRespondent(responder, respondent, true);
           })}
         </section>
-        <section id="notAttending">
+        <section className={styles.attendeeListSection}>
           <h3>No Shows</h3>
           {notAttending.map((responder) => {
             const respondent = respondersRespondentsObj[responder];

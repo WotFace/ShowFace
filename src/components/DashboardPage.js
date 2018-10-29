@@ -102,14 +102,15 @@ class DashboardPage extends Component {
 
     // Invite user to create poll if they don't have any
     if (!userShows || userShows.length === 0) {
-      // TODO: Beautify
       return (
-        <section className={styles.cardSection}>
-          <p>You don&apos;t have any polls yet.</p>
-          <Link to="/new" className={sharedStyles.buttonLink}>
-            <Button>Create Poll</Button>
-          </Link>
-        </section>
+        <>
+          <p className="mdc-typography--body1">
+            You don&apos;t have any polls yet. Create one now!
+          </p>
+          <Card className={styles.card} id={styles.createCard}>
+            <QuickCreate />
+          </Card>
+        </>
       );
     }
 

@@ -9,30 +9,6 @@
   padding: 64px 32px 32px;
 }
 
-.background {
-  background: url('../background.svg') no-repeat;
-  @media screen and (min-width: 1200px) {
-    background-size: 100%;
-    margin: -2px;
-  }
-  @media screen and (min-width: 799px) and (max-width: 1199px) {
-    background-size: 150%;
-    background-position: top center;
-  }
-  @media screen and (min-width: 600px) and (max-width: 799px) {
-    background-size: 225%;
-    background-position: top center;
-  }
-  @media screen and (min-width: 350px) and (max-width: 599px) {
-    background-size: 450%;
-    background-position: top center;
-  }
-  @media screen and (max-width: 349px) {
-    background-size: 600%;
-    background-position: top center;
-  }
-}
-
 #subText {
   font-size: 20px;
   line-height: 1.5;
@@ -57,4 +33,145 @@
   #pageTitle {
     font-size: 32px;
   }
+}
+
+@mixin backgroundScreens {
+  @media screen and (min-width: 1200px) {
+    background-size: 100%;
+    margin: -2px;
+  }
+  @media screen and (min-width: 799px) and (max-width: 1199px) {
+    background-size: 150%;
+    background-position: top center;
+  }
+  @media screen and (min-width: 600px) and (max-width: 799px) {
+    background-size: 225%;
+    background-position: top center;
+  }
+  @media screen and (min-width: 350px) and (max-width: 599px) {
+    background-size: 450%;
+    background-position: top center;
+  }
+  @media screen and (max-width: 349px) {
+    background-size: 600%;
+    background-position: top center;
+  }
+}
+
+@mixin backgroundMute {
+  background: url('../background-2.svg') no-repeat;
+  background-size: cover;
+  margin: -1px;
+}
+
+.background {
+  background: url('../background.svg') no-repeat;
+  @include backgroundScreens;
+}
+
+.descriptionContainer {
+  @include backgroundMute;
+
+  padding: 100px 10% 50px 10%;
+  display: flex;
+  text-align: center;
+  
+  @media screen and (max-width: 999px) {
+    flex-direction: column;
+    padding-top: 300px;
+    .descriptionItems {
+      flex: 100%;
+    }
+  }
+
+  @media screen and (min-width: 1000px) {
+    padding-top: 150px;
+    .descriptionItems {
+      flex: 33.33%;
+      padding: 0px 32px;
+    }
+  }
+  
+  .descriptionIcon {
+    font-size: 100px;
+    color: $mdc-theme-secondary;
+  }
+  
+  .descriptionItems {
+    color: $mdc-theme-primary;
+    padding-bottom: 50px;
+  }
+}
+
+.carouselContainer {
+  display: flex;
+  justify-content: center;
+  margin: 100px 0px;
+  .carouselCard {
+    background-image: url('../card.PNG');
+    background-repeat: no-repeat;
+    background-size: cover;
+    @media screen and (max-width: 999px) {
+      width: 100%;
+      padding-top: 60.25%;
+    }
+    @media screen and (min-width: 1000px) {
+      width: 60%;
+      padding-top: 32.25%;
+    }
+  }
+}
+
+.readyContainer {
+  padding: 100px 10%;
+  display: flex;
+
+  .readyColumnText {
+    .readyText {
+      color: $mdc-theme-primary;
+    }
+  }
+
+  @media screen and (max-width: 999px) {
+    flex-direction: column;
+    .readyColumnText {
+      flex: 100%;
+      margin-bottom: 50px;
+    }
+    .readyColumnButton {
+      flex: 100%;
+      .readyButton {
+        margin-right: 40px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .readyColumnButton {
+      .readyButton {
+        margin-bottom: 24px;
+      }
+    }
+  }
+
+  @media screen and (min-width: 1000px) {
+    .readyColumnText {
+      flex: 50%;
+    }
+    .readyColumnButton {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      flex: 50%
+    }
+  }
+}
+
+.footerContainer {
+  @include backgroundMute;
+
+  padding: 150px 10% 50px 10%;
+  display: flex;
+  background-size: 200%;
+
 }

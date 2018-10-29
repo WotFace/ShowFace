@@ -4,6 +4,9 @@ import gql from 'graphql-tag';
 import { withAlert } from 'react-alert';
 import { facebookAuthProvider, googleAuthProvider, auth } from '../firebase';
 import { getAuthInput } from '../utils/auth';
+import Button from '@material/react-button';
+import MaterialIcon from '@material/react-material-icon';
+import styles from './ShowPage.module.scss';
 
 class SocialLogin extends Component {
   constructor(props) {
@@ -79,21 +82,24 @@ class SocialLogin extends Component {
       <ApolloConsumer>
         {(client) => (
           <div>
-            <button
-              style={{ width: '100%', marginBottom: '10px' }}
-              className="btn btn-outline-primary btn-lg btn-block"
+            <Button
+              className={styles.submitButton}
+              value="Log in"
               onClick={() => this.socialAuth(googleAuthProvider, client)}
+              icon={<MaterialIcon icon="send" />}
+              raised
             >
               Log in with Google
-            </button>
-            <button
-              style={{ width: '100%' }}
-              className="btn btn-outline-primary btn-lg btn-block"
+            </Button>
+            <Button
+              className={styles.submitButton}
+              value="Log in"
               onClick={() => this.socialAuth(facebookAuthProvider, client)}
+              icon={<MaterialIcon icon="send" />}
+              raised
             >
               Log in with Facebook
-            </button>
-            <hr style={{ marginTop: '10px', marginBottom: '10px' }} />
+            </Button>
           </div>
         )}
       </ApolloConsumer>

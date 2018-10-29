@@ -11,6 +11,7 @@ import { getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
 import { datifyShowsResponse } from '../utils/datetime';
 import { userShowsToDict } from '../utils/userShows';
+import QuickCreate from './QuickCreate';
 import Loading from './Loading';
 import Error from './Error';
 
@@ -118,13 +119,17 @@ class DashboardPage extends Component {
       firebaseUser.email,
     );
 
+    const cardHeaderClass = classnames(styles.cardHeader, 'mdc-typography--headline6');
+
     return (
       <>
+        <Card className={styles.card} id={styles.createCard}>
+          <QuickCreate />
+        </Card>
+
         {pendingShows.length > 0 && (
           <Card className={styles.card} id={styles.toRespondCard}>
-            <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
-              Polls awaiting your response
-            </div>
+            <div className={cardHeaderClass}>Polls awaiting your response</div>
             {this.userShowItems(
               pendingShows,
               'respond',
@@ -136,9 +141,7 @@ class DashboardPage extends Component {
 
         {adminShows.length > 0 && (
           <Card className={styles.card}>
-            <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
-              Polls you are organizing
-            </div>
+            <div className={cardHeaderClass}>Polls you are organizing</div>
             {this.userShowItems(
               adminShows,
               'results',
@@ -150,9 +153,7 @@ class DashboardPage extends Component {
 
         {respondedShows.length > 0 && (
           <Card className={styles.card}>
-            <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
-              Polls you responded to
-            </div>
+            <div className={cardHeaderClass}>Polls you responded to</div>
             {this.userShowItems(
               respondedShows,
               'results',

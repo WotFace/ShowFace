@@ -5,21 +5,23 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+
+  > * {
+    margin: 0.3em 0.4em;
+  }
 }
 
 .pollNameField {
-  background-color: white;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 100px;
+  min-width: 17em;
+  flex: 2;
 }
 
-#buttonContainer {
-  text-decoration: none;
-  margin: 10px;
-}
+.buttonContainer {
+  min-width: 13em;
+  flex: 1;
 
-#createPollButton {
-  @include mdc-button-filled-accessible($mdc-theme-secondary);
-  width: 100%;
+  #createPollButton {
+    @include mdc-button-filled-accessible($mdc-theme-secondary);
+    width: 100%;
+  }
 }

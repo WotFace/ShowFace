@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import Button from '@material/react-button';
 import { NavLink } from 'react-router-dom';
-import TextField, { Input } from '@material/react-text-field';
+import classnames from 'classnames';
 import queryString from 'query-string';
+import NoLabelTextField from './NoLabelTextField';
 
 import styles from './QuickCreate.module.scss';
+import sharedStyles from './SharedStyles.module.scss';
 
 class QuickCreate extends Component {
   state = {
@@ -19,17 +21,17 @@ class QuickCreate extends Component {
     const { name } = this.state;
     return (
       <div id={styles.formContainer}>
-        <TextField label="Meet for what?" className={styles.pollNameField}>
-          <Input
-            type="text"
+        <div className={styles.pollNameField}>
+          <NoLabelTextField
+            placeholder="Meet For What?"
             name="name"
             value={name}
             autoComplete="off"
             onChange={this.handleInputChange}
           />
-        </TextField>
+        </div>
         <NavLink
-          id={styles.buttonContainer}
+          className={classnames(sharedStyles.buttonLink, styles.buttonContainer)}
           to={{
             pathname: '/new',
             search: queryString.stringify({ name }),

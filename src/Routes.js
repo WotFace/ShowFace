@@ -2,6 +2,8 @@ import React from 'react';
 import { Redirect, Switch, Route } from 'react-router-dom';
 
 import AppBar from './components/AppBar';
+import GoogleAnalytics from './components/GoogleAnalytics';
+
 import ShowPage from './components/ShowPage';
 import WelcomePage from './components/WelcomePage';
 import CreatePage from './components/CreatePage';
@@ -19,6 +21,7 @@ const Routes = () => (
       <Route path="/login" component={LoginPage} />
       <Route path="/dashboard" component={DashboardPage} />
     </Switch>
+    <GoogleAnalytics />
   </>
 );
 

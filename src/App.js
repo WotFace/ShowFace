@@ -9,12 +9,7 @@ import Routes from './Routes.js';
 import apolloClient from './apolloClient';
 import store from './store';
 
-import ReactGA from 'react-ga';
-
 import './App.scss';
-
-ReactGA.initialize(process.env.REACT_GA_TRACKING_ID);
-ReactGA.pageview('/');
 
 const alertOptions = {
   timeout: 2000,

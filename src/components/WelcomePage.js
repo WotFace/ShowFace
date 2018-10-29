@@ -7,8 +7,8 @@ class WelcomePage extends Component {
     return (
       <div id={styles.halfPage}>
         <div id={styles.titleContainer}>
-          <h1 id={styles.pageTitle}> Get together with ShowFace</h1>
-          <h2 id={styles.subText}>The simple way to decide on dates, places &amp; more.</h2>
+          <h1 id={styles.pageTitle}>Welcome to ShowFace!</h1>
+          <h2 id={styles.subText}>We help you navigate schedules to find the best time to meet.</h2>
         </div>
         <QuickCreate />
       </div>

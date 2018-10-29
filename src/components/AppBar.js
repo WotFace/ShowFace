@@ -63,13 +63,6 @@ export default class AppBar extends Component {
         >
           <span className="mdc-list-item__text">Log out</span>
         </li>
-        <Button
-          onClick={() => {
-            auth().signOut();
-          }}
-        >
-          Log out
-        </Button>
         <li className="mdc-list-item" role="menuitem">
           <span className="mdc-list-item__text">My Account TODO</span>
         </li>

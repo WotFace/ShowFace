@@ -39,6 +39,7 @@
     "react-apollo": "^2.2.4",
     "react-day-picker": "^7.2.4",
     "react-dom": "^16.6.0",
+    "react-ga": "^2.5.3",
     "react-loading": "^2.0.3",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",

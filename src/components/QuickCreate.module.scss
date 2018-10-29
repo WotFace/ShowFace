@@ -1,0 +1,25 @@
+@import '../mdc';
+
+#formContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.pollNameField {
+  background-color: white;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 100px;
+}
+
+#buttonContainer {
+  text-decoration: none;
+  margin: 10px;
+}
+
+#createPollButton {
+  @include mdc-button-filled-accessible($mdc-theme-secondary);
+  width: 100%;
+}

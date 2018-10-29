@@ -1,4 +1,3 @@
-@import '~@material/button/mdc-button';
 @import '../mdc-variables';
 
 #halfPage {
@@ -32,35 +31,8 @@
   margin-bottom: 0px;
 }
 
-.pollNameField {
-  background-color: white;
-  width: 400px;
-  border-radius: 100px;
-}
-
-#formContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-
-#createPollButton {
-  @include mdc-button-filled-accessible($mdc-theme-secondary);
-  width: 100%;
-}
-
-#buttonContainer {
-  text-decoration: none;
-  margin: 10px;
-}
-
 @media screen and (max-width: 600px) {
   #pageTitle {
     font-size: 32px;
-  }
-
-  .pollNameField {
-    width: 100%;
   }
 }

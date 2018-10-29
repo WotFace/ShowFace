@@ -15,7 +15,7 @@ function ShowAttendees({ partitionedRespondents, time }) {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
 
     return (
-      <ListItem className={styles.listItems}>
+      <ListItem>
         <ListItemGraphic graphic={<MaterialIcon icon='account_circle'/>} />
         <ListItemText
           className={styles.listText}
@@ -34,7 +34,7 @@ function ShowAttendees({ partitionedRespondents, time }) {
         {time ? <h2 className={styles.pollTime}>{format(time, 'D MMM hh:mmA')}</h2> : null}
         <section className={styles.attendeeListSection}>
           <h3>Attending</h3>
-          <List twoLine className={styles.listContainer}>
+          <List twoLine>
             {attending.map((responder) => {
               const respondent = respondersRespondentsObj[responder];
               return renderRespondent(responder, respondent, true);

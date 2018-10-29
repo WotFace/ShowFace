@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Card from '@material/react-card';
 import Button from '@material/react-button';
-import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import TextField, { Input } from '@material/react-text-field';
 import copyToClipboard from '../utils/copyToClipboard';
@@ -9,11 +8,9 @@ import { withAlert } from 'react-alert';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import WhatsappIcon from '../icons/whatsapp.svg' // https://fontawesome.com/icons/whatsapp?style=brands
-import MessengerIcon from '../icons/messenger.svg' // https://fontawesome.com/icons/telegram-plane?style=brands
 import TelegramIcon from '../icons/telegram.svg' // https://fontawesome.com/icons/facebook-messenger?style=brands
 import {ReactMultiEmail} from 'react-multi-email';
-import 'react-multi-email/style.css';
-import './multi-email-override.css';
+import './MultiEmailOverride.scss';
 import styles from './ShareModal.module.scss';
 
 

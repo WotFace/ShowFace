@@ -1,33 +1,36 @@
 // Shape of returned Map:
 // {
-//   admin: [{ slug: '', anonymousName: '' }],
-//   pending: [{ slug: '' }],
-//   responded: [{ slug: '', anonymousName: '' }],
+//   admin: [ShowWithRespondent],
+//   pending: [ShowWithRespondent],
+//   responded: [ShowWithRespondent],
 // };
+//
+// where a ShowWithRespondent = { show: Show, respondent: Respondent }
 export function userShowsToDict(userShows, email) {
-  var adminShows = [];
-  var pendingShows = [];
-  var respondedShows = [];
+  const adminShows = [];
+  const pendingShows = [];
+  const respondedShows = [];
 
-  userShows.forEach((userShow) => {
-    const respondents = userShow.respondents;
+  userShows.forEach((show) => {
+    const respondents = show.respondents;
     if (respondents && respondents.length !== 0) {
       respondents.forEach((respondent) => {
         if (respondent.user.email !== email) {
           return;
         }
 
+        const showWithRespondent = { show, respondent };
         if (respondent.role === 'admin') {
-          adminShows.push(userShow);
+          adminShows.push(showWithRespondent);
         }
 
         if (respondent.response.length === 0) {
-          pendingShows.push(userShow);
+          pendingShows.push(showWithRespondent);
         } else {
-          respondedShows.push(userShow);
+          respondedShows.push(showWithRespondent);
         }
       });
     }
   });
-  return { admin: adminShows, pending: pendingShows, responded: respondedShows };
+  return { adminShows, pendingShows, respondedShows };
 }

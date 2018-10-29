@@ -17,6 +17,8 @@ import Error from './Error';
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './DashboardPage.module.scss';
 
+const dateFormat = 'D MMM YYYY hh:mmA';
+
 class DashboardPage extends Component {
   constructor(props) {
     super(props);
@@ -25,31 +27,63 @@ class DashboardPage extends Component {
     this.userShowItems = this.userShowItems.bind(this);
   }
 
-  userShowItems(userShows, tab) {
+  renderPendingListItem = (show, respondent) => {
+    const { name } = show;
+    const { createdAt } = respondent;
+    return (
+      <li className="mdc-list-item">
+        <span className="mdc-list-item__text">
+          <span className="mdc-list-item__primary-text">{name}</span>
+          <span className="mdc-list-item__secondary-text">
+            Invited {format(createdAt, dateFormat)}
+          </span>
+        </span>
+      </li>
+    );
+  };
+
+  renderOrganizerListItem = (show) => {
+    const { name, createdAt, updatedAt, respondents } = show;
+    const totalNumRespondents = respondents.length;
+    const numRespondents = respondents.filter((r) => r.response.length !== 0).length;
+    return (
+      <li className="mdc-list-item">
+        <span className="mdc-list-item__text">
+          <span className="mdc-list-item__primary-text">{name}</span>
+          <span className="mdc-list-item__secondary-text">
+            Created {format(createdAt, dateFormat)} and updated {format(updatedAt, dateFormat)}.{' '}
+            {numRespondents}/{totalNumRespondents} responded.
+          </span>
+        </span>
+      </li>
+    );
+  };
+
+  renderRespondedListItem = (show, respondent) => {
+    const { name } = show;
+    const { updatedAt } = respondent;
+    return (
+      <li className="mdc-list-item">
+        <span className="mdc-list-item__text">
+          <span className="mdc-list-item__primary-text">{name}</span>
+          <span className="mdc-list-item__secondary-text">
+            Responded {format(updatedAt, dateFormat)}
+          </span>
+        </span>
+      </li>
+    );
+  };
+
+  userShowItems(userShows, tab, sorter, listItemRenderer) {
     // Sort polls from latest to oldest
-    // TODO: Sort by updatedAt
-    const sortedShows = _.sortBy(userShows, (s) => -s.createdAt.getTime());
-    const dateFormat = 'D MMM YYYY hh:mmA';
+    const sortedShows = _.sortBy(userShows, sorter);
     return (
       <ul className="mdc-list mdc-list--two-line">
-        {sortedShows.map(function(userShow) {
-          const { id, slug, name, createdAt, updatedAt, respondents } = userShow;
-
-          const totalNumRespondents = respondents.length;
-          const numRespondents = respondents.filter((r) => r.response.length !== 0).length;
-
+        {sortedShows.map(({ show, respondent }) => {
+          const { id, slug } = show;
           return (
             <Link key={id} to={`/show/${slug}/${tab}`} className={sharedStyles.buttonLink}>
-              <li className="mdc-list-item">
-                <span className="mdc-list-item__text">
-                  <span className="mdc-list-item__primary-text">{name}</span>
-                  <span className="mdc-list-item__secondary-text">
-                    Created {format(createdAt, dateFormat)} and updated{' '}
-                    {format(updatedAt, dateFormat)}. {numRespondents}/{totalNumRespondents}{' '}
-                    responded.
-                  </span>
-                </span>
-              </li>
+              {listItemRenderer(show, respondent)}
             </Link>
           );
         })}
@@ -79,34 +113,52 @@ class DashboardPage extends Component {
     }
 
     const firebaseUser = getFirebaseUserInfo();
-    const { admin, pending, responded } = userShowsToDict(userShows, firebaseUser.email);
+    const { adminShows, pendingShows, respondedShows } = userShowsToDict(
+      userShows,
+      firebaseUser.email,
+    );
 
     return (
       <>
-        {pending.length > 0 && (
+        {pendingShows.length > 0 && (
           <Card className={styles.card} id={styles.toRespondCard}>
             <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
               Polls awaiting your response
             </div>
-            {this.userShowItems(pending, 'respond')}
+            {this.userShowItems(
+              pendingShows,
+              'respond',
+              (s) => -s.respondent.createdAt.getTime(),
+              this.renderPendingListItem,
+            )}
           </Card>
         )}
 
-        {admin.length > 0 && (
+        {adminShows.length > 0 && (
           <Card className={styles.card}>
             <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
-              Polls created by you
+              Polls you are organizing
             </div>
-            {this.userShowItems(admin, 'results')}
+            {this.userShowItems(
+              adminShows,
+              'results',
+              (s) => -s.show.updatedAt.getTime(),
+              this.renderOrganizerListItem,
+            )}
           </Card>
         )}
 
-        {responded.length > 0 && (
+        {respondedShows.length > 0 && (
           <Card className={styles.card}>
             <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
               Polls you responded to
             </div>
-            {this.userShowItems(responded, 'results')}
+            {this.userShowItems(
+              respondedShows,
+              'results',
+              (s) => -s.respondent.updatedAt.getTime(),
+              this.renderRespondedListItem,
+            )}
           </Card>
         )}
       </>
@@ -169,8 +221,11 @@ DashboardPage.fragments = {
         }
         role
         response
+        createdAt
+        updatedAt
       }
       createdAt
+      updatedAt
     }
   `,
 };

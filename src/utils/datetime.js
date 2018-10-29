@@ -32,7 +32,9 @@ export function datifyShowResponse(result, path) {
   const valKeys = ['createdAt', 'updatedAt', 'startTime', 'endTime'];
   const arrKeys = ['dates'];
   const datifiedShow = datifiedEntity(show, valKeys, arrKeys);
-  // datifiedShow.respondents = datifiedShow.respondents.map((r) => datifiedEntity(r, ['updatedAt']));
+  datifiedShow.respondents = datifiedShow.respondents.map((r) =>
+    datifiedEntity(r, ['createdAt', 'updatedAt']),
+  );
   return _.set(result, path, datifiedShow);
 }
 

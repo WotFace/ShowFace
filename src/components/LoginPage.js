@@ -1,103 +1,88 @@
 import React, { Component } from 'react';
 import { withAlert } from 'react-alert';
+
+import Button from '@material/react-button';
+import Card from '@material/react-card';
+import MaterialIcon from '@material/react-material-icon';
+import Tab from '@material/react-tab';
+import TabBar from '@material/react-tab-bar';
+import TextField, { Input } from '@material/react-text-field';
+
 import { auth } from '../firebase';
 import SocialLogin from './SocialLogin';
 import SignupForm from './SignupForm';
-import Tab from '@material/react-tab';
-import TabBar from '@material/react-tab-bar';
-import styles from './ShowPage.module.scss';
-import Button from '@material/react-button';
-import MaterialIcon from '@material/react-material-icon';
-import TextField, { Input } from '@material/react-text-field';
+
+import styles from './LoginPage.module.scss';
 
 class LoginPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { selectedTab: 0 };
-    this.authWithEmailPassword = this.authWithEmailPassword.bind(this);
-  }
+  state = {
+    selectedTab: 0,
+    emailInput: '',
+    passwordInput: '',
+  };
 
-  authWithEmailPassword(event) {
-    const email = this.emailInput.value;
-    const password = this.passwordInput.value;
-    event.preventDefault();
+  authWithEmailPassword = (e) => {
+    e.preventDefault();
+    const { emailInput, passwordInput } = this.state;
     auth()
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(emailInput, passwordInput)
       .catch((error) => {
         console.log('Error', error);
       });
-  }
+  };
 
-  changeTab(activeIndex) {
-    this.setState({ selectedTab: activeIndex });
-  }
+  handleTabChange = (selectedTab) => this.setState({ selectedTab });
+  handleEmailInputChange = (e) => this.setState({ emailInput: e.target.value });
+  handlePasswordInputChange = (e) => this.setState({ passwordInput: e.target.value });
 
   render() {
-    const { selectedTab } = this.state;
+    const { selectedTab, emailInput, passwordInput } = this.state;
     return (
-      <div className="container Welcome-content">
-        <section id="form" className="row">
-          <div className="col">
-            <TabBar
-              className={styles.tabBar}
-              activeIndex={selectedTab}
-              handleActiveIndexUpdate={(activeIndex) => this.changeTab(activeIndex)}
-            >
-              <Tab key="Login">
-                <span className="mdc-tab__text-label">Log in</span>
-              </Tab>
-              <Tab key="Signup">
-                <span className="mdc-tab__text-label">Sign up</span>
-              </Tab>
-            </TabBar>
-            {selectedTab === 0 ? (
-              <div>
-                <div
-                  ref={(form) => {
-                    this.loginForm = form;
-                  }}
-                >
-                  <input
-                    style={{ width: '100%', margin: '10px auto' }}
-                    className="form-control"
+      <Card>
+        <div>
+          <SocialLogin />
+          <TabBar activeIndex={selectedTab} handleActiveIndexUpdate={this.handleTabChange}>
+            <Tab key="Login">
+              <span className="mdc-tab__text-label">Log in</span>
+            </Tab>
+            <Tab key="Signup">
+              <span className="mdc-tab__text-label">Sign up</span>
+            </Tab>
+          </TabBar>
+          {selectedTab === 0 ? (
+            <div>
+              <form onSubmit={this.authWithEmailPassword}>
+                <TextField label="Email" className={styles.formInput}>
+                  <Input
                     name="email"
                     type="email"
-                    ref={(input) => {
-                      this.emailInput = input;
-                    }}
-                    placeholder="Email"
+                    value={emailInput}
+                    onChange={this.handleEmailInputChange}
                   />
-                  <input
-                    style={{ width: '100%', margin: '10px auto' }}
-                    className="form-control"
+                </TextField>
+                <TextField label="Password" className={styles.formInput}>
+                  <Input
                     name="password"
                     type="password"
-                    ref={(input) => {
-                      this.passwordInput = input;
-                    }}
-                    placeholder="Password"
+                    value={passwordInput}
+                    onChange={this.handlePasswordInputChange}
                   />
-                  <Button
-                    className={styles.submitButton}
-                    value="Log in"
-                    onClick={(event) => {
-                      this.authWithEmailPassword(event);
-                    }}
-                    icon={<MaterialIcon icon="send" />}
-                    raised
-                  >
-                    Log in
-                  </Button>
-                </div>
-                <hr style={{ marginTop: '10px', marginBottom: '10px' }} />
-                <SocialLogin />
-              </div>
-            ) : (
-              <SignupForm />
-            )}
-          </div>
-        </section>
-      </div>
+                </TextField>
+                <Button
+                  type="submit"
+                  icon={<MaterialIcon icon="send" />}
+                  disabled={emailInput.length === 0 || passwordInput.length === 0}
+                  raised
+                >
+                  Log in
+                </Button>
+              </form>
+            </div>
+          ) : (
+            <SignupForm />
+          )}
+        </div>
+      </Card>
     );
   }
 }

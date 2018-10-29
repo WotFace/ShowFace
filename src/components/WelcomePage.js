@@ -40,7 +40,7 @@ class WelcomePage extends Component {
         <div className={styles.readyContainer}>
           <div className={styles.readyColumnText}>
             <h2 className={styles.readyText}>Ready to start organizing?</h2>
-            <h2>Create an account or start organizing</h2>
+            <h2>Create an account or start now</h2>
           </div>
           <div className={styles.readyColumnButton}>
             <Button className={styles.readyButton} raised onClick={() => {}}>CREATE AN ACCOUNT</Button>

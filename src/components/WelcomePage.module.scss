@@ -4,10 +4,33 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: $mdc-theme-primary;
   color: white;
   text-align: center;
   padding: 64px 32px 32px;
+}
+
+.background {
+  background: url('../background.svg') no-repeat;
+  @media screen and (min-width: 1200px) {
+    background-size: 100%;
+    margin: -2px;
+  }
+  @media screen and (min-width: 799px) and (max-width: 1199px) {
+    background-size: 150%;
+    background-position: top center;
+  }
+  @media screen and (min-width: 600px) and (max-width: 799px) {
+    background-size: 225%;
+    background-position: top center;
+  }
+  @media screen and (min-width: 350px) and (max-width: 599px) {
+    background-size: 450%;
+    background-position: top center;
+  }
+  @media screen and (max-width: 349px) {
+    background-size: 600%;
+    background-position: top center;
+  }
 }
 
 #subText {

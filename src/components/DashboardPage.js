@@ -83,21 +83,21 @@ class DashboardPage extends Component {
 
     return (
       <>
+        {pending.length > 0 && (
+          <Card className={styles.card} id={styles.toRespondCard}>
+            <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
+              Polls awaiting your response
+            </div>
+            {this.userShowItems(pending, 'respond')}
+          </Card>
+        )}
+
         {admin.length > 0 && (
           <Card className={styles.card}>
             <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
               Polls created by you
             </div>
             {this.userShowItems(admin, 'results')}
-          </Card>
-        )}
-
-        {pending.length > 0 && (
-          <Card className={styles.card}>
-            <div className={classnames(styles.cardHeader, 'mdc-typography--headline5')}>
-              Polls pending your response
-            </div>
-            {this.userShowItems(pending, 'respond')}
           </Card>
         )}
 

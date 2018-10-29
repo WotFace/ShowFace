@@ -1,3 +1,5 @@
+@import '../mdc';
+
 .header {
   text-align: center;
   margin-bottom: 10px;
@@ -21,5 +23,9 @@
 
   .cardHeader {
     text-align: center;
+  }
+
+  &#toRespondCard {
+    @include mdc-card-outline($the-pinkish-color, 0.2em);
   }
 }

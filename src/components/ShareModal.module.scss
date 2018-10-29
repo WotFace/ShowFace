@@ -1,7 +1,4 @@
-$mdc-theme-primary: #193163;
-$mdc-theme-secondary: #F9BA5C;
-$mdc-theme-surface: #F7F6F4;
-
+@import '../mdc-variables';
 
 .container {
   width: 475px;
@@ -15,11 +12,11 @@ $mdc-theme-surface: #F7F6F4;
 }
 
 .socialIcon {
-    width: 50%;
+  width: 50%;
 }
 
 .socialIcon:hover {
-    fill: rgb(255, 255, 255);
+  fill: rgb(255, 255, 255);
 }
 
 .copyUrlInput {
@@ -36,27 +33,27 @@ $mdc-theme-surface: #F7F6F4;
 }
 
 .shareRow {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 
 }
 
 .descText {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 #linkShareRow {
-    display: flex;
-    flex-direction: row;
-    margin: 0px 0px 10px 0px;
+  display: flex;
+  flex-direction: row;
+  margin: 0px 0px 10px 0px;
 }
 
 .tabDiv {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    justify-content: center;
-    align-items: center
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center
 }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
 import { withAlert } from 'react-alert';
-import Button from '@material/react-button';
 import Card from '@material/react-card';
 import classnames from 'classnames';
 import { format } from 'date-fns';

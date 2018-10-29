@@ -83,7 +83,7 @@ export default class PollRespondNameForm extends Component {
     return (
       <form className={styles.nameForm} onSubmit={this.handleNameFormSubmit}>
         <div className="mdc-typography--headline6">
-          Respond {canContinueAsSignedInUser ? 'as someone else' : 'with a name'}
+          Respond {canContinueAsSignedInUser ? 'as someone else' : 'with a pseudonym'}
         </div>
         <div className={classnames(styles.descText, 'mdc-typography--caption')}>
           Quicky and easily respond to a poll. Your responses can be changed by anyone.
@@ -112,10 +112,6 @@ export default class PollRespondNameForm extends Component {
   render() {
     return (
       <div className={styles.container}>
-        <div className={styles.titleContainer}>
-          <div className="mdc-typography--headline4">Welcome to ShowFace!</div>
-          <p className="mdc-typography--body1">Let the organizers of this poll know who you are.</p>
-        </div>
         <Card className={styles.card}>
           {this.renderWithAccountSection()}
           <Divider className={styles.divider} text="OR" />

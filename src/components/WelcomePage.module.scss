@@ -59,7 +59,6 @@
 }
 
 @mixin backgroundMute {
-  background: url('../background-2.svg') no-repeat;
   background-size: cover;
   margin: -1px;
 }
@@ -70,6 +69,7 @@
 }
 
 .descriptionContainer {
+  background: url('../background-3.svg') no-repeat;
   @include backgroundMute;
 
   padding: 100px 10% 50px 10%;
@@ -79,6 +79,7 @@
   @media screen and (max-width: 999px) {
     flex-direction: column;
     padding-top: 300px;
+    padding-bottom: 150px;
     .descriptionItems {
       flex: 100%;
     }
@@ -86,6 +87,7 @@
 
   @media screen and (min-width: 1000px) {
     padding-top: 150px;
+    padding-bottom: 100px;
     .descriptionItems {
       flex: 33.33%;
       padding: 0px 32px;
@@ -100,6 +102,9 @@
   .descriptionItems {
     color: $mdc-theme-primary;
     padding-bottom: 50px;
+    .descriptionItemsHeader {
+      font-weight: bolder;
+    }
   }
 }
 
@@ -128,7 +133,17 @@
 
   .readyColumnText {
     .readyText {
+      font-weight: bold;
       color: $mdc-theme-primary;
+    }
+  }
+
+  .readyColumnButton {
+    .navLink {
+      text-decoration: none;
+    }
+    .readyButton {
+      height: 48px;
     }
   }
 
@@ -140,7 +155,7 @@
     }
     .readyColumnButton {
       flex: 100%;
-      .readyButton {
+      .readyButtonSignUp {
         margin-right: 40px;
       }
     }
@@ -169,6 +184,7 @@
 
 .footerContainer {
   @include backgroundMute;
+  background: url('../background-2.svg') no-repeat;
 
   padding: 150px 10% 50px 10%;
   display: flex;

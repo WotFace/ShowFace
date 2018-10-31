@@ -81,6 +81,7 @@ class LoginPage extends Component {
     this.setState({ authenticating: false, authenticated: false, authError: error });
 
   render() {
+    const { location } = this.props;
     const {
       selectedTab,
       nameInput,
@@ -92,7 +93,12 @@ class LoginPage extends Component {
     } = this.state;
 
     if (authenticated) {
-      return <Redirect to="/dashboard" />;
+      let to = '/dashboard';
+      // Redirect back to where we came from if location.state.from exists
+      if (location.state && location.state.from) {
+        to = location.state.from.pathname;
+      }
+      return <Redirect to={to} />;
     }
 
     const submitButton =

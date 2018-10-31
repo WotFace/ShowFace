@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import Button from '@material/react-button';
 import Card from '@material/react-card';
 import TextField, { Input } from '@material/react-text-field';
@@ -7,7 +8,7 @@ import { cleanName } from '../utils/string';
 import Divider from './Divider';
 import styles from './PollRespondNameForm.module.scss';
 
-export default class PollRespondNameForm extends Component {
+class PollRespondNameForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,13 +21,9 @@ export default class PollRespondNameForm extends Component {
   }
 
   handleLogIn = () => {
-    // TODO: Show log in dialog/page
-    console.log('TODO: Show login');
-  };
-
-  handleSignUp = () => {
-    // TODO: Show sign up dialog/page
-    console.log('TODO: Show signup');
+    // Show log in dialog/page, and make auth page redirect back to this page
+    const { history } = this.props;
+    history.push('/login', { from: history.location });
   };
 
   handleNameChange = (e) => {
@@ -61,10 +58,7 @@ export default class PollRespondNameForm extends Component {
         ) : (
           <div className={styles.authButtonContainer}>
             <Button onClick={this.handleLogIn} outlined>
-              Log In
-            </Button>
-            <Button onClick={this.handleSignUp} outlined>
-              Sign Up
+              Log In or Sign Up
             </Button>
           </div>
         )}
@@ -121,3 +115,5 @@ export default class PollRespondNameForm extends Component {
     );
   }
 }
+
+export default withRouter(PollRespondNameForm);

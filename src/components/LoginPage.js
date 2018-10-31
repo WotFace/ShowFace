@@ -41,50 +41,48 @@ class LoginPage extends Component {
       <div className={styles.outerContainer}>
         <div className={styles.innerContainer}>
           <Card className={styles.card}>
-            <div>
-              <SocialLogin />
-              <TabBar activeIndex={selectedTab} handleActiveIndexUpdate={this.handleTabChange}>
-                <Tab key="Login">
-                  <span className="mdc-tab__text-label">Log in</span>
-                </Tab>
-                <Tab key="Signup">
-                  <span className="mdc-tab__text-label">Sign up</span>
-                </Tab>
-              </TabBar>
-              {selectedTab === 0 ? (
-                <div>
-                  <form className={styles.form} onSubmit={this.authWithEmailPassword}>
-                    <TextField label="Email" className={styles.formInput}>
-                      <Input
-                        name="email"
-                        type="email"
-                        value={emailInput}
-                        onChange={this.handleEmailInputChange}
-                      />
-                    </TextField>
-                    <TextField label="Password" className={styles.formInput}>
-                      <Input
-                        name="password"
-                        type="password"
-                        value={passwordInput}
-                        onChange={this.handlePasswordInputChange}
-                      />
-                    </TextField>
-                    <Button
-                      type="submit"
-                      className={styles.submitButton}
-                      icon={<MaterialIcon icon="send" />}
-                      disabled={emailInput.length === 0 || passwordInput.length === 0}
-                      raised
-                    >
-                      Log in
-                    </Button>
-                  </form>
-                </div>
-              ) : (
-                <SignupForm />
-              )}
-            </div>
+            <SocialLogin />
+          </Card>
+          <Card className={styles.card}>
+            <TabBar activeIndex={selectedTab} handleActiveIndexUpdate={this.handleTabChange}>
+              <Tab key="Login">
+                <span className="mdc-tab__text-label">Log in</span>
+              </Tab>
+              <Tab key="Signup">
+                <span className="mdc-tab__text-label">Sign up</span>
+              </Tab>
+            </TabBar>
+            {selectedTab === 0 ? (
+              <form className={styles.form} onSubmit={this.authWithEmailPassword}>
+                <TextField label="Email" className={styles.formInput}>
+                  <Input
+                    name="email"
+                    type="email"
+                    value={emailInput}
+                    onChange={this.handleEmailInputChange}
+                  />
+                </TextField>
+                <TextField label="Password" className={styles.formInput}>
+                  <Input
+                    name="password"
+                    type="password"
+                    value={passwordInput}
+                    onChange={this.handlePasswordInputChange}
+                  />
+                </TextField>
+                <Button
+                  type="submit"
+                  className={styles.submitButton}
+                  icon={<MaterialIcon icon="send" />}
+                  disabled={emailInput.length === 0 || passwordInput.length === 0}
+                  raised
+                >
+                  Log in
+                </Button>
+              </form>
+            ) : (
+              <SignupForm />
+            )}
           </Card>
         </div>
       </div>

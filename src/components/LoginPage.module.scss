@@ -4,6 +4,7 @@
   margin-right: auto;
   width: 100%;
 
+  // Vertically center the login panels on shorter viewports
   @media (min-height: 40em) {
     position: absolute;
     top: 50%;
@@ -17,16 +18,16 @@
 }
 
 .card {
-  padding: 1em;
+  margin-top: 1.3em;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  margin-top: 0.5em;
+  margin: 0.5em 1em 1em 1em;
 
   .formInput {
-    margin-top: 0.5em;
+    margin-top: 0.7em;
   }
 
   .submitButton {

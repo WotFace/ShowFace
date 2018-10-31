@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
+import { Redirect } from 'react-router-dom';
 import gql from 'graphql-tag';
 
 import Button from '@material/react-button';
@@ -24,30 +25,36 @@ class LoginPage extends Component {
     nameInput: '',
     emailInput: '',
     passwordInput: '',
+
+    authenticating: false, // Logging in or signing up
+    authenticated: false, // Logged in or signed up
+    authError: null,
   };
 
   authWithEmailPassword() {
     const { emailInput, passwordInput } = this.state;
+    this.setState({ authenticating: true, authenticated: false, authError: null });
     auth()
       .signInWithEmailAndPassword(emailInput, passwordInput)
       .then((res) => {
-        console.log('Logged in', res, emailInput);
+        this.setState({ authenticating: false, authenticated: true, authError: null });
       })
       .catch((error) => {
-        console.log('Error', error);
+        this.setState({ authenticating: false, authenticated: false, authError: error });
       });
   }
 
   createUserWithEmailAndPassword() {
     const { nameInput, emailInput, passwordInput } = this.state;
+    this.setState({ authenticating: true, authenticated: false, authError: null });
     auth()
       .createUserWithEmailAndPassword(emailInput, passwordInput)
       .then(() => this.props.createUser(nameInput, emailInput))
       .then((res) => {
-        console.log('Signed up!', res, nameInput, emailInput);
+        this.setState({ authenticating: false, authenticated: true, authError: null });
       })
       .catch((error) => {
-        console.log('Error', error);
+        this.setState({ authenticating: false, authenticated: false, authError: error });
       });
   }
 
@@ -60,13 +67,25 @@ class LoginPage extends Component {
     }
   };
 
-  handleTabChange = (selectedTab) => this.setState({ selectedTab });
+  handleTabChange = (selectedTab) => this.setState({ selectedTab, authError: null });
   handleNameInputChange = (e) => this.setState({ nameInput: e.target.value });
   handleEmailInputChange = (e) => this.setState({ emailInput: e.target.value });
   handlePasswordInputChange = (e) => this.setState({ passwordInput: e.target.value });
 
   render() {
-    const { selectedTab, nameInput, emailInput, passwordInput } = this.state;
+    const {
+      selectedTab,
+      nameInput,
+      emailInput,
+      passwordInput,
+      authenticating,
+      authenticated,
+      authError,
+    } = this.state;
+
+    if (authenticated) {
+      return <Redirect to="/dashboard" />;
+    }
 
     const submitButton =
       selectedTab === this.LOGIN_TAB_IDX ? (
@@ -74,23 +93,29 @@ class LoginPage extends Component {
           type="submit"
           className={styles.submitButton}
           icon={<MaterialIcon icon="exit_to_app" />}
-          disabled={emailInput.length === 0 || passwordInput.length === 0}
+          disabled={authenticating || emailInput.length === 0 || passwordInput.length === 0}
           raised
         >
-          Log in
+          {authenticating ? 'Logging in...' : 'Log in'}
         </Button>
       ) : (
         <Button
           type="submit"
           className={styles.submitButton}
           icon={<MaterialIcon icon="account_circle" />}
-          disabled={nameInput.length === 0 || emailInput.length === 0 || passwordInput.length === 0}
+          disabled={
+            authenticating ||
+            nameInput.length === 0 ||
+            emailInput.length === 0 ||
+            passwordInput.length === 0
+          }
           raised
         >
-          Sign up
+          {authenticating ? 'Signing up...' : 'Sign up'}
         </Button>
       );
 
+    // TODO: Beautify error display
     return (
       <div className={styles.outerContainer}>
         <div className={styles.innerContainer}>
@@ -99,14 +124,20 @@ class LoginPage extends Component {
           </Card>
           <Card className={styles.card}>
             <TabBar activeIndex={selectedTab} handleActiveIndexUpdate={this.handleTabChange}>
-              <Tab key="Login">
+              <Tab key="Login" disabled={authenticating}>
                 <span className="mdc-tab__text-label">Log in</span>
               </Tab>
-              <Tab key="Signup">
+              <Tab key="Signup" disabled={authenticating}>
                 <span className="mdc-tab__text-label">Sign up</span>
               </Tab>
             </TabBar>
             <form className={styles.form} onSubmit={this.handleFormSubmit}>
+              {!!authError && (
+                <div>
+                  Could not {selectedTab === this.LOGIN_TAB_IDX ? 'log in' : 'sign up'}.{' '}
+                  {authError.message}
+                </div>
+              )}
               {selectedTab !== this.LOGIN_TAB_IDX && (
                 <TextField label="Name" className={styles.formInput}>
                   <Input

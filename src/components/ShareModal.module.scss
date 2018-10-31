@@ -1,7 +1,6 @@
-@import '../mdc-variables';
-
 .container {
-  width: 475px;
+  max-width: 475px;
+  width: 100%;
   margin-bottom: 5px;
   display: flex;
   flex-direction: column;
@@ -11,25 +10,17 @@
   border-radius: 0px 0px 10px 10px;
 }
 
-.socialIcon {
-  width: 50%;
-}
-
-.socialIcon:hover {
-  fill: rgb(255, 255, 255);
-}
-
 .copyUrlInput {
   color: white;
-  height: 30px !important;
-  width: 375px;
+  height: 30px !important; // TODO: Remove important
+  width: 100%;
   margin: 10px 10px;
 }
 
 .clipboardButton {
   margin-top: 10px;
   margin-right: 10px;
-  height: 30px !important;
+  height: 30px !important; // TODO: Remove important
 }
 
 .shareRow {
@@ -37,6 +28,9 @@
   flex-direction: row;
   justify-content: center;
 
+  :not(:last-child) {
+    margin-right: 0.5em;
+  }
 }
 
 .descText {
@@ -47,6 +41,7 @@
   display: flex;
   flex-direction: row;
   margin: 0px 0px 10px 0px;
+  width: 100%;
 }
 
 .tabDiv {

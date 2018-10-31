@@ -5,9 +5,10 @@ import classnames from 'classnames';
 import TextField, { Input } from '@material/react-text-field';
 import copyToClipboard from '../utils/copyToClipboard';
 import { withAlert } from 'react-alert';
+import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import WhatsappIcon from '../icons/whatsapp.svg'; // https://fontawesome.com/icons/whatsapp?style=brands
+import WhatsAppIcon from '../icons/whatsapp.svg'; // https://fontawesome.com/icons/whatsapp?style=brands
 import TelegramIcon from '../icons/telegram.svg'; // https://fontawesome.com/icons/facebook-messenger?style=brands
 import { ReactMultiEmail } from 'react-multi-email';
 import './MultiEmailOverride.scss';
@@ -24,7 +25,7 @@ class ShareModal extends Component {
     this.props.alert.success('URL Copied To Clipboard');
   };
 
-  openWhatsapp = () => {
+  openWhatsApp = () => {
     const urlEncodedText = 'Respond%20to%20ShowFace%20poll!%20' + this.props.link;
     const url = 'https://wa.me/?text=' + urlEncodedText;
     window.open(url, '_blank');
@@ -47,15 +48,15 @@ class ShareModal extends Component {
   render() {
     const linkShareDiv = (
       <div className={styles.tabDiv}>
-        <div className={classnames(styles.descText, 'mdc-typography--caption')}>
-          Everyone with the link can vote– no account required.
+        <div className={classnames(styles.descText, 'mdc-typography--body2')}>
+          Everyone with the link can respond to this poll.
         </div>
 
         <div id={styles.linkShareRow}>
           <TextField outlined className={styles.copyUrlInput} label="">
             <Input type="text" value={this.props.link} />
           </TextField>
-          <Button className={styles.clipboardButton} onClick={this.copyUrlToClipboard} raised>
+          <Button className={styles.clipboardButton} onClick={this.copyUrlToClipboard} unelevated>
             Copy
           </Button>
         </div>
@@ -64,15 +65,17 @@ class ShareModal extends Component {
           <Button
             icon={<img className={styles.socialIcon} src={TelegramIcon} />}
             onClick={this.openTelegram}
+            outlined
           >
             Telegram
           </Button>
 
           <Button
-            icon={<img className={styles.socialIcon} src={WhatsappIcon} />}
-            onClick={this.openWhatsapp}
+            icon={<img className={styles.socialIcon} src={WhatsAppIcon} />}
+            onClick={this.openWhatsApp}
+            outlined
           >
-            Whatsapp
+            WhatsApp
           </Button>
         </div>
       </div>
@@ -81,11 +84,15 @@ class ShareModal extends Component {
     const { emails } = this.state;
     const inputEmailDiv = (
       <div className={styles.tabDiv}>
+        <div className={classnames(styles.descText, 'mdc-typography--body2')}>
+          Email your respondents with a link to this poll.
+        </div>
+
         <ReactMultiEmail
-          placeholder="Input Email Addresses"
+          placeholder="Enter email addresses"
           emails={emails}
-          onChange={(_emails) => {
-            this.setState({ emails: _emails });
+          onChange={(emails) => {
+            this.setState({ emails });
           }}
           getLabel={(email, index, removeEmail) => {
             return (
@@ -98,8 +105,14 @@ class ShareModal extends Component {
             );
           }}
         />
-        <Button className={styles.clipboardButton} onClick={this.sendInvites} raised>
-          Send Invites
+        <Button
+          className={styles.clipboardButton}
+          onClick={this.sendInvites}
+          icon={<MaterialIcon icon="send" />}
+          disabled={this.state.emails.length === 0}
+          raised
+        >
+          Send Invitations
         </Button>
       </div>
     );
@@ -107,7 +120,7 @@ class ShareModal extends Component {
     return (
       <Card className={styles.container}>
         <div>
-          <div className="mdc-typography--headline6">Invite your respondents via...</div>
+          <div className="mdc-typography--headline6">Invite respondents via...</div>
           <TabBar
             activeIndex={this.state.activeIndex}
             handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}

@@ -179,7 +179,7 @@ class DashboardPage extends Component {
     }
 
     const { userShows } = getUserShowsResult.data;
-    const welcomeText = getUserResult.data
+    const welcomeText = getUserResult.data && getUserResult.data.user
       ? `Welcome, ${getUserResult.data.user.name}!`
       : 'Welcome!';
 

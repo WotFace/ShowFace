@@ -73,7 +73,7 @@ class CreatePage extends Component {
       // TODO: Beautify
       return <Loading text="Creating" />;
     } else if (data) {
-      return <Redirect to={`/show/${data.createNewShow.slug}`} />;
+      return <Redirect to={`/meeting/${data.createNewShow.slug}`} />;
     } else {
       // Not loading. Render form
       // TODO: Display error if it exists

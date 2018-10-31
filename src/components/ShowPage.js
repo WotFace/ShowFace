@@ -194,7 +194,7 @@ class ShowPageComponent extends Component {
                 exact
                 path={match.url}
                 component={() => (
-                  <Redirect to={`/show/${this.props.match.params.showId}/respond`} />
+                  <Redirect to={`/meeting/${this.props.match.params.showId}/respond`} />
                 )}
               />
               <Route

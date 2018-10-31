@@ -125,13 +125,15 @@ class ShowPageComponent extends Component {
     ));
 
     return (
-      <TabBar
-        className={styles.tabBar}
-        activeIndex={activeIndex === -1 ? undefined : activeIndex}
-        handleActiveIndexUpdate={(activeIndex) => history.push(links[activeIndex].path)}
-      >
-        {tabs}
-      </TabBar>
+      <div className={styles.tabBarContainer}>
+        <TabBar
+          className={styles.tabBar}
+          activeIndex={activeIndex === -1 ? undefined : activeIndex}
+          handleActiveIndexUpdate={(activeIndex) => history.push(links[activeIndex].path)}
+        >
+          {tabs}
+        </TabBar>
+      </div>
     );
   };
 
@@ -183,8 +185,8 @@ class ShowPageComponent extends Component {
               />
             </div>
           </div>
-          {this.renderTabBar()}
         </section>
+        {this.renderTabBar()}
         <section id="show">
           {show && (
             <React.Fragment>

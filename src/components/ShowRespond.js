@@ -124,7 +124,6 @@ class ShowRespond extends Component {
   renderBottomBar() {
     const { hasPendingSubmissions, isSaving } = this.props;
     const { saved } = this.state;
-    console.log(this.props);
 
     let mainText;
 

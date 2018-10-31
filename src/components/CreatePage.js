@@ -115,6 +115,7 @@ class CreatePage extends Component {
                   <p>Select one or more dates for your meeting.</p>
                   <DayPicker
                     fromMonth={today}
+                    numberOfMonths={2}
                     disabledDays={{ before: today }}
                     selectedDays={selectedDays}
                     onDayClick={this.handleDayClick}

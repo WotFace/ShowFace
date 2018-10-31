@@ -19,6 +19,7 @@ import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';
 import Modal from 'react-modal';
 import './ReactModalOverride.scss';
+import EditShowPage from './EditShowPage'
 
 import styles from './ShowPage.module.scss';
 
@@ -140,6 +141,14 @@ class ShowPageComponent extends Component {
         text: 'Respond',
         icon: 'add',
         path: `${this.meetingPageBaseUrl()}/respond`,
+      });
+    }
+
+    if (responseAllowed) { // Check if settings is allowed
+      links.unshift({
+        text: 'Settings',
+        icon: 'settings',
+        path: `${this.meetingPageBaseUrl()}/settings`,
       });
     }
 
@@ -410,11 +419,11 @@ function getOptimisticResponseForShow(name, email, responses, show) {
     const firebaseUser = getFirebaseUserInfo();
     const user = firebaseUser
       ? {
-          __typename: 'User',
-          name: firebaseUser.displayName, // TODO: Use user's name on our server
-          uid: firebaseUser.uid,
-          email,
-        }
+        __typename: 'User',
+        name: firebaseUser.displayName, // TODO: Use user's name on our server
+        uid: firebaseUser.uid,
+        email,
+      }
       : null;
     newRespondents = [
       ...respondents,

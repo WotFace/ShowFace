@@ -95,22 +95,21 @@ class CreatePage extends Component {
           <form>
             <section className={styles.formSection}>
               <Card>
-                <div>
-                  <TextField label="Meet for what?" className={styles.formInput}>
-                    <Input
-                      type="text"
-                      name="name"
-                      value={name}
-                      autoComplete="off"
-                      onChange={this.handleInputChange}
-                    />
-                  </TextField>
-                </div>
+                <TextField label="What are you meeting for?" className={styles.formInput}>
+                  <Input
+                    type="text"
+                    name="name"
+                    value={name}
+                    autoComplete="off"
+                    onChange={this.handleInputChange}
+                  />
+                </TextField>
               </Card>
             </section>
             <section className={styles.formSection}>
               <Card>
-                <div>
+                <div className={styles.noFocus}>
+                  <p>Select one or more dates for your meeting.</p>
                   <DayPicker
                     fromMonth={today}
                     disabledDays={{ before: today }}

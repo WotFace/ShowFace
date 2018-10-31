@@ -19,6 +19,14 @@
 
 .card {
   margin-top: 1.3em;
+
+  &.socialCard {
+    padding: 1em;
+
+    :not(:last-child) {
+      margin-bottom: 0.5em;
+    }
+  }
 }
 
 .form {

@@ -42,6 +42,8 @@ class SocialLogin extends Component {
     var name = '';
     var email = '';
 
+    this.props.onLogInStart();
+
     auth()
       .signInWithPopup(provider)
       .then(async (result) => {
@@ -65,8 +67,10 @@ class SocialLogin extends Component {
         });
         return data;
       })
+      .then(() => this.props.onLoggedIn())
       .catch((error) => {
         console.log('Error', error);
+        this.props.onLogInError(error);
       });
   }
 
@@ -74,14 +78,14 @@ class SocialLogin extends Component {
     return (
       <ApolloConsumer>
         {(client) => (
-          <div>
-            <Button onClick={() => this.socialAuth(googleAuthProvider, client)} raised>
+          <>
+            <Button onClick={() => this.socialAuth(googleAuthProvider, client)} outlined>
               Log in with Google
             </Button>
-            <Button onClick={() => this.socialAuth(facebookAuthProvider, client)} raised>
+            <Button onClick={() => this.socialAuth(facebookAuthProvider, client)} outlined>
               Log in with Facebook
             </Button>
-          </div>
+          </>
         )}
       </ApolloConsumer>
     );

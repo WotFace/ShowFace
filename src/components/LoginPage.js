@@ -3,6 +3,7 @@ import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import gql from 'graphql-tag';
+import classnames from 'classnames';
 
 import Button from '@material/react-button';
 import Card from '@material/react-card';
@@ -72,6 +73,13 @@ class LoginPage extends Component {
   handleEmailInputChange = (e) => this.setState({ emailInput: e.target.value });
   handlePasswordInputChange = (e) => this.setState({ passwordInput: e.target.value });
 
+  handleSocialLogInStart = () =>
+    this.setState({ authenticating: true, authenticated: false, authError: null });
+  handleSocialLoggedIn = () =>
+    this.setState({ authenticating: false, authenticated: true, authError: null });
+  handleSocialLogInError = (error) =>
+    this.setState({ authenticating: false, authenticated: false, authError: error });
+
   render() {
     const {
       selectedTab,
@@ -119,8 +127,12 @@ class LoginPage extends Component {
     return (
       <div className={styles.outerContainer}>
         <div className={styles.innerContainer}>
-          <Card className={styles.card}>
-            <SocialLogin />
+          <Card className={classnames(styles.card, styles.socialCard)}>
+            <SocialLogin
+              onLogInStart={this.handleSocialLogInStart}
+              onLoggedIn={this.handleSocialLoggedIn}
+              onLogInError={this.handleSocialLogInError}
+            />
           </Card>
           <Card className={styles.card}>
             <TabBar activeIndex={selectedTab} handleActiveIndexUpdate={this.handleTabChange}>

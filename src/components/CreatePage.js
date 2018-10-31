@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { withAlert } from 'react-alert';
-import DayPicker, { DateUtils } from 'react-day-picker';
-import Card from '@material/react-card';
-import 'react-day-picker/lib/style.css';
 import { Mutation } from 'react-apollo';
+import DayPicker, { DateUtils } from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
+
 import queryString from 'query-string';
 import { startOfToday, endOfToday } from 'date-fns';
 import gql from 'graphql-tag';
+
+import Button from '@material/react-button';
+import Card from '@material/react-card';
+import MaterialIcon from '@material/react-material-icon';
+import TextField, { Input } from '@material/react-text-field';
+
 import { getAuthInput } from '../utils/auth';
 import { cleanName } from '../utils/string';
+import BottomAppBar from './BottomAppBar';
 import Loading from './Loading';
 
 import styles from './CreatePage.module.scss';
-
-import TextField, { Input } from '@material/react-text-field';
-import Button from '@material/react-button';
-import BottomAppBar from './BottomAppBar';
 
 class CreatePage extends Component {
   constructor(props) {
@@ -125,9 +128,10 @@ class CreatePage extends Component {
                   className={styles.submitButton}
                   onClick={this.handleSubmit}
                   disabled={noSelectedDay || cleanName(name).length === 0}
+                  icon={<MaterialIcon icon="arrow_forward" />}
                   raised
                 >
-                  Submit
+                  Create
                 </Button>
               </div>
             </BottomAppBar>

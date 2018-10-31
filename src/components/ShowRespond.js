@@ -135,7 +135,7 @@ class ShowRespond extends Component {
             icon={<MaterialIcon icon="send" />}
             raised
           >
-            Submit
+            Save
           </Button>
         </div>
       </BottomAppBar>

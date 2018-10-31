@@ -1,0 +1,54 @@
+.container {
+  max-width: 475px;
+  width: 100%;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.copyUrlInput {
+  color: white;
+  height: 30px !important; // TODO: Remove important
+  width: 100%;
+  margin: 10px 10px;
+}
+
+.clipboardButton {
+  margin-top: 10px;
+  margin-right: 10px;
+  height: 30px !important; // TODO: Remove important
+}
+
+.shareRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  :not(:last-child) {
+    margin-right: 0.5em;
+  }
+}
+
+.descText {
+  margin-top: 10px;
+}
+
+#linkShareRow {
+  display: flex;
+  flex-direction: row;
+  margin: 0px 0px 10px 0px;
+  width: 100%;
+}
+
+.tabDiv {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center
+}

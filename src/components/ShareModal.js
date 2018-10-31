@@ -21,7 +21,7 @@ class ShareModal extends Component {
 
   copyUrlToClipboard = () => {
     copyToClipboard(this.props.link);
-    this.props.alert.success("URL Copied To Clipboard");
+    this.props.alert.success('URL Copied To Clipboard');
   };
 
   openWhatsapp = () => {

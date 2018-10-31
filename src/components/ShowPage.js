@@ -18,7 +18,7 @@ import Loading from './Loading';
 import Error from './Error';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
-import ShareModal from './ShareModal'
+import ShareModal from './ShareModal';
 
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
@@ -175,7 +175,7 @@ class ShowPageComponent extends Component {
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
             <div className={styles.copyUrlInputContainer}>
-              <ShareModal link={window.location.href}/>
+              <ShareModal link={window.location.href} />
             </div>
           </div>
         </section>

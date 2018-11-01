@@ -109,12 +109,12 @@ class ShowPageComponent extends Component {
     this.setState({ pendingSubmission: null });
   };
 
-  renderTabBar = () => {
+  renderTabBar = (responseAllowed) => {
     const { match, location, history } = this.props;
-    const links = [
-      { text: 'Respond', icon: 'add', path: `${match.url}/respond` },
-      { text: 'Results', icon: 'list', path: `${match.url}/results` },
-    ];
+    var links = [{ text: 'Results', icon: 'list', path: `${match.url}/results` }];
+    if (responseAllowed) {
+      links.unshift({ text: 'Respond', icon: 'add', path: `${match.url}/respond` });
+    }
 
     const { pathname } = location;
     const activeIndex = links.findIndex(({ path }) => path === pathname);
@@ -169,6 +169,10 @@ class ShowPageComponent extends Component {
       );
     }
 
+    const responseAllowed = !latestSavedShow.isReadOnly;
+
+    console.log(latestSavedShow.isReadOnly);
+
     return (
       <div className={styles.container}>
         <section className={styles.headerSection}>
@@ -179,7 +183,7 @@ class ShowPageComponent extends Component {
             </div>
           </div>
         </section>
-        {this.renderTabBar()}
+        {this.renderTabBar(responseAllowed)}
         <section id="show">
           {show && (
             <React.Fragment>
@@ -190,21 +194,32 @@ class ShowPageComponent extends Component {
                   <Redirect to={`/meeting/${this.props.match.params.showId}/respond`} />
                 )}
               />
-              <Route
-                path={match.url + '/respond'}
-                render={() => (
-                  <ShowRespond
-                    show={show}
-                    hasSetName={hasSetName}
-                    onSetName={this.handleSetName}
-                    onSelectTimes={this.handleSelectTimes}
-                    onDeselectTimes={this.handleDeselectTimes}
-                    hasPendingSubmissions={!!pendingSubmission}
-                    isSaving={upsertResponsesLoading}
-                    onSubmit={this.handleSubmit}
-                  />
-                )}
-              />
+              {responseAllowed ? (
+                <Route
+                  path={match.url + '/respond'}
+                  render={() => (
+                    <ShowRespond
+                      show={show}
+                      hasSetName={hasSetName}
+                      onSetName={this.handleSetName}
+                      onSelectTimes={this.handleSelectTimes}
+                      onDeselectTimes={this.handleDeselectTimes}
+                      hasPendingSubmissions={!!pendingSubmission}
+                      isSaving={upsertResponsesLoading}
+                      onSubmit={this.handleSubmit}
+                    />
+                  )}
+                />
+              ) : (
+                <>
+                  <p className="mdc-typography--body1">
+                    This meeting is closed from further responses. You can create another Meeting:
+                  </p>
+                  <Card className={styles.card} id={styles.createCard}>
+                    <QuickCreate />
+                  </Card>
+                </>
+              )}
               <Route
                 path={match.url + '/results'}
                 render={() => <ShowResults show={latestSavedShow} />}

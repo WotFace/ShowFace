@@ -124,9 +124,11 @@ class ShowPageComponent extends Component {
 
   renderTabBar = (responseAllowed) => {
     const { match, location, history } = this.props;
+    const { pendingSubmission } = this.state;
     var links = [{ text: 'Results', icon: 'list', path: `${match.url}/results` }];
+    var responseIcon = pendingSubmission ? 'warning' : 'add';
     if (responseAllowed) {
-      links.unshift({ text: 'Respond', icon: 'add', path: `${match.url}/respond` });
+      links.unshift({ text: 'Respond', icon: `${responseIcon}`, path: `${match.url}/respond` });
     }
 
     const { pathname } = location;

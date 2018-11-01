@@ -278,7 +278,7 @@ class ShowPageComponent extends Component {
                 // style={styles.copyUrlInputContainer}
                 contentLabel="Example Modal"
               >
-              <ShareModal link={window.location.href} />
+              <ShareModal link={window.location.href.split('/').slice(0, -1).join('/')} />
               </Modal>
             </div>
           </div>

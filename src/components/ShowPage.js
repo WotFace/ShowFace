@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, withRouter, Link } from 'react-router-dom';
+import { Route, withRouter, Link, Prompt } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
@@ -208,10 +208,16 @@ class ShowPageComponent extends Component {
     const adminAccess = this.amIAdmin();
     const responseAllowed = !latestSavedShow.isReadOnly || adminAccess;
 
-    console.log(latestSavedShow.isReadOnly);
-
     return (
       <div className={styles.container}>
+        <Prompt
+          when={!!pendingSubmission}
+          message={(location) =>
+            location.pathname.startsWith(match.url)
+              ? true
+              : 'You have unsaved changes. Are you sure you want to leave this page?'
+          }
+        />
         <section className={styles.headerSection}>
           <div className={styles.header}>
             <h1>{show && show.name}</h1>

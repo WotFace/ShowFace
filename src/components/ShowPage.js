@@ -5,7 +5,7 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import TextField, { Input } from '@material/react-text-field';
+import classnames from 'classnames';
 import { withAlert } from 'react-alert';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -251,7 +251,19 @@ class ShowPageComponent extends Component {
         />
         <section className={styles.headerSection}>
           <div className={styles.header}>
-            <h1>{show && show.name}</h1>
+            <div className={styles.headerWithShareBtn}>
+              <h1 className={styles.showNameHeader}>{show && show.name}</h1>
+              <button className={styles.shareButton} onClick={this.openModal}>
+                <MaterialIcon
+                  // className='mdc-tab__icon'
+                  className={classnames(
+                    'mdc-tab__icon',
+                    styles.shareIcon,
+                  )}
+                  icon='share'
+                />
+              </button>
+            </div>
             {latestSavedShow.isReadOnly && (
               <>
                 <p className="mdc-typography--body1">
@@ -270,12 +282,10 @@ class ShowPageComponent extends Component {
               </>
             )}
             <div className={styles.copyUrlInputContainer}>
-              <button onClick={this.openModal}>Open Modal</button>
               <Modal 
                 isOpen={this.state.modalIsOpen}
                 onAfterOpen={this.afterOpenModal}
                 onRequestClose={this.closeModal}
-                // style={styles.copyUrlInputContainer}
                 contentLabel="Example Modal"
               >
               <ShareModal link={window.location.href.split('/').slice(0, -1).join('/')} />

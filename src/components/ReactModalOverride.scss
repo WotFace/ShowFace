@@ -4,7 +4,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgba(20, 48, 103, 0.11) !important;
+    background-color: rgba(20, 48, 103, 0.10) !important;
 }
 
 .ReactModal__Content, .ReactModal__Content--after-open {
@@ -17,4 +17,5 @@
   height: auto;
   position: static !important;
   padding: 0px !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }

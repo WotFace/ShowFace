@@ -190,6 +190,20 @@ class ShowPageComponent extends Component {
         <section className={styles.headerSection}>
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
+            {latestSavedShow.isReadOnly && (
+              <p className="mdc-typography--body1">
+                This meeting is closed from further responses.
+              </p>
+            )}
+            {adminAccess ? (
+              <p className="mdc-typography--body1">
+                You can allow others to respond again in settings tab.
+              </p>
+            ) : (
+              <p className="mdc-typography--body1">
+                You can contact meeting organizers to enable response again.
+              </p>
+            )}
             <div className={styles.copyUrlInputContainer}>
               <ShareModal link={window.location.href} />
             </div>
@@ -223,13 +237,7 @@ class ShowPageComponent extends Component {
                   )}
                 />
               ) : (
-                <>
-                  <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
-
-                  <p className="mdc-typography--body1">
-                    This meeting is closed from further responses.
-                  </p>
-                </>
+                <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
               )}
               <Route
                 path={match.url + '/results'}

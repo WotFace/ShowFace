@@ -109,15 +109,15 @@ class ShowPageComponent extends Component {
     this.setState({ pendingSubmission: null });
   };
 
-  renderTabBar = () => {
+  renderTabBar = (responseAllowed) => {
     const { match, location, history } = this.props;
-    const links = [
-      { text: 'Respond', icon: 'add', path: `${match.url}/respond` },
-      { text: 'Results', icon: 'list', path: `${match.url}/results` },
-    ];
+    var links = [{ text: 'Results', icon: 'list', path: `${match.url}/results` }];
+    if (responseAllowed) {
+      links.unshift({ text: 'Respond', icon: 'add', path: `${match.url}/respond` });
+    }
 
     const { pathname } = location;
-    const activeIndex = links.findIndex(({ path }) => path === pathname);
+    const activeIndex = links.length === 1 ? 0 : links.findIndex(({ path }) => path === pathname);
     const tabs = links.map(({ text, icon }) => (
       <Tab key={text}>
         <MaterialIcon className="mdc-tab__icon" icon={icon} />
@@ -136,6 +136,17 @@ class ShowPageComponent extends Component {
         </TabBar>
       </div>
     );
+  };
+
+  amIAdmin = () => {
+    const user = getFirebaseUserInfo();
+    const email = user ? user.email : null;
+    const latestSavedShow = this.latestShow(true);
+    const { respondents } = latestSavedShow;
+    // Find current respondent by current user's email
+    const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
+
+    return currentRespondent && currentRespondent.role === 'admin';
   };
 
   render() {
@@ -169,17 +180,36 @@ class ShowPageComponent extends Component {
       );
     }
 
+    const adminAccess = this.amIAdmin();
+    const responseAllowed = !latestSavedShow.isReadOnly || adminAccess;
+
+    console.log(latestSavedShow.isReadOnly);
+
     return (
       <div className={styles.container}>
         <section className={styles.headerSection}>
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
+            {latestSavedShow.isReadOnly && (
+              <p className="mdc-typography--body1">
+                This meeting is closed from further responses.
+              </p>
+            )}
+            {adminAccess ? (
+              <p className="mdc-typography--body1">
+                You can allow others to respond again in settings tab.
+              </p>
+            ) : (
+              <p className="mdc-typography--body1">
+                You can contact meeting organizers to enable response again.
+              </p>
+            )}
             <div className={styles.copyUrlInputContainer}>
               <ShareModal link={window.location.href} />
             </div>
           </div>
         </section>
-        {this.renderTabBar()}
+        {this.renderTabBar(responseAllowed)}
         <section id="show">
           {show && (
             <React.Fragment>
@@ -190,21 +220,25 @@ class ShowPageComponent extends Component {
                   <Redirect to={`/meeting/${this.props.match.params.showId}/respond`} />
                 )}
               />
-              <Route
-                path={match.url + '/respond'}
-                render={() => (
-                  <ShowRespond
-                    show={show}
-                    hasSetName={hasSetName}
-                    onSetName={this.handleSetName}
-                    onSelectTimes={this.handleSelectTimes}
-                    onDeselectTimes={this.handleDeselectTimes}
-                    hasPendingSubmissions={!!pendingSubmission}
-                    isSaving={upsertResponsesLoading}
-                    onSubmit={this.handleSubmit}
-                  />
-                )}
-              />
+              {responseAllowed ? (
+                <Route
+                  path={match.url + '/respond'}
+                  render={() => (
+                    <ShowRespond
+                      show={show}
+                      hasSetName={hasSetName}
+                      onSetName={this.handleSetName}
+                      onSelectTimes={this.handleSelectTimes}
+                      onDeselectTimes={this.handleDeselectTimes}
+                      hasPendingSubmissions={!!pendingSubmission}
+                      isSaving={upsertResponsesLoading}
+                      onSubmit={this.handleSubmit}
+                    />
+                  )}
+                />
+              ) : (
+                <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
+              )}
               <Route
                 path={match.url + '/results'}
                 render={() => <ShowResults show={latestSavedShow} />}

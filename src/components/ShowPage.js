@@ -223,12 +223,11 @@ class ShowPageComponent extends Component {
                 />
               ) : (
                 <>
+                  <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
+
                   <p className="mdc-typography--body1">
-                    This meeting is closed from further responses. You can create another Meeting:
+                    This meeting is closed from further responses.
                   </p>
-                  <Card className={styles.card} id={styles.createCard}>
-                    <QuickCreate />
-                  </Card>
                 </>
               )}
               <Route

@@ -11,9 +11,11 @@ import LoginPage from './components/LoginPage';
 import DashboardPage from './components/DashboardPage';
 import NotFoundPage from './components/NotFoundPage';
 
+const disableAppBar = ['/login'];
+
 const Routes = () => (
   <>
-    <AppBar />
+    <AppBar pathToDisable={disableAppBar} />
     <Switch>
       <Redirect exact from="/poll" to="/" />
       <Route exact path="/" component={WelcomePage} />

@@ -20,9 +20,9 @@ const Routes = () => (
       <Redirect exact from="/poll" to="/" />
       <Route exact path="/" component={WelcomePage} />
       <Route path="/meeting/:showId" component={ShowPage} />
-      <Route path="/new" component={CreatePage} />
-      <Route path="/login" component={LoginPage} />
-      <Route path="/dashboard" component={DashboardPage} />
+      <Route exact path="/new" component={CreatePage} />
+      <Route exact path="/login" component={LoginPage} />
+      <Route exact path="/dashboard" component={DashboardPage} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
     <GoogleAnalytics />

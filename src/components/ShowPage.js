@@ -117,7 +117,7 @@ class ShowPageComponent extends Component {
     }
 
     const { pathname } = location;
-    const activeIndex = links.findIndex(({ path }) => path === pathname);
+    const activeIndex = links.length === 1 ? 0 : links.findIndex(({ path }) => path === pathname);
     const tabs = links.map(({ text, icon }) => (
       <Tab key={text}>
         <MaterialIcon className="mdc-tab__icon" icon={icon} />

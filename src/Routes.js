@@ -9,6 +9,7 @@ import WelcomePage from './components/WelcomePage';
 import CreatePage from './components/CreatePage';
 import LoginPage from './components/LoginPage';
 import DashboardPage from './components/DashboardPage';
+import NotFoundPage from './components/NotFoundPage';
 
 const Routes = () => (
   <>
@@ -20,6 +21,7 @@ const Routes = () => (
       <Route path="/new" component={CreatePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/dashboard" component={DashboardPage} />
+      <Route path="*" component={NotFoundPage} />
     </Switch>
     <GoogleAnalytics />
   </>

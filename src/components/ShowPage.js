@@ -138,6 +138,17 @@ class ShowPageComponent extends Component {
     );
   };
 
+  isResponseAllowed = () => {
+    const user = getFirebaseUserInfo();
+    const email = user ? user.email : null;
+    const latestSavedShow = this.latestShow(true);
+    const { respondents } = latestSavedShow;
+    // Find current respondent by current user's email
+    const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
+
+    return !latestSavedShow.isReadOnly || (currentRespondent && currentRespondent.role === 'admin');
+  };
+
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
     const { hasSetName, pendingSubmission } = this.state;
@@ -169,7 +180,7 @@ class ShowPageComponent extends Component {
       );
     }
 
-    const responseAllowed = !latestSavedShow.isReadOnly;
+    const responseAllowed = this.isResponseAllowed();
 
     console.log(latestSavedShow.isReadOnly);
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, withRouter } from 'react-router-dom';
+import { Route, withRouter, Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
@@ -21,6 +21,7 @@ import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';
 
+import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
@@ -97,6 +98,17 @@ class ShowPageComponent extends Component {
     });
   }
 
+  renderLoginPrompt = () => {
+    return (
+      <>
+        <p>Log in to be part of this meeting</p>
+        <Link to="/login" className={sharedStyles.buttonLink}>
+          <Button>Log in</Button>
+        </Link>
+      </>
+    );
+  };
+
   handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
   handleDeselectTimes = (startTimes, name) =>
     this.handleSelectDeselectTimes(startTimes, name, false);
@@ -161,6 +173,11 @@ class ShowPageComponent extends Component {
       return <Loading />;
     } else if (getShowError) {
       console.log('Show page load got getShowError', getShowError);
+      if (
+        getShowError.message === "GraphQL error: TypeError: Cannot read property 'token' of null"
+      ) {
+        return <Error title="The meeting is private" message={this.renderLoginPrompt()} />;
+      }
       return <Error title="That didn&#39;t work" message={getShowError.message} />;
     } else if (upsertResponsesError) {
       console.log('Show upsert responses got upsertResponsesError', upsertResponsesError);

@@ -176,11 +176,11 @@ class ShowPageComponent extends Component {
       if (
         getShowError.message === "GraphQL error: TypeError: Cannot read property 'token' of null"
       ) {
-        return <Error title="The meeting is private" message={this.renderLoginPrompt()} />;
+        return <Error title="This meeting is private" message={this.renderLoginPrompt()} />;
       } else if (getShowError.message === 'GraphQL error: Error: UserNotAuthorizedError') {
         return (
           <Error
-            title="The meeting is private"
+            title="This meeting is private"
             message="Contact the meeting&apos;s organizers to ask for an email invite"
           />
         );

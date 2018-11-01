@@ -1,13 +1,14 @@
 .container {
   max-width: 475px;
   width: 100%;
-  margin-bottom: 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding-bottom: 20px;
   padding-top: 20px;
   border-radius: 0px 0px 10px 10px;
+  box-shadow: none !important;
 }
 
 .copyUrlInput {

@@ -30,11 +30,12 @@ import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com
 
 // Modal.setAppElement('#root');
 class ShowPageComponent extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
       hasSetName: false,
+      modalIsOpen: props.isModalOpen || false,
     };
 
     this.openModal = this.openModal.bind(this);

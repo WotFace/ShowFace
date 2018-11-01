@@ -119,7 +119,7 @@ class ShareModal extends Component {
 
     return (
       <Card className={styles.container}>
-        <div>
+        {/* <div> */}
           <div className="mdc-typography--headline6">Invite respondents via...</div>
           <TabBar
             activeIndex={this.state.activeIndex}
@@ -132,7 +132,7 @@ class ShareModal extends Component {
               <span>Email</span>
             </Tab>
           </TabBar>
-        </div>
+        {/* </div> */}
         {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
       </Card>
     );

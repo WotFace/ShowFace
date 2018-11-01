@@ -20,16 +20,44 @@ import Error from './Error';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';
+import Modal from 'react-modal';
+import './ReactModalOverride.scss';
+
 
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
+// Modal.setAppElement('#root');
 class ShowPageComponent extends Component {
-  state = {
-    pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
-    hasSetName: false,
-  };
+  constructor() {
+    super();
+    this.state = {
+      pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
+      hasSetName: false,
+    };
+
+    this.openModal = this.openModal.bind(this);
+    // this.afterOpenModal = this.afterOpenModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+  }
+
+  componentWillMount() {
+    Modal.setAppElement('body');
+  }
+  
+
+  openModal() {
+    this.setState({ modalIsOpen: true });
+  }
+
+  // afterOpenModal() {
+  //   this.subtitle.style.color = '#f00';
+  // }
+
+  closeModal() {
+    this.setState({ modalIsOpen: false });
+  }
 
   copyUrlToClipboard = () => {
     copyToClipboard(window.location.href);
@@ -241,7 +269,16 @@ class ShowPageComponent extends Component {
               </>
             )}
             <div className={styles.copyUrlInputContainer}>
+              <button onClick={this.openModal}>Open Modal</button>
+              <Modal 
+                isOpen={this.state.modalIsOpen}
+                onAfterOpen={this.afterOpenModal}
+                onRequestClose={this.closeModal}
+                // style={styles.copyUrlInputContainer}
+                contentLabel="Example Modal"
+              >
               <ShareModal link={window.location.href} />
+              </Modal>
             </div>
           </div>
         </section>

@@ -138,7 +138,7 @@ class ShowPageComponent extends Component {
     );
   };
 
-  isResponseAllowed = () => {
+  amIAdmin = () => {
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
     const latestSavedShow = this.latestShow(true);
@@ -146,7 +146,7 @@ class ShowPageComponent extends Component {
     // Find current respondent by current user's email
     const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
 
-    return !latestSavedShow.isReadOnly || (currentRespondent && currentRespondent.role === 'admin');
+    return currentRespondent && currentRespondent.role === 'admin';
   };
 
   render() {
@@ -180,7 +180,8 @@ class ShowPageComponent extends Component {
       );
     }
 
-    const responseAllowed = this.isResponseAllowed();
+    const adminAccess = this.amIAdmin();
+    const responseAllowed = !latestSavedShow.isReadOnly || adminAccess;
 
     console.log(latestSavedShow.isReadOnly);
 

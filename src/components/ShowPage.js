@@ -12,6 +12,7 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
+import AuthenticatedQuery from './AuthenticatedQuery';
 import { datifyShowResponse } from '../utils/datetime';
 import copyToClipboard from '../utils/copyToClipboard';
 import Loading from './Loading';
@@ -283,8 +284,8 @@ ShowPageComponent.fragments = {
 };
 
 const GET_SHOW_QUERY = gql`
-  query Show($slug: String!) {
-    show(where: { slug: $slug }) {
+  query Show($slug: String!, $auth: AuthInput) {
+    show(where: { slug: $slug }, auth: $auth) {
       ...ShowPageShow
     }
   }
@@ -365,7 +366,7 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
 function ShowPageWithQueries(props) {
   const slug = props.match.params.showId;
   return (
-    <Query query={GET_SHOW_QUERY} variables={{ slug }}>
+    <AuthenticatedQuery query={GET_SHOW_QUERY} variables={{ slug }}>
       {(getShowResult) => (
         <Mutation mutation={UPSERT_RESPONSES_MUTATION}>
           {(upsertResponses, upsertResponsesResult) => (
@@ -392,7 +393,7 @@ function ShowPageWithQueries(props) {
           )}
         </Mutation>
       )}
-    </Query>
+    </AuthenticatedQuery>
   );
 }
 

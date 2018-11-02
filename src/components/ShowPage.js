@@ -5,7 +5,7 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import classnames from 'classnames';
+import IconButton from '@material/react-icon-button';
 import { withAlert } from 'react-alert';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -23,12 +23,10 @@ import ShareModal from './ShareModal';
 import Modal from 'react-modal';
 import './ReactModalOverride.scss';
 
-
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
-// Modal.setAppElement('#root');
 class ShowPageComponent extends Component {
   constructor(props) {
     super();
@@ -45,7 +43,6 @@ class ShowPageComponent extends Component {
   componentWillMount() {
     Modal.setAppElement('body');
   }
-  
 
   openModal() {
     this.setState({ modalIsOpen: true });
@@ -248,16 +245,9 @@ class ShowPageComponent extends Component {
           <div className={styles.header}>
             <div className={styles.headerWithShareBtn}>
               <h1 className={styles.showNameHeader}>{show && show.name}</h1>
-              <button className={styles.shareButton} onClick={this.openModal}>
-                <MaterialIcon
-                  // className='mdc-tab__icon'
-                  className={classnames(
-                    'mdc-tab__icon',
-                    styles.shareIcon,
-                  )}
-                  icon='share'
-                />
-              </button>
+              <IconButton onClick={this.openModal}>
+                <MaterialIcon className="mdc-tab__icon" icon="share" />
+              </IconButton>
             </div>
             {latestSavedShow.isReadOnly && (
               <>
@@ -270,20 +260,25 @@ class ShowPageComponent extends Component {
                     You can allow others to respond again in settings tab.
                   </p>
                 ) : (
-                  <p className="mdc-typography--body1">
-                    You can contact meeting organizers to enable response again.
+                    <p className="mdc-typography--body1">
+                      You can contact meeting organizers to enable response again.
                   </p>
-                )}
+                  )}
               </>
             )}
             <div className={styles.copyUrlInputContainer}>
-              <Modal 
+              <Modal
                 isOpen={this.state.modalIsOpen}
                 onAfterOpen={this.afterOpenModal}
                 onRequestClose={this.closeModal}
-                contentLabel="Example Modal"
+                contentLabel="Share"
               >
-              <ShareModal link={window.location.href.split('/').slice(0, -1).join('/')} />
+                <ShareModal
+                  link={window.location.href
+                    .split('/')
+                    .slice(0, -1)
+                    .join('/')}
+                />
               </Modal>
             </div>
           </div>
@@ -316,8 +311,8 @@ class ShowPageComponent extends Component {
                   )}
                 />
               ) : (
-                <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
-              )}
+                  <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
+                )}
               <Route
                 path={match.url + '/results'}
                 render={() => <ShowResults show={latestSavedShow} />}
@@ -397,11 +392,11 @@ function getOptimisticResponseForShow(name, email, responses, show) {
     const firebaseUser = getFirebaseUserInfo();
     const user = firebaseUser
       ? {
-          __typename: 'User',
-          name: firebaseUser.displayName, // TODO: Use user's name on our server
-          uid: firebaseUser.uid,
-          email,
-        }
+        __typename: 'User',
+        name: firebaseUser.displayName, // TODO: Use user's name on our server
+        uid: firebaseUser.uid,
+        email,
+      }
       : null;
     newRespondents = [
       ...respondents,

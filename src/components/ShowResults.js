@@ -53,7 +53,7 @@ class ShowResults extends Component {
       <BottomAppBar className={styles.bottomBar}>
         <div className={styles.bottomBarContent}>
           <IconButton onClick={this.handleDetailToggleClick}>
-            <MaterialIcon icon={isShowingDetails ? 'arrow_back' : 'more_vert'} />
+            <MaterialIcon icon={isShowingDetails ? 'grid_on' : 'format_list_bulleted'} />
           </IconButton>
           <span className={styles.mainText}>
             {format(selectedTime, 'D MMM hh:mmA')}

@@ -19,7 +19,7 @@ $sidebar-hidden-breakpoint: largephone;
 @media (min-width: mdc-layout-grid-breakpoint-min($sidebar-hidden-breakpoint)) {
   .sidebar {
     width: 17em;
-    top: 1em;
+    top: 5em;
     margin-left: 1.8em;
     position: -webkit-sticky;
     position: sticky;

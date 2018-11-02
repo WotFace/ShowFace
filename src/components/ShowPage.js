@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, withRouter } from 'react-router-dom';
+import { Route, withRouter, Link, Prompt } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
@@ -12,13 +12,16 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
+import AuthenticatedQuery from './AuthenticatedQuery';
 import { datifyShowResponse } from '../utils/datetime';
 import copyToClipboard from '../utils/copyToClipboard';
 import Loading from './Loading';
 import Error from './Error';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
+import ShareModal from './ShareModal';
 
+import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
@@ -95,6 +98,17 @@ class ShowPageComponent extends Component {
     });
   }
 
+  renderLoginPrompt = () => {
+    return (
+      <>
+        <p>Log in to be part of this meeting</p>
+        <Link to="/login" className={sharedStyles.buttonLink}>
+          <Button>Log in</Button>
+        </Link>
+      </>
+    );
+  };
+
   handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
   handleDeselectTimes = (startTimes, name) =>
     this.handleSelectDeselectTimes(startTimes, name, false);
@@ -108,15 +122,17 @@ class ShowPageComponent extends Component {
     this.setState({ pendingSubmission: null });
   };
 
-  renderTabBar = () => {
+  renderTabBar = (responseAllowed) => {
     const { match, location, history } = this.props;
-    const links = [
-      { text: 'Respond', icon: 'add', path: `${match.url}/respond` },
-      { text: 'Results', icon: 'list', path: `${match.url}/results` },
-    ];
+    const { pendingSubmission } = this.state;
+    var links = [{ text: 'Results', icon: 'list', path: `${match.url}/results` }];
+    var responseIcon = pendingSubmission ? 'warning' : 'add';
+    if (responseAllowed) {
+      links.unshift({ text: 'Respond', icon: `${responseIcon}`, path: `${match.url}/respond` });
+    }
 
     const { pathname } = location;
-    const activeIndex = links.findIndex(({ path }) => path === pathname);
+    const activeIndex = links.length === 1 ? 0 : links.findIndex(({ path }) => path === pathname);
     const tabs = links.map(({ text, icon }) => (
       <Tab key={text}>
         <MaterialIcon className="mdc-tab__icon" icon={icon} />
@@ -125,14 +141,27 @@ class ShowPageComponent extends Component {
     ));
 
     return (
-      <TabBar
-        className={styles.tabBar}
-        activeIndex={activeIndex === -1 ? undefined : activeIndex}
-        handleActiveIndexUpdate={(activeIndex) => history.push(links[activeIndex].path)}
-      >
-        {tabs}
-      </TabBar>
+      <div className={styles.tabBarContainer}>
+        <TabBar
+          className={styles.tabBar}
+          activeIndex={activeIndex === -1 ? undefined : activeIndex}
+          handleActiveIndexUpdate={(activeIndex) => history.push(links[activeIndex].path)}
+        >
+          {tabs}
+        </TabBar>
+      </div>
     );
+  };
+
+  amIAdmin = () => {
+    const user = getFirebaseUserInfo();
+    const email = user ? user.email : null;
+    const latestSavedShow = this.latestShow(true);
+    const { respondents } = latestSavedShow;
+    // Find current respondent by current user's email
+    const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
+
+    return currentRespondent && currentRespondent.role === 'admin';
   };
 
   render() {
@@ -146,6 +175,18 @@ class ShowPageComponent extends Component {
       return <Loading />;
     } else if (getShowError) {
       console.log('Show page load got getShowError', getShowError);
+      if (
+        getShowError.message === "GraphQL error: TypeError: Cannot read property 'token' of null"
+      ) {
+        return <Error title="This meeting is private" message={this.renderLoginPrompt()} />;
+      } else if (getShowError.message === 'GraphQL error: Error: UserNotAuthorizedError') {
+        return (
+          <Error
+            title="This meeting is private"
+            message="Contact the meeting&apos;s organizers to ask for an email invite"
+          />
+        );
+      }
       return <Error title="That didn&#39;t work" message={getShowError.message} />;
     } else if (upsertResponsesError) {
       console.log('Show upsert responses got upsertResponsesError', upsertResponsesError);
@@ -166,25 +207,45 @@ class ShowPageComponent extends Component {
       );
     }
 
+    const adminAccess = this.amIAdmin();
+    const responseAllowed = !latestSavedShow.isReadOnly || adminAccess;
+
     return (
       <div className={styles.container}>
+        <Prompt
+          when={!!pendingSubmission}
+          message={(location) =>
+            location.pathname.startsWith(match.url)
+              ? true
+              : 'You have unsaved changes. Are you sure you want to leave this page?'
+          }
+        />
         <section className={styles.headerSection}>
           <div className={styles.header}>
             <h1>{show && show.name}</h1>
-            <div className={styles.copyUrlInputContainer}>
-              <TextField outlined className={styles.copyUrlInput} label="">
-                <Input type="text" value={window.location.href} />
-              </TextField>
+            {latestSavedShow.isReadOnly && (
+              <>
+                <p className="mdc-typography--body1">
+                  This meeting is closed from further responses.
+                </p>
 
-              <Button
-                className={styles.clipboardButton}
-                onClick={this.copyUrlToClipboard}
-                icon={<img src={clipboardIcon} className="font-icon" alt="Clipboard icon" />}
-              />
+                {adminAccess ? (
+                  <p className="mdc-typography--body1">
+                    You can allow others to respond again in settings tab.
+                  </p>
+                ) : (
+                  <p className="mdc-typography--body1">
+                    You can contact meeting organizers to enable response again.
+                  </p>
+                )}
+              </>
+            )}
+            <div className={styles.copyUrlInputContainer}>
+              <ShareModal link={window.location.href} />
             </div>
           </div>
-          {this.renderTabBar()}
         </section>
+        {this.renderTabBar(responseAllowed)}
         <section id="show">
           {show && (
             <React.Fragment>
@@ -192,24 +253,28 @@ class ShowPageComponent extends Component {
                 exact
                 path={match.url}
                 component={() => (
-                  <Redirect to={`/show/${this.props.match.params.showId}/respond`} />
+                  <Redirect to={`/meeting/${this.props.match.params.showId}/respond`} />
                 )}
               />
-              <Route
-                path={match.url + '/respond'}
-                render={() => (
-                  <ShowRespond
-                    show={show}
-                    hasSetName={hasSetName}
-                    onSetName={this.handleSetName}
-                    onSelectTimes={this.handleSelectTimes}
-                    onDeselectTimes={this.handleDeselectTimes}
-                    hasPendingSubmissions={!!pendingSubmission}
-                    isSaving={upsertResponsesLoading}
-                    onSubmit={this.handleSubmit}
-                  />
-                )}
-              />
+              {responseAllowed ? (
+                <Route
+                  path={match.url + '/respond'}
+                  render={() => (
+                    <ShowRespond
+                      show={show}
+                      hasSetName={hasSetName}
+                      onSetName={this.handleSetName}
+                      onSelectTimes={this.handleSelectTimes}
+                      onDeselectTimes={this.handleDeselectTimes}
+                      hasPendingSubmissions={!!pendingSubmission}
+                      isSaving={upsertResponsesLoading}
+                      onSubmit={this.handleSubmit}
+                    />
+                  )}
+                />
+              ) : (
+                <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
+              )}
               <Route
                 path={match.url + '/results'}
                 render={() => <ShowResults show={latestSavedShow} />}
@@ -251,8 +316,8 @@ ShowPageComponent.fragments = {
 };
 
 const GET_SHOW_QUERY = gql`
-  query Show($slug: String!) {
-    show(where: { slug: $slug }) {
+  query Show($slug: String!, $auth: AuthInput) {
+    show(where: { slug: $slug }, auth: $auth) {
       ...ShowPageShow
     }
   }
@@ -333,7 +398,7 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
 function ShowPageWithQueries(props) {
   const slug = props.match.params.showId;
   return (
-    <Query query={GET_SHOW_QUERY} variables={{ slug }}>
+    <AuthenticatedQuery query={GET_SHOW_QUERY} variables={{ slug }}>
       {(getShowResult) => (
         <Mutation mutation={UPSERT_RESPONSES_MUTATION}>
           {(upsertResponses, upsertResponsesResult) => (
@@ -360,7 +425,7 @@ function ShowPageWithQueries(props) {
           )}
         </Mutation>
       )}
-    </Query>
+    </AuthenticatedQuery>
   );
 }
 

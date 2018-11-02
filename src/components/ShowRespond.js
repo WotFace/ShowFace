@@ -39,6 +39,17 @@ class ShowRespond extends Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (!this.state.saved && !this.props.isSaving && prevProps.isSaving) {
+      this.startSavedTimer();
+    }
+  }
+
+  startSavedTimer() {
+    this.setState({ saved: true });
+    setTimeout(() => this.setState({ saved: false }), 2000);
+  }
+
   shouldUseName() {
     const { name } = this.props;
     return name && name.length > 0;
@@ -112,14 +123,23 @@ class ShowRespond extends Component {
 
   renderBottomBar() {
     const { hasPendingSubmissions, isSaving } = this.props;
+    const { saved } = this.state;
 
-    const mainText = hasPendingSubmissions ? (
-      <>
-        Responding as <strong>{this.responseName()}</strong>
-      </>
-    ) : (
-      'Hold and drag on the timeline to select your availability.'
-    );
+    let mainText;
+
+    if (hasPendingSubmissions) {
+      mainText = (
+        <>
+          Responding as <strong>{this.responseName()}</strong>
+        </>
+      );
+    } else if (isSaving) {
+      mainText = 'Saving...';
+    } else if (saved) {
+      mainText = 'Saved!';
+    } else {
+      mainText = 'Hold and drag on the timeline to select your availability.';
+    }
 
     return (
       <BottomAppBar className={styles.bottomBar}>
@@ -135,7 +155,7 @@ class ShowRespond extends Component {
             icon={<MaterialIcon icon="send" />}
             raised
           >
-            Submit
+            Save
           </Button>
         </div>
       </BottomAppBar>

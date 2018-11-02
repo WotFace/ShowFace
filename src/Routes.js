@@ -9,17 +9,21 @@ import WelcomePage from './components/WelcomePage';
 import CreatePage from './components/CreatePage';
 import LoginPage from './components/LoginPage';
 import DashboardPage from './components/DashboardPage';
+import NotFoundPage from './components/NotFoundPage';
+
+const disableAppBar = ['/login'];
 
 const Routes = () => (
   <>
-    <AppBar />
+    <AppBar pathToDisable={disableAppBar} />
     <Switch>
       <Redirect exact from="/poll" to="/" />
       <Route exact path="/" component={WelcomePage} />
-      <Route path="/show/:showId" component={ShowPage} />
-      <Route path="/new" component={CreatePage} />
-      <Route path="/login" component={LoginPage} />
-      <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/meeting/:showId" component={ShowPage} />
+      <Route exact path="/new" component={CreatePage} />
+      <Route exact path="/login" component={LoginPage} />
+      <Route exact path="/dashboard" component={DashboardPage} />
+      <Route path="*" component={NotFoundPage} />
     </Switch>
     <GoogleAnalytics />
   </>

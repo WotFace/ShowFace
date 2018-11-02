@@ -8958,6 +8958,11 @@ react-loading@^2.0.3:
   resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-2.0.3.tgz#e8138fb0c3e4674e481b320802ac7048ae14ffb9"
   integrity sha512-Vdqy79zq+bpeWJqC+xjltUjuGApyoItPgL0vgVfcJHhqwU7bAMKzysfGW/ADu6i0z0JiOCRJjo+IkFNkRNbA3A==
 
+react-multi-email@^0.3.8:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/react-multi-email/-/react-multi-email-0.3.8.tgz#a12b3cd9c3494e9e990abfd1724dfd84ece3de9f"
+  integrity sha512-ULhBbITQfyvntuF3blh0TiEhT7yDsHI4Wwi+vr2jiJcdqdVRgeFH7Bs2I8Q8u/krHmlj23FwQVMVECQg1dCAfg==
+
 react-redux@^5.0.7:
   version "5.0.7"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.7.tgz#0dc1076d9afb4670f993ffaef44b8f8c1155a4c8"

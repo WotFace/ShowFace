@@ -104,6 +104,13 @@ export default class AppBar extends Component {
   }
 
   render() {
+    const { pathToDisable } = this.props;
+    const pathname = window.location.pathname;
+
+    if (pathToDisable.indexOf(pathname) > -1) {
+      return null;
+    }
+
     // TODO: Change buttons on login/signup/dashboard pages
     // TODO: Consider putting AppBar in every page instead, and allow pages to provide buttons
 

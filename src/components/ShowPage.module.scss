@@ -4,8 +4,6 @@
 }
 
 .headerSection {
-  margin-bottom: 1.8em;
-
   .header {
     text-align: center;
     margin-bottom: 1em;
@@ -27,7 +25,14 @@
   height: 30px !important;
 }
 
-.tabBar {
-  margin: 0 auto;
-  max-width: 30em;
+.tabBarContainer {
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  .tabBar {
+    margin: 0 auto 1.8em auto;
+    max-width: 30em;
+  }
 }

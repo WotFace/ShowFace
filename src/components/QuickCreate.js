@@ -23,7 +23,7 @@ class QuickCreate extends Component {
       <div id={styles.formContainer}>
         <div className={styles.pollNameField}>
           <NoLabelTextField
-            placeholder="Meet For What?"
+            placeholder="What are you meeting for?"
             name="name"
             value={name}
             autoComplete="off"

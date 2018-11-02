@@ -1,12 +1,17 @@
-@import '../mdc-variables';
-
 .formSection {
   padding-bottom: 20px;
   text-align: center;
 }
 
 .formInput {
-  margin: 40px;
+  margin: 1em auto;
+  width: 17em;
+}
+
+.noFocus {
+  *:focus {
+    outline-width: 0;
+  }
 }
 
 #header {
@@ -18,9 +23,11 @@
 #pageContainer {
   display: flex;
   flex-direction: column;
+  padding-left: 1em;
+  padding-right: 1em;
   margin-left: auto;
   margin-right: auto;
-  max-width: 700px;
+  max-width: 40em;
 }
 
 .bottomBarContent {

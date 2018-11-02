@@ -82,7 +82,7 @@ class DashboardPage extends Component {
         {sortedShows.map(({ show, respondent }) => {
           const { id, slug } = show;
           return (
-            <Link key={id} to={`/show/${slug}/${tab}`} className={sharedStyles.buttonLink}>
+            <Link key={id} to={`/meeting/${slug}/${tab}`} className={sharedStyles.buttonLink}>
               {listItemRenderer(show, respondent)}
             </Link>
           );
@@ -179,9 +179,10 @@ class DashboardPage extends Component {
     }
 
     const { userShows } = getUserShowsResult.data;
-    const welcomeText = getUserResult.data
-      ? `Welcome, ${getUserResult.data.user.name}!`
-      : 'Welcome!';
+    const welcomeText =
+      getUserResult.data && getUserResult.data.user
+        ? `Welcome, ${getUserResult.data.user.name}!`
+        : 'Welcome!';
 
     // TODO: Use our server's display name
     return (

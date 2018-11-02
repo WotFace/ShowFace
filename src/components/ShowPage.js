@@ -39,7 +39,6 @@ class ShowPageComponent extends Component {
     };
 
     this.openModal = this.openModal.bind(this);
-    // this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
 
@@ -51,10 +50,6 @@ class ShowPageComponent extends Component {
   openModal() {
     this.setState({ modalIsOpen: true });
   }
-
-  // afterOpenModal() {
-  //   this.subtitle.style.color = '#f00';
-  // }
 
   closeModal() {
     this.setState({ modalIsOpen: false });

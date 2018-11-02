@@ -42,7 +42,6 @@ class ShareModal extends Component {
 
   sendInvites = () => {
     // TODO: Send invites to this.emails
-
     this.setState({ emails: [] });
   };
 

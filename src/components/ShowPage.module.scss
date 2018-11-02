@@ -1,3 +1,5 @@
+@import '../mdc-variables.scss';
+
 .container {
   margin-bottom: 1em;
   padding: 0 5%;
@@ -35,4 +37,30 @@
     margin: 0 auto 1.8em auto;
     max-width: 30em;
   }
+}
+
+.headerWithShareBtn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;  
+}
+
+.showNameHeader {
+  margin-right: 5px;
+}
+
+.shareButton {
+  border: none !important;
+  padding-top: 9px;
+}
+
+.shareIcon:hover {
+  opacity: 1 !important;
+  color: $mdc-theme-primary !important;
+}
+
+
+.shareButton:focus {
+  outline: none !important;
 }

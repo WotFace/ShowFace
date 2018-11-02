@@ -119,20 +119,18 @@ class ShareModal extends Component {
 
     return (
       <Card className={styles.container}>
-        <div>
-          <div className="mdc-typography--headline6">Invite respondents via...</div>
-          <TabBar
-            activeIndex={this.state.activeIndex}
-            handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}
-          >
-            <Tab>
-              <span>Link</span>
-            </Tab>
-            <Tab>
-              <span>Email</span>
-            </Tab>
-          </TabBar>
-        </div>
+        <div className="mdc-typography--headline6">Invite respondents via...</div>
+        <TabBar
+          activeIndex={this.state.activeIndex}
+          handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}
+        >
+          <Tab>
+            <span>Link</span>
+          </Tab>
+          <Tab>
+            <span>Email</span>
+          </Tab>
+        </TabBar>
         {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
       </Card>
     );

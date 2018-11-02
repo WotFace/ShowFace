@@ -5,7 +5,7 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import TextField, { Input } from '@material/react-text-field';
+import classnames from 'classnames';
 import { withAlert } from 'react-alert';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -20,16 +20,40 @@ import Error from './Error';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';
+import Modal from 'react-modal';
+import './ReactModalOverride.scss';
+
 
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
+// Modal.setAppElement('#root');
 class ShowPageComponent extends Component {
-  state = {
-    pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
-    hasSetName: false,
-  };
+  constructor(props) {
+    super();
+    this.state = {
+      pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
+      hasSetName: false,
+      modalIsOpen: props.isModalOpen || false,
+    };
+
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+  }
+
+  componentWillMount() {
+    Modal.setAppElement('body');
+  }
+  
+
+  openModal() {
+    this.setState({ modalIsOpen: true });
+  }
+
+  closeModal() {
+    this.setState({ modalIsOpen: false });
+  }
 
   copyUrlToClipboard = () => {
     copyToClipboard(window.location.href);
@@ -222,7 +246,19 @@ class ShowPageComponent extends Component {
         />
         <section className={styles.headerSection}>
           <div className={styles.header}>
-            <h1>{show && show.name}</h1>
+            <div className={styles.headerWithShareBtn}>
+              <h1 className={styles.showNameHeader}>{show && show.name}</h1>
+              <button className={styles.shareButton} onClick={this.openModal}>
+                <MaterialIcon
+                  // className='mdc-tab__icon'
+                  className={classnames(
+                    'mdc-tab__icon',
+                    styles.shareIcon,
+                  )}
+                  icon='share'
+                />
+              </button>
+            </div>
             {latestSavedShow.isReadOnly && (
               <>
                 <p className="mdc-typography--body1">
@@ -241,7 +277,14 @@ class ShowPageComponent extends Component {
               </>
             )}
             <div className={styles.copyUrlInputContainer}>
-              <ShareModal link={window.location.href} />
+              <Modal 
+                isOpen={this.state.modalIsOpen}
+                onAfterOpen={this.afterOpenModal}
+                onRequestClose={this.closeModal}
+                contentLabel="Example Modal"
+              >
+              <ShareModal link={window.location.href.split('/').slice(0, -1).join('/')} />
+              </Modal>
             </div>
           </div>
         </section>

@@ -18,10 +18,12 @@ import { getAuthInput } from '../utils/auth';
 import { cleanName } from '../utils/string';
 import BottomAppBar from './BottomAppBar';
 import Loading from './Loading';
+import _ from 'lodash';
 
 import styles from './CreatePage.module.scss';
 import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
+import Select from '@material/react-select';
 
 class CreatePage extends Component {
   constructor(props) {
@@ -38,8 +40,11 @@ class CreatePage extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDayClick = this.handleDayClick.bind(this);
-    this.setStartTime = this.setStartTime.bind(this);
-    this.setEndTime = this.setEndTime.bind(this);
+
+    this.setStartHour = this.setStartHour.bind(this);
+    this.setStartMin = this.setStartMin.bind(this); 
+    this.setEndHour = this.setEndHour.bind(this);
+    this.setEndMin = this.setEndMin.bind(this);
   }
 
   handleSubmit(event) {
@@ -68,24 +73,55 @@ class CreatePage extends Component {
     this.setState({ selectedDays });
   }
 
-  setStartTime(value) {
+  setStartHour(event) {
+    const value = event.target.value;
+    this.setState({[event.target.value]: value});
     if (value) {
-      this.setState({startTime: value.toDate()});
+      this.state.startTime.setHours(value);
     }
   }
 
-  setEndTime(value) {
+  setStartMin(event) {
+    const value = event.target.value;
+    this.setState({ [event.target.value]: value });
     if (value) {
-      this.setState({endTime: value.toDate()});
+      this.state.startTime.setMinutes(value);
+    }
+  }
+
+  setEndHour(event) {
+    const value = event.target.value;
+    this.setState({ [event.target.value]: value });
+    if (value) {
+      this.state.endTime.setHours(value);
+    }
+  }
+
+  setEndMin(event) {
+    const value = event.target.value;
+    this.setState({ [event.target.value]: value });
+    if (value) {
+      this.state.endTime.setMinutes(value);
     }
   }
 
   setInterval(value) {
-    this.setState({interval: value})
-    console.log("Set to" + value)
+    this.setState({ interval: value });
+    console.log('Set to' + value);
   }
-
   render() {
+    const startHourOptions = _.range(24).map((hour) => ({ value: hour, label: hour }));
+
+    const minOptions = _.range(0, 60, this.state.interval).map((hour) => ({
+      value: hour,
+      label: hour,
+    }));
+
+    const endHourOptions = _.range(this.state.startTime.getHours(), 24).map((hour) => ({
+      value: hour,
+      label: hour,
+    }));
+
     const {
       createShowResult: { loading, data, error },
     } = this.props;
@@ -145,72 +181,52 @@ class CreatePage extends Component {
             </section>
             <section className={styles.formSection}>
               <Card>
-                 Select Time Interval
+                Select Time Interval
                 <div className={styles.radioRow}>
-                    
-                    <div className={styles.radioGroup}>
-                      <div className="mdc-radio" onChange={() => this.setInterval(15)}>
-                        <input className="mdc-radio__native-control" 
-                          type="radio"
-                          name="radios"
-                          id = "radio-1"
-                          readOnly
-                          checked={this.state.interval === 15} />
-                        <div className="mdc-radio__background">
-                          <div className="mdc-radio__outer-circle"></div>
-                          <div className="mdc-radio__inner-circle"></div>
-                        </div>
+                  <div className={styles.radioGroup}>
+                    <div className="mdc-radio" onChange={() => this.setInterval(15)}>
+                      <input
+                        className="mdc-radio__native-control"
+                        type="radio"
+                        name="radios"
+                        id="radio-1"
+                        readOnly
+                        checked={this.state.interval === 15}
+                      />
+                      <div className="mdc-radio__background">
+                        <div className="mdc-radio__outer-circle" />
+                        <div className="mdc-radio__inner-circle" />
                       </div>
-                      <label>15 mins</label>
                     </div>
-
-                    <div className={styles.radioGroup}>
-                      <div className="mdc-radio" onChange={() => this.setInterval(30)}>
-                        <input className="mdc-radio__native-control" 
-                          type="radio"
-                          name="radios"
-                          id = "radio-2"
-                          readOnly
-                          checked={this.state.interval === 30} />
-                        <div className="mdc-radio__background">
-                          <div className="mdc-radio__outer-circle"></div>
-                          <div className="mdc-radio__inner-circle"></div>
-                        </div>
-                      </div>
-                      <label>30 mins</label>
-                    </div>
-
+                    <label>15 mins</label>
                   </div>
+
+                  <div className={styles.radioGroup}>
+                    <div className="mdc-radio" onChange={() => this.setInterval(30)}>
+                      <input
+                        className="mdc-radio__native-control"
+                        type="radio"
+                        name="radios"
+                        id="radio-2"
+                        readOnly
+                        checked={this.state.interval === 30}
+                      />
+                      <div className="mdc-radio__background">
+                        <div className="mdc-radio__outer-circle" />
+                        <div className="mdc-radio__inner-circle" />
+                      </div>
+                    </div>
+                    <label>30 mins</label>
+                  </div>
+                </div>
               </Card>
             </section>
-            <section className={styles.formSection}>
+            <section>
               <Card>
-                <div className={styles.timePickerRow}>
-                    <div> Select Start and End Times</div>
-                    <TimePicker className="mdc"
-                      showSecond={false}
-                      placeholder="No meeting earlier than..."
-                      className={styles.timePicker}
-                      onChange={this.setStartTime}
-                      format={'h:mm a'}
-                      minuteStep={this.state.interval}
-                      use12Hours
-                      inputReadOnly
-                    />
-
-                    <TimePicker className="mdc"
-                      showSecond={false}
-                      placeholder="No meeting after..."
-                      className={styles.timePicker}
-                      onChange={this.setEndTime}
-                      format={'h:mm a'}
-                      minuteStep={this.state.interval}                      
-                      use12Hours
-                      // TODO: Validation for end time
-                      // disabledHours={(hour) => {hour <= this.state.startTime.getHours()}}
-                      inputReadOnly
-                    />
-                </div>
+                <Select value={this.state.startTime.getHours()} label="" onChange={this.setStartHour} options={startHourOptions} />
+                <Select value={this.state.startTime.getMinutes()} label="" onChange={this.setStartMin} options={minOptions} />
+                <Select value={this.state.endTime.getHours()} label="" onChange={this.setEndHour} options={endHourOptions} />
+                <Select value={this.state.endTime.getMinutes()} label="" onChange={this.setEndMin} options={minOptions} />
               </Card>
             </section>
             <BottomAppBar>
@@ -218,15 +234,13 @@ class CreatePage extends Component {
                 <Button
                   className={styles.submitButton}
                   onClick={this.handleSubmit}
-<<<<<<< HEAD
-                  disabled={noSelectedDay || cleanName(name).length === 0}
+                  disabled={
+                    noSelectedDay ||
+                    cleanName(name).length === 0 ||
+                    this.state.startTime === null ||
+                    this.state.endTime === null
+                  }
                   icon={<MaterialIcon icon="arrow_forward" />}
-=======
-                  disabled={noSelectedDay || 
-                            cleanName(name).length === 0 || 
-                            this.state.startTime === null || 
-                            this.state.endTime === null}
->>>>>>> Add more options to create page
                   raised
                 >
                   Create

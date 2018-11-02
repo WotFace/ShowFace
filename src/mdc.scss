@@ -18,6 +18,8 @@
 @import '~@material/react-tab-scroller/index';
 @import '~@material/react-text-field/index';
 @import '~@material/radio/mdc-radio';
+@import '@material/react-select/index.scss';
+
 
 // Override standard MDC classes
 @import './mdc-override';

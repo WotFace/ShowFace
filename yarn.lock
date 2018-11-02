@@ -1227,6 +1227,19 @@
     prop-types "^15.6.1"
     react "^16.4.2"
 
+"@material/react-select@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@material/react-select/-/react-select-0.6.1.tgz#a8d2f5e182146de6662e2059818e2d2871b9a249"
+  integrity sha512-cVDMTySGqO8znwDRo7/tCRuTBDHvb3+pCzl2+PsemtQb1bbTH++9ecqNvgECOJ9ncK9HHDRWFyFJN4bQi+rmPQ==
+  dependencies:
+    "@material/react-floating-label" "^0.6.1"
+    "@material/react-line-ripple" "^0.6.1"
+    "@material/react-notched-outline" "^0.6.1"
+    "@material/select" "^0.40.1"
+    classnames "^2.2.5"
+    prop-types "^15.6.1"
+    react "^16.4.2"
+
 "@material/react-tab-bar@^0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@material/react-tab-bar/-/react-tab-bar-0.6.1.tgz#179b2f8ef59fd038e7c072396f46bc738240299f"
@@ -1296,6 +1309,22 @@
   version "0.40.1"
   resolved "https://registry.yarnpkg.com/@material/rtl/-/rtl-0.40.1.tgz#5b0d973e3c6f8e2ea3656c06ada37ba2fedfa206"
   integrity sha512-Pk6Iw1/KrhWZoZtkDsPMDUW0bm7Z1zeXb3MTQRCFmjf1wU5cRxgOTtuoZLcJqlcKGppLAzJL/TJV3E7KEiuL0A==
+
+"@material/select@^0.40.1":
+  version "0.40.1"
+  resolved "https://registry.yarnpkg.com/@material/select/-/select-0.40.1.tgz#16ae8609a6d821dca231ce54f09b013e4343684c"
+  integrity sha512-aOMoOEzJRyQbTYiXRifqaLEvX0Oj5w/WWa9+UStemeIURVSnOlaVPlnNY+dcvr6vvFeGfBX6q/G1O+CGk0FIbA==
+  dependencies:
+    "@material/animation" "^0.40.1"
+    "@material/base" "^0.40.1"
+    "@material/floating-label" "^0.40.1"
+    "@material/line-ripple" "^0.40.1"
+    "@material/notched-outline" "^0.40.1"
+    "@material/ripple" "^0.40.1"
+    "@material/rtl" "^0.40.1"
+    "@material/shape" "^0.40.1"
+    "@material/theme" "^0.40.1"
+    "@material/typography" "^0.40.1"
 
 "@material/selection-control@^0.40.1":
   version "0.40.1"

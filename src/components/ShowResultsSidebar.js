@@ -2,10 +2,13 @@ import React, { createRef } from 'react';
 import { format } from 'date-fns';
 import classnames from 'classnames';
 import { auth } from '../firebase';
-import _ from 'lodash';
+import { Mutation } from 'react-apollo';
 import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
+
+import _ from 'lodash';
+import gql from 'graphql-tag';
 
 import styles from './ShowResultsSidebar.module.scss';
 
@@ -38,7 +41,7 @@ class ShowResultsSidebar extends React.Component {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
 
     return (
-      <ListItem onClick={() => {this.setState({ isMenuOpen: true, selectedRespondentKey: responder }) }}>
+      <ListItem onClick={() => { this.setState({ isMenuOpen: true, selectedRespondentKey: responder }) }}>
         <ListItemGraphic
           graphic={
             <MaterialIcon
@@ -121,7 +124,7 @@ class ShowResultsSidebar extends React.Component {
           <MenuSurface
             open={isMenuOpen}
             onClose={this.closeMenu}
-            anchorCorner={Corner.BOTTOM_RIGHT}
+            anchorCorner={Corner.TOP_LEFT}
             anchorElement={anchorElement}
           >
             {this.renderMenuContents(respondersRespondentsObj[selectedRespondentKey])}
@@ -131,5 +134,29 @@ class ShowResultsSidebar extends React.Component {
     );
   }
 }
+
+const UPDATE = gql`
+  mutation EditShowRespondentStatus(
+    $slug: String!
+    $id: String!
+    $role: String
+    $isKeyRespondent: Boolean
+    $auth: AuthInput
+  ) {
+    createNewShow(
+      auth: $auth
+      where: { 
+        slug: $slug 
+        id: $id 
+      }
+      data: {
+        role: $role
+        isKeyRespondent: $isKeyRespondent
+      }
+    ) {
+      slug
+    }
+  }
+`;
 
 export default ShowResultsSidebar;

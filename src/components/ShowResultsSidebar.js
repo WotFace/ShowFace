@@ -1,13 +1,15 @@
 import React, { createRef } from 'react';
 import { format } from 'date-fns';
 import classnames from 'classnames';
-import { auth } from '../firebase';
+import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
+import { getAuthInput } from '../utils/auth';
 
 import _ from 'lodash';
+import { getFirebaseUserInfo } from '../utils/auth';
 import gql from 'graphql-tag';
 
 import styles from './ShowResultsSidebar.module.scss';
@@ -58,11 +60,19 @@ class ShowResultsSidebar extends React.Component {
     );
   }
 
-  renderMenuContents(respondent) {
+  renderMenuContents(respondent, respondersRespondentsObj) {
     if (respondent) {
-      const currentUser = auth().currentUser;
+      const currentUser = getFirebaseUserInfo;
       // TODO: make it possible to hide respondents dynamically
       const isRespondentHidden = false;
+      console.log(respondersRespondentsObj);
+      let userInMeeting = null;
+      if (currentUser != null) {
+        userInMeeting = _.findKey(respondersRespondentsObj, function (a) {
+          return a.user && a.user.email == currentUser.email;
+        });
+        console.log(userInMeeting);
+      }
 
       return (
         <List>
@@ -70,22 +80,30 @@ class ShowResultsSidebar extends React.Component {
             <ListItemGraphic graphic={<MaterialIcon icon={isRespondentHidden ? 'visibility_off' : 'visibility'} />} />
             <ListItemText primaryText={isRespondentHidden ? 'Un-hide' : 'Hide'} />
           </ListItem>
-          <ListItem onClick={this.closeMenu}>
-            <ListItemGraphic graphic={<MaterialIcon icon={(respondent.isKeyRespondent ? true : false) ? 'star_border' : 'star'} />} />
-            <ListItemText primaryText={(respondent.isKeyRespondent ? true : false) ? 'Remove key respondent' : 'Make key respondent'} />
-          </ListItem>
-          <ListItem onClick={this.closeMenu}>
-            <ListItemGraphic graphic={<MaterialIcon icon={(respondent.role == 'admin') ? 'person_add_disabled' : 'person_add'} />} />
-            <ListItemText primaryText={(respondent.role == 'admin') ? 'Revoke admin' : 'Make admin'} />
-          </ListItem>
-          <ListItem onClick={this.closeMenu}>
-            <ListItemGraphic graphic={<MaterialIcon icon="clear_all" />} />
-            <ListItemText primaryText="Clear response" />
-          </ListItem>
-          <ListItem onClick={this.closeMenu}>
-            <ListItemGraphic graphic={<MaterialIcon icon="delete" />} />
-            <ListItemText primaryText="Remove" />
-          </ListItem>
+          {(userInMeeting && userInMeeting.role == 'admin') ? (
+            <ListItem onClick={this.closeMenu}>
+              <ListItemGraphic graphic={<MaterialIcon icon={(respondent.isKeyRespondent ? true : false) ? 'star_border' : 'star'} />} />
+              <ListItemText primaryText={(respondent.isKeyRespondent ? true : false) ? 'Remove key respondent' : 'Make key respondent'} />
+            </ListItem>
+          ) : <div />}
+          {(userInMeeting && userInMeeting.role == 'admin') ? (
+            <ListItem onClick={this.closeMenu}>
+              <ListItemGraphic graphic={<MaterialIcon icon={(respondent.role == 'admin') ? 'person_add_disabled' : 'person_add'} />} />
+              <ListItemText primaryText={(respondent.role == 'admin') ? 'Revoke admin' : 'Make admin'} />
+            </ListItem>
+          ) : <div />}
+          {((userInMeeting && userInMeeting.role == 'admin') || (!respondent.user && respondent.anonymousName)) ? (
+            <ListItem onClick={this.closeMenu}>
+              <ListItemGraphic graphic={<MaterialIcon icon="clear_all" />} />
+              <ListItemText primaryText="Clear response" />
+            </ListItem>
+          ) : <div />}
+          {((userInMeeting && userInMeeting.role == 'admin') || (!respondent.user && respondent.anonymousName)) ? (
+            <ListItem onClick={this.closeMenu}>
+              <ListItemGraphic graphic={<MaterialIcon icon="delete" />} />
+              <ListItemText primaryText="Remove" />
+            </ListItem>
+          ) : <div />}
         </List>
       );
     }
@@ -127,7 +145,10 @@ class ShowResultsSidebar extends React.Component {
             anchorCorner={Corner.TOP_LEFT}
             anchorElement={anchorElement}
           >
-            {this.renderMenuContents(respondersRespondentsObj[selectedRespondentKey])}
+            {this.renderMenuContents(
+              respondersRespondentsObj[selectedRespondentKey],
+              respondersRespondentsObj,
+            )}
           </MenuSurface>
         </div>
       </div>
@@ -135,7 +156,7 @@ class ShowResultsSidebar extends React.Component {
   }
 }
 
-const UPDATE = gql`
+const UPDATE_SHOW_RESPONDENT_STATUS = gql`
   mutation EditShowRespondentStatus(
     $slug: String!
     $id: String!
@@ -143,9 +164,9 @@ const UPDATE = gql`
     $isKeyRespondent: Boolean
     $auth: AuthInput
   ) {
-    createNewShow(
+    editShowRespondentStatus(
       auth: $auth
-      where: { 
+      where: {
         slug: $slug 
         id: $id 
       }
@@ -159,4 +180,107 @@ const UPDATE = gql`
   }
 `;
 
-export default ShowResultsSidebar;
+const DELETE_RESPONDENTS = gql`
+  mutation DeleteRespondents(
+    $slug: String!
+    $id: [String!]!
+    $auth: AuthInput
+  ) {
+    deleteRespondents(
+      auth: $auth
+      where: { 
+        slug: $slug 
+        id: $id 
+      }
+    ) {
+      slug
+    }
+  }
+`;
+
+const DELETE_RESPONSE = gql`
+  mutation DeleteResponse(
+    $slug: String!
+    $id: String!
+    $auth: AuthInput
+  ) {
+    deleteResponse(
+      auth: $auth
+      where: {
+        slug: $slug
+        id: $id
+      }
+    ) {
+      slug
+    }
+  }
+`;
+
+// export default ShowResultsSidebar;
+
+// export default withAlert((props) => {
+//   return (
+//     <Mutation mutation={DELETE_RESPONDENTS}>
+//       {(deleteRespondents, deleteRespondentsResult) => (
+//         <Mutation mutation={UPDATE_SHOW_RESPONDENT_STATUS}>
+//           {(editShowRespondentStatus, editShowRespondentStatusResult) => (
+//             <Mutation mutation={DELETE_RESPONSE}>
+//               {(deleteResponse, deleteResponseResult) => (
+//                 <ShowResultsSidebar
+//                   {...props}
+//                   deleteResponse={async (slug, id) => {
+//                     const auth = await getAuthInput();
+//                     deleteResponse({ variables: { slug, id, auth } });
+//                   }}
+//                   deleteResponseResult={deleteResponseResult}
+//                   deleteRespondents={async (slug, id) => {
+//                     const auth = await getAuthInput();
+//                     deleteRespondents({ variables: { slug, id, auth } });
+//                   }}
+//                   deleteRespondentsResult={deleteRespondentsResult}
+//                   editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
+//                     const auth = await getAuthInput();
+//                     editShowRespondentStatus({
+//                       variables: { slug, id, role, isKeyRespondent, auth },
+//                     });
+//                   }}
+//                   editShowRespondentStatusResult={editShowRespondentStatusResult}
+//                 />
+//               )}
+//             </Mutation>
+//           )}
+//           )}
+//         </Mutation>
+//       )}
+//     </Mutation>
+//   );
+// });
+
+export default withAlert((props) => {
+  return (
+    <Mutation mutation={UPDATE_SHOW_RESPONDENT_STATUS}>
+      {(editShowRespondentStatus, editShowRespondentStatusResult) => (
+        <ShowResultsSidebar
+          {...props}
+          // deleteResponse={async (slug, id) => {
+          //   const auth = await getAuthInput();
+          //   deleteResponse({ variables: { slug, id, auth } });
+          // }}
+          // deleteResponseResult={deleteResponseResult}
+          // deleteRespondents={async (slug, id) => {
+          //   const auth = await getAuthInput();
+          //   deleteRespondents({ variables: { slug, id, auth } });
+          // }}
+          // deleteRespondentsResult={deleteRespondentsResult}
+          editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
+            const auth = await getAuthInput();
+            editShowRespondentStatus({
+              variables: { slug, id, role, isKeyRespondent, auth },
+            });
+          }}
+          editShowRespondentStatusResult={editShowRespondentStatusResult}
+        />
+      )}
+    </Mutation>
+  );
+});

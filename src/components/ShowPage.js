@@ -426,18 +426,16 @@ const EDIT_SHOW_RESPONDENT_STATUS = gql`
   ) {
     editShowRespondentStatus(
       auth: $auth
-      where: {
-        slug: $slug 
-        id: $id 
-      }
-      data: {
-        role: $role
-        isKeyRespondent: $isKeyRespondent
-      }
+      where: { slug: $slug, id: $id }
+      data: { role: $role, isKeyRespondent: $isKeyRespondent }
     ) {
-      slug
+      id
+      respondents {
+        ...ShowPageShowRespondent
+      }
     }
   }
+  ${ShowPageComponent.fragments.respondent}
 `;
 
 const DELETE_RESPONDENTS = gql`
@@ -453,21 +451,15 @@ const DELETE_RESPONDENTS = gql`
 `;
 
 const DELETE_RESPONSE = gql`
-  mutation DeleteResponse(
-    $slug: String!
-    $id: String!
-    $auth: AuthInput
-  ) {
-    deleteResponse(
-      auth: $auth
-      where: {
-        slug: $slug
-        id: $id
+  mutation DeleteResponse($slug: String!, $id: String!, $auth: AuthInput) {
+    deleteResponse(auth: $auth, where: { slug: $slug, id: $id }) {
+      id
+      respondents {
+        ...ShowPageShowRespondent
       }
-    ) {
-      slug
     }
   }
+  ${ShowPageComponent.fragments.respondent}
 `;
 
 function getOptimisticResponseForShow(name, email, responses, show) {

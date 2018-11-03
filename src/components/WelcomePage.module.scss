@@ -109,8 +109,9 @@
 }
 
 .carouselContainer {
-  display: flex;
-  justify-content: center;
+  // width: 60%;
+  // display: flex;
+  // justify-content: center;
   margin: 20px 0px 10px 0px;
   .carouselCard {
     background-image: url('../screen.png');
@@ -127,10 +128,21 @@
   }
 }
 
+.slider {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.wrapper {
+  width: 40px;
+}
+
 .imageContainer {
+  display: inline;
   @media screen and (max-width: 999px) {
-      max-width: 100%;
-      height: auto;
+    max-width: 100%;
+    height: auto;
   }
   @media screen and (min-width: 1000px) {
     max-width: 60%;

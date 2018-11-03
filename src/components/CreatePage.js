@@ -31,8 +31,8 @@ class CreatePage extends Component {
       name: name || '',
       selectedDays: [],
       interval: 15,
-      startTime: startOfToday(),
-      endTime: endOfToday(),
+      startTime: null,
+      endTime: null,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);

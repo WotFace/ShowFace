@@ -28,9 +28,6 @@ class ShowResultsSidebar extends React.Component {
   }
 
   setAnchorElement = (element) => {
-    if (this.state.anchorElement) {
-      return;
-    }
     this.setState({ anchorElement: element });
   };
 
@@ -44,10 +41,13 @@ class ShowResultsSidebar extends React.Component {
       <ListItem
         onClick={() => {
           this.setState({
-            isMenuOpen: true,
             selectedRespondentKey: responder,
             selectedRespondentId: respondersRespondentsObj[responder].id,
             selectedRespondent: respondersRespondentsObj[responder],
+          }, () => {
+            this.setState({
+              isMenuOpen: true,
+            })
           });
         }}
       >
@@ -63,6 +63,9 @@ class ShowResultsSidebar extends React.Component {
           primaryText={displayName}
           secondaryText={(respondent.user ? (respondent.user.email + ' • ') : '') + (respondent.role) + (' • ' + ((respondent.response.length == 0) ? 'not responded' : 'responded'))}
         />
+        {respondent.id == (this.state.selectedRespondent ? this.state.selectedRespondent.id : false) ?
+          (<div ref={this.setAnchorElement} />) :
+          (<div ref={null} />)}
       </ListItem>
     );
   };
@@ -110,7 +113,7 @@ class ShowResultsSidebar extends React.Component {
     const { selectedRespondent } = this.state;
     this.closeMenu();
     // route to edit user info
-  }
+  };
 
   renderMenuContents = (respondent, respondersRespondentsObj) => {
     if (respondent) {
@@ -173,7 +176,7 @@ class ShowResultsSidebar extends React.Component {
 
     return (
       <div className={className}>
-        <div className={styles.sidebarContainer} ref={this.setAnchorElement}>
+        <div className={styles.sidebarContainer}>
           <section className={styles.attendees}>
             {time ? <h2 className={styles.pollTime}>{format(time, 'D MMM hh:mmA')}</h2> : null}
             <section className={styles.attendeeListSection}>

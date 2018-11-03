@@ -36,3 +36,11 @@ $sidebar-hidden-breakpoint: largephone;
 .pollTime {
   margin-bottom: 1em;
 }
+
+.listItemHeader {
+  padding-left: 16px;
+  padding-right: 16px;
+  .listItemSubText {
+    color: #757575;
+  }
+}

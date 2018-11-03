@@ -5,6 +5,7 @@ import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
 import { getAuthInput } from '../utils/auth';
+import Divider from './Divider';
 
 import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
@@ -128,42 +129,49 @@ class ShowResultsSidebar extends React.Component {
       }
 
       return (
-        <List>
-          <ListItem onClick={this.handleHideUser}>
-            <ListItemGraphic graphic={<MaterialIcon icon={isRespondentHidden ? 'visibility_off' : 'visibility'} />} />
-            <ListItemText primaryText={isRespondentHidden ? 'Un-hide' : 'Hide'} />
-          </ListItem>
-          {(!respondent.user || (userInMeeting && userInMeeting.user.role == 'admin')) ? (
-            <ListItem onClick={() => {}}>
-              <ListItemGraphic graphic={<MaterialIcon icon='edit' />} />
-              <ListItemText primaryText='Edit response' />
+        <div>
+          <div className={styles.listItemHeader}>
+            <p>{respondent.user ? respondent.user.name : respondent.anonymousName} <br />
+            <span className={styles.listItemSubText}>{(respondent.user ? (respondent.user.email + ' • ') : '') + respondent.role}</span></p>
+          </div>
+          <Divider />
+          <List>
+            <ListItem onClick={this.handleHideUser}>
+              <ListItemGraphic graphic={<MaterialIcon icon={isRespondentHidden ? 'visibility_off' : 'visibility'} />} />
+              <ListItemText primaryText={isRespondentHidden ? 'Un-hide' : 'Hide'} />
             </ListItem>
-          ) : <div />}
-          {(userInMeeting && userInMeeting.role == 'admin') ? (
-            <ListItem onClick={this.handleEditKeyRespondentStatus}>
-              <ListItemGraphic graphic={<MaterialIcon icon={(respondent.isKeyRespondent ? true : false) ? 'star_border' : 'star'} />} />
-              <ListItemText primaryText={(respondent.isKeyRespondent ? true : false) ? 'Remove key respondent' : 'Make key respondent'} />
-            </ListItem>
-          ) : <div />}
-          {(userInMeeting && userInMeeting.role == 'admin') ? (
-            <ListItem onClick={this.handleEditRespondentRoleStatus}>
-              <ListItemGraphic graphic={<MaterialIcon icon={(respondent.role == 'admin') ? 'person_add_disabled' : 'person_add'} />} />
-              <ListItemText primaryText={(respondent.role == 'admin') ? 'Revoke admin' : 'Make admin'} />
-            </ListItem>
-          ) : <div />}
-          {((userInMeeting && userInMeeting.role == 'admin') || (!respondent.user && respondent.anonymousName)) ? (
-            <ListItem onClick={this.handleDeleteResponse}>
-              <ListItemGraphic graphic={<MaterialIcon icon="clear_all" />} />
-              <ListItemText primaryText="Clear response" />
-            </ListItem>
-          ) : <div />}
-          {((userInMeeting && userInMeeting.role == 'admin') || (!respondent.user && respondent.anonymousName)) ? (
-            <ListItem onClick={this.handleDeleteRespondents}>
-              <ListItemGraphic graphic={<MaterialIcon icon="delete" />} />
-              <ListItemText primaryText="Remove" />
-            </ListItem>
-          ) : <div />}
-        </List>
+            {(!respondent.user || (userInMeeting && userInMeeting.user.role == 'admin')) ? (
+              <ListItem onClick={this.handleEditResponse}>
+                <ListItemGraphic graphic={<MaterialIcon icon='edit' />} />
+                <ListItemText primaryText='Edit response' />
+              </ListItem>
+            ) : <div />}
+            {(userInMeeting && userInMeeting.role == 'admin') ? (
+              <ListItem onClick={this.handleEditKeyRespondentStatus}>
+                <ListItemGraphic graphic={<MaterialIcon icon={(respondent.isKeyRespondent ? true : false) ? 'star_border' : 'star'} />} />
+                <ListItemText primaryText={(respondent.isKeyRespondent ? true : false) ? 'Remove key respondent' : 'Make key respondent'} />
+              </ListItem>
+            ) : <div />}
+            {(userInMeeting && userInMeeting.role == 'admin') ? (
+              <ListItem onClick={this.handleEditRespondentRoleStatus}>
+                <ListItemGraphic graphic={<MaterialIcon icon={(respondent.role == 'admin') ? 'person_add_disabled' : 'person_add'} />} />
+                <ListItemText primaryText={(respondent.role == 'admin') ? 'Revoke admin' : 'Make admin'} />
+              </ListItem>
+            ) : <div />}
+            {((userInMeeting && userInMeeting.role == 'admin') || (!respondent.user && respondent.anonymousName)) ? (
+              <ListItem onClick={this.handleDeleteResponse}>
+                <ListItemGraphic graphic={<MaterialIcon icon="clear_all" />} />
+                <ListItemText primaryText="Clear response" />
+              </ListItem>
+            ) : <div />}
+            {((userInMeeting && userInMeeting.role == 'admin') || (!respondent.user && respondent.anonymousName)) ? (
+              <ListItem onClick={this.handleDeleteRespondents}>
+                <ListItemGraphic graphic={<MaterialIcon icon="delete" />} />
+                <ListItemText primaryText="Remove" />
+              </ListItem>
+            ) : <div />}
+          </List>
+        </div>
       );
     }
   };
@@ -199,6 +207,7 @@ class ShowResultsSidebar extends React.Component {
             </section>
           </section>
           <MenuSurface
+            className={styles.menuSurface}
             open={isMenuOpen}
             onClose={this.closeMenu}
             anchorCorner={Corner.TOP_LEFT}

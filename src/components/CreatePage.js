@@ -13,6 +13,7 @@ import Button from '@material/react-button';
 import Card from '@material/react-card';
 import MaterialIcon from '@material/react-material-icon';
 import TextField, { Input } from '@material/react-text-field';
+import Select from '@material/react-select';
 
 import { getAuthInput } from '../utils/auth';
 import { cleanName } from '../utils/string';
@@ -21,9 +22,6 @@ import Loading from './Loading';
 import _ from 'lodash';
 
 import styles from './CreatePage.module.scss';
-import 'rc-time-picker/assets/index.css';
-import TimePicker from 'rc-time-picker';
-import Select from '@material/react-select';
 
 class CreatePage extends Component {
   constructor(props) {

@@ -35,7 +35,6 @@
     "pepjs": "^0.4.3",
     "query-string": "^6.2.0",
     "quickselect": "^2.0.0",
-    "rc-time-picker": "^3.4.0",
     "react": "^16.6.0",
     "react-alert": "^4.0.4",
     "react-alert-template-basic": "^1.0.0",

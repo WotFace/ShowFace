@@ -354,6 +354,19 @@ class ShowPageComponent extends Component {
 }
 
 ShowPageComponent.fragments = {
+  respondent: gql`
+    fragment ShowPageShowRespondent on Respondent {
+      id
+      anonymousName
+      user {
+        email
+        name
+        uid
+      }
+      role
+      response
+    }
+  `,
   show: gql`
     fragment ShowPageShow on Show {
       id
@@ -367,15 +380,7 @@ ShowPageComponent.fragments = {
       endTime
       interval
       respondents {
-        id
-        anonymousName
-        user {
-          email
-          name
-          uid
-        }
-        role
-        response
+        ...ShowPageShowRespondent
       }
     }
   `,
@@ -388,6 +393,7 @@ const GET_SHOW_QUERY = gql`
     }
   }
   ${ShowPageComponent.fragments.show}
+  ${ShowPageComponent.fragments.respondent}
 `;
 
 const UPSERT_RESPONSES_MUTATION = gql`
@@ -407,6 +413,7 @@ const UPSERT_RESPONSES_MUTATION = gql`
     }
   }
   ${ShowPageComponent.fragments.show}
+  ${ShowPageComponent.fragments.respondent}
 `;
 
 const EDIT_SHOW_RESPONDENT_STATUS = gql`
@@ -434,21 +441,15 @@ const EDIT_SHOW_RESPONDENT_STATUS = gql`
 `;
 
 const DELETE_RESPONDENTS = gql`
-  mutation DeleteRespondents(
-    $slug: String!
-    $id: [String!]!
-    $auth: AuthInput
-  ) {
-    deleteRespondents(
-      auth: $auth
-      where: { 
-        slug: $slug 
-        id: $id 
+  mutation DeleteRespondents($slug: String!, $id: [String!]!, $auth: AuthInput) {
+    deleteRespondents(auth: $auth, where: { slug: $slug, id: $id }) {
+      id
+      respondents {
+        ...ShowPageShowRespondent
       }
-    ) {
-      slug
     }
   }
+  ${ShowPageComponent.fragments.respondent}
 `;
 
 const DELETE_RESPONSE = gql`

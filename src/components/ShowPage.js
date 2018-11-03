@@ -36,6 +36,7 @@ class ShowPageComponent extends Component {
       pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
       hasSetName: false,
       modalIsOpen: props.isModalOpen || false,
+      refreshDummy: true,
     };
 
     this.openModal = this.openModal.bind(this);
@@ -45,7 +46,6 @@ class ShowPageComponent extends Component {
   componentWillMount() {
     Modal.setAppElement('body');
   }
-  
 
   openModal() {
     this.setState({ modalIsOpen: true });
@@ -144,6 +144,33 @@ class ShowPageComponent extends Component {
     const { slug } = show;
     this.props.upsertResponses(slug, name, email, responses);
     this.setState({ pendingSubmission: null });
+  };
+
+  handleDeleteRespondents = (id) => {
+    const slug = this.props.match.params.showId;
+    console.log(slug);
+    console.log(id);
+    console.log(this.state.refreshDummy);
+    this.props.deleteRespondents(slug, [id]);
+    this.setState({ refreshDummy: !this.state.refreshDummy });
+  };
+
+  handleDeleteResponse = (id) => {
+    const slug = this.props.match.params.showId;
+    console.log(slug);
+    console.log(id);
+    console.log(this.state.refreshDummy);
+    this.props.deleteResponse(slug, id);
+    this.setState({ refreshDummy: !this.state.refreshDummy });
+  };
+
+  handleEditRespondentStatus = (id, role, isKeyRespondent) => {
+    const slug = this.props.match.params.showId;
+    console.log(slug);
+    console.log(id);
+    console.log(role);
+    console.log(isKeyRespondent);
+    this.props.editShowRespondentStatus(slug, id, role, isKeyRespondent);
   };
 
   renderTabBar = (responseAllowed) => {
@@ -320,7 +347,14 @@ class ShowPageComponent extends Component {
               )}
               <Route
                 path={match.url + '/results'}
-                render={() => <ShowResults show={latestSavedShow} />}
+                render={() => (
+                  <ShowResults
+                    show={latestSavedShow}
+                    onDeleteResponse={this.handleDeleteResponse}
+                    onDeleteRespondents={this.handleDeleteRespondents}
+                    onEditRespondentStatus={this.handleEditRespondentStatus}
+                  />
+                )}
               />
             </React.Fragment>
           )}
@@ -386,6 +420,66 @@ const UPSERT_RESPONSES_MUTATION = gql`
   ${ShowPageComponent.fragments.show}
 `;
 
+const EDIT_SHOW_RESPONDENT_STATUS = gql`
+  mutation EditShowRespondentStatus(
+    $slug: String!
+    $id: String!
+    $role: String
+    $isKeyRespondent: Boolean
+    $auth: AuthInput
+  ) {
+    editShowRespondentStatus(
+      auth: $auth
+      where: {
+        slug: $slug 
+        id: $id 
+      }
+      data: {
+        role: $role
+        isKeyRespondent: $isKeyRespondent
+      }
+    ) {
+      slug
+    }
+  }
+`;
+
+const DELETE_RESPONDENTS = gql`
+  mutation DeleteRespondents(
+    $slug: String!
+    $id: [String!]!
+    $auth: AuthInput
+  ) {
+    deleteRespondents(
+      auth: $auth
+      where: { 
+        slug: $slug 
+        id: $id 
+      }
+    ) {
+      slug
+    }
+  }
+`;
+
+const DELETE_RESPONSE = gql`
+  mutation DeleteResponse(
+    $slug: String!
+    $id: String!
+    $auth: AuthInput
+  ) {
+    deleteResponse(
+      auth: $auth
+      where: {
+        slug: $slug
+        id: $id
+      }
+    ) {
+      slug
+    }
+  }
+`;
+
 function getOptimisticResponseForShow(name, email, responses, show) {
   if (!show) return null;
   const { respondents } = show;
@@ -438,6 +532,18 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
   };
 }
 
+function getOptimisticResponseForDeleteResponse() {
+
+}
+
+function getOptimisticResponseForDeleteRespondents() {
+
+}
+
+function getOptimisticResponseForEditShowRespondentStatus() {
+
+}
+
 function ShowPageWithQueries(props) {
   const slug = props.match.params.showId;
   return (
@@ -445,26 +551,59 @@ function ShowPageWithQueries(props) {
       {(getShowResult) => (
         <Mutation mutation={UPSERT_RESPONSES_MUTATION}>
           {(upsertResponses, upsertResponsesResult) => (
-            <ShowPageComponent
-              {...props}
-              getShowResult={datifyShowResponse(getShowResult, 'data.show')}
-              upsertResponses={async (slug, name, email, responses) => {
-                const auth = await getAuthInput();
-                upsertResponses({
-                  variables: { slug, name, email, auth, responses },
-                  optimisticResponse: getOptimisticResponseForUpsertResponses(
-                    name,
-                    email,
-                    responses,
-                    getShowResult,
-                  ),
-                });
-              }}
-              upsertResponsesResult={datifyShowResponse(
-                upsertResponsesResult,
-                'data._upsertResponse',
+            <Mutation mutation={DELETE_RESPONSE}>
+              {(deleteResponse, deleteResponseResult) => (
+                <Mutation mutation={DELETE_RESPONDENTS}>
+                  {(deleteRespondents, deleteRespondentsResult) => (
+                    <Mutation mutation={EDIT_SHOW_RESPONDENT_STATUS}>
+                      {(editShowRespondentStatus, editShowRespondentStatusResult) => (
+                        <ShowPageComponent
+                          {...props}
+                          getShowResult={datifyShowResponse(getShowResult, 'data.show')}
+                          upsertResponses={async (slug, name, email, responses) => {
+                            const auth = await getAuthInput();
+                            upsertResponses({
+                              variables: { slug, name, email, auth, responses },
+                              optimisticResponse: getOptimisticResponseForUpsertResponses(
+                                name,
+                                email,
+                                responses,
+                                getShowResult,
+                              ),
+                            });
+                          }}
+                          upsertResponsesResult={datifyShowResponse(
+                            upsertResponsesResult,
+                            'data._upsertResponse',
+                          )}
+                          deleteResponse={async (slug, id) => {
+                            const auth = await getAuthInput();
+                            deleteResponse({
+                              variables: { slug, id, auth },
+                            });
+                          }}
+                          deleteResponseResult={deleteResponseResult}
+                          deleteRespondents={async (slug, id) => {
+                            const auth = await getAuthInput();
+                            deleteRespondents({
+                              variables: { slug, id, auth },
+                            });
+                          }}
+                          deleteRespondentsResult={deleteRespondentsResult}
+                          editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
+                            const auth = await getAuthInput();
+                            editShowRespondentStatus({
+                              variables: { slug, id, role, isKeyRespondent, auth },
+                            });
+                          }}
+                          editShowRespondentStatusResult={editShowRespondentStatusResult}
+                        />
+                      )}
+                    </Mutation>
+                  )}
+                </Mutation>
               )}
-            />
+            </Mutation>
           )}
         </Mutation>
       )}

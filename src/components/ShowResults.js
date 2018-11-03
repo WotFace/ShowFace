@@ -109,6 +109,9 @@ class ShowResults extends Component {
               )}
               partitionedRespondents={partitionedRespondents}
               time={selectedTime}
+              onDeleteResponse={this.props.onDeleteResponse}
+              onDeleteRespondents={this.props.onDeleteRespondents}
+              onEditRespondentStatus={this.props.onEditRespondentStatus}
             />
           </div>
         </div>

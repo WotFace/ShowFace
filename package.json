@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material/menu": "^0.40.1",
+    "@material/radio": "^0.40.1",
     "@material/react-button": "^0.6.1",
     "@material/react-card": "^0.6.1",
     "@material/react-fab": "^0.6.1",
@@ -12,6 +13,7 @@
     "@material/react-list": "^0.6.1",
     "@material/react-material-icon": "^0.6.1",
     "@material/react-menu-surface": "^0.6.1",
+    "@material/react-select": "^0.6.1",
     "@material/react-tab": "^0.6.1",
     "@material/react-tab-bar": "^0.6.1",
     "@material/react-text-field": "^0.6.1",

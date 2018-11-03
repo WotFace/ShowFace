@@ -6,7 +6,6 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
 import queryString from 'query-string';
-import { startOfToday, endOfToday } from 'date-fns';
 import gql from 'graphql-tag';
 
 import Button from '@material/react-button';
@@ -17,7 +16,9 @@ import TextField, { Input } from '@material/react-text-field';
 import { getAuthInput } from '../utils/auth';
 import { cleanName } from '../utils/string';
 import BottomAppBar from './BottomAppBar';
+import TimePicker from './TimePicker';
 import Loading from './Loading';
+import _ from 'lodash';
 
 import styles from './CreatePage.module.scss';
 
@@ -28,6 +29,9 @@ class CreatePage extends Component {
     this.state = {
       name: name || '',
       selectedDays: [],
+      interval: 15,
+      startTime: null,
+      endTime: null,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -36,11 +40,7 @@ class CreatePage extends Component {
   }
 
   handleSubmit(event) {
-    // TODO: Add interval option to UI and retrieve from state
-    const interval = 15;
-    const { name, selectedDays } = this.state;
-    const startTime = startOfToday();
-    const endTime = endOfToday();
+    const { name, selectedDays, interval, startTime, endTime } = this.state;
     this.props.createShow(cleanName(name), selectedDays, startTime, endTime, interval);
     event.preventDefault();
   }
@@ -64,6 +64,18 @@ class CreatePage extends Component {
     }
     this.setState({ selectedDays });
   }
+
+  updateStartTime = (date) => {
+    this.setState({ startTime: date });
+  };
+
+  updateEndTime = (date) => {
+    this.setState({ endTime: date });
+  };
+
+  updateInterval = (interval) => {
+    this.setState({ interval: interval });
+  };
 
   render() {
     const {
@@ -123,12 +135,23 @@ class CreatePage extends Component {
                 </div>
               </Card>
             </section>
+            <TimePicker
+              updateStartTime={this.updateStartTime}
+              updateEndTime={this.updateEndTime}
+              updateInterval={this.updateInterval}
+              interval={this.state.interval}
+            />
             <BottomAppBar>
               <div className={styles.bottomBarContent}>
                 <Button
                   className={styles.submitButton}
                   onClick={this.handleSubmit}
-                  disabled={noSelectedDay || cleanName(name).length === 0}
+                  disabled={
+                    noSelectedDay ||
+                    cleanName(name).length === 0 ||
+                    this.state.startTime === null ||
+                    this.state.endTime === null
+                  }
                   icon={<MaterialIcon icon="arrow_forward" />}
                   raised
                 >

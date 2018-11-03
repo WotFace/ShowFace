@@ -133,6 +133,10 @@ class ShowPageComponent extends Component {
     //TODO: add rerender method
   };
 
+  updateShowSettings = (name, selectedDays, startTime, endTime, interval) => {
+    // TODO: IMPLEMENT UPDATE SETTINGS FUNCTION
+  };
+
   renderTabBar = (responseAllowed) => {
     const { location, history } = this.props;
     const links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];

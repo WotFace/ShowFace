@@ -8,6 +8,9 @@ import classnames from 'classnames';
 
 import styles from './WelcomePage.module.scss';
 
+import card from '../screen.png'
+
+
 class WelcomePage extends Component {
   render() {
     return (
@@ -22,7 +25,10 @@ class WelcomePage extends Component {
           <QuickCreate />
         </div>
         <div className={styles.carouselContainer}>
-          <Card className={styles.carouselCard} />
+        <div className={styles.imageContainer}>
+            {/* <div className={styles.carouselCard} /> Might reuse if needed */}  
+            <img className={styles.carouselImage} src={card} />
+        </div>
         </div>
         <div className={styles.descriptionContainer}>
           <div className={styles.descriptionItems}>

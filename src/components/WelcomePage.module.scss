@@ -78,7 +78,7 @@
   
   @media screen and (max-width: 999px) {
     flex-direction: column;
-    padding-top: 300px;
+    padding-top: 200px;
     padding-bottom: 150px;
     .descriptionItems {
       flex: 100%;
@@ -111,9 +111,9 @@
 .carouselContainer {
   display: flex;
   justify-content: center;
-  margin: 100px 0px;
+  margin: 20px 0px 10px 0px;
   .carouselCard {
-    background-image: url('../card.PNG');
+    background-image: url('../screen.png');
     background-repeat: no-repeat;
     background-size: cover;
     @media screen and (max-width: 999px) {
@@ -125,6 +125,23 @@
       padding-top: 32.25%;
     }
   }
+}
+
+.imageContainer {
+  @media screen and (max-width: 999px) {
+      max-width: 100%;
+      height: auto;
+  }
+  @media screen and (min-width: 1000px) {
+    max-width: 60%;
+    height: auto;
+  }
+}
+
+.carouselImage {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .readyContainer {

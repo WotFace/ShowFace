@@ -1,3 +1,5 @@
+@import '../mdc';
+
 .timeSelect {
   width: 80px;
   margin: 10px;
@@ -29,7 +31,6 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  padding: 5px;
 }
 
 .timePickerContainer {
@@ -39,3 +40,12 @@
   justify-content: center;
   padding: 5px 10px 5px 10px;
 }
+
+.timePickerSelectContainer {
+  margin-left: 5px;
+  display: flex;
+  @media (max-width: mdc-layout-grid-breakpoint-max(phone)) {
+    flex-direction: column;
+  }
+}
+

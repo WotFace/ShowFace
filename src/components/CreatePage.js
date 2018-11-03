@@ -6,7 +6,6 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
 import queryString from 'query-string';
-import { startOfToday, endOfToday } from 'date-fns';
 import gql from 'graphql-tag';
 
 import Button from '@material/react-button';

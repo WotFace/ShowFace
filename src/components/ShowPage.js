@@ -36,7 +36,6 @@ class ShowPageComponent extends Component {
       pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
       hasSetName: false,
       modalIsOpen: props.isModalOpen || false,
-      refreshDummy: true,
     };
 
     this.openModal = this.openModal.bind(this);
@@ -148,29 +147,18 @@ class ShowPageComponent extends Component {
 
   handleDeleteRespondents = (id) => {
     const slug = this.props.match.params.showId;
-    console.log(slug);
-    console.log(id);
-    console.log(this.state.refreshDummy);
     this.props.deleteRespondents(slug, [id]);
-    this.setState({ refreshDummy: !this.state.refreshDummy });
   };
 
   handleDeleteResponse = (id) => {
     const slug = this.props.match.params.showId;
-    console.log(slug);
-    console.log(id);
-    console.log(this.state.refreshDummy);
     this.props.deleteResponse(slug, id);
-    this.setState({ refreshDummy: !this.state.refreshDummy });
   };
 
   handleEditRespondentStatus = (id, role, isKeyRespondent) => {
     const slug = this.props.match.params.showId;
-    console.log(slug);
-    console.log(id);
-    console.log(role);
-    console.log(isKeyRespondent);
     this.props.editShowRespondentStatus(slug, id, role, isKeyRespondent);
+    //TODO: add rerender method
   };
 
   renderTabBar = (responseAllowed) => {
@@ -353,6 +341,7 @@ class ShowPageComponent extends Component {
                     onDeleteResponse={this.handleDeleteResponse}
                     onDeleteRespondents={this.handleDeleteRespondents}
                     onEditRespondentStatus={this.handleEditRespondentStatus}
+                    onUserAction={this.onUserAction}
                   />
                 )}
               />

@@ -16,12 +16,9 @@
   flex: 2;
 }
 
-.buttonContainer {
-  min-width: 13em;
+#createPollButton {
+  @include mdc-button-filled-accessible($mdc-theme-secondary);
   flex: 1;
-
-  #createPollButton {
-    @include mdc-button-filled-accessible($mdc-theme-secondary);
-    width: 100%;
-  }
+  min-width: 11em;
+  width: 100%;
 }

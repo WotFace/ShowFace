@@ -143,6 +143,7 @@ class TimePicker extends Component {
     }
   };
 
+
   render() {
     const unselectedOption = {
       label: '-',
@@ -164,52 +165,53 @@ class TimePicker extends Component {
       this.getEndMins().map((min) => ({ value: min, label: min })),
     );
 
-    return (
-      <div>
-        <section className={containerStyles.formSection}>
-          <Card>
-            <div className={styles.cardTitle}>Select Time Interval</div>
-            <div className={styles.radioRow}>
-              <div className={styles.radioGroup}>
-                <div className="mdc-radio" onChange={() => this.setInterval(15)}>
-                  <input
-                    className="mdc-radio__native-control"
-                    type="radio"
-                    name="radios"
-                    id="radio-1"
-                    readOnly
-                    checked={this.state.interval === 15}
-                  />
-                  <div className="mdc-radio__background">
-                    <div className="mdc-radio__outer-circle" />
-                    <div className="mdc-radio__inner-circle" />
-                  </div>
-                </div>
-                <label>15 mins</label>
-              </div>
+    const wrapper = (children) => {
+      if (this.props.card) {
+        return <Card>{children}</Card>;
+      } else {
+        return <div>{children}</div>;
+      }
+    }
 
-              <div className={styles.radioGroup}>
-                <div className="mdc-radio" onChange={() => this.setInterval(30)}>
-                  <input
-                    className="mdc-radio__native-control"
-                    type="radio"
-                    name="radios"
-                    id="radio-2"
-                    readOnly
-                    checked={this.state.interval === 30}
-                  />
-                  <div className="mdc-radio__background">
-                    <div className="mdc-radio__outer-circle" />
-                    <div className="mdc-radio__inner-circle" />
+    let intervalDiv;
+    if (this.props.withInterval) {
+      intervalDiv = <section className={containerStyles.formSection}>
+          {wrapper(<div>
+              <div className={styles.cardTitle}>Select Time Interval</div>
+              <div className={styles.radioRow}>
+                <div className={styles.radioGroup}>
+                  <div className="mdc-radio" onChange={() => this.setInterval(15)}>
+                    <input className="mdc-radio__native-control" type="radio" name="radios" id="radio-1" readOnly checked={this.state.interval === 15} />
+                    <div className="mdc-radio__background">
+                      <div className="mdc-radio__outer-circle" />
+                      <div className="mdc-radio__inner-circle" />
+                    </div>
                   </div>
+                  <label>15 mins</label>
                 </div>
-                <label>30 mins</label>
+
+                <div className={styles.radioGroup}>
+                  <div className="mdc-radio" onChange={() => this.setInterval(30)}>
+                    <input className="mdc-radio__native-control" type="radio" name="radios" id="radio-2" readOnly checked={this.state.interval === 30} />
+                    <div className="mdc-radio__background">
+                      <div className="mdc-radio__outer-circle" />
+                      <div className="mdc-radio__inner-circle" />
+                    </div>
+                  </div>
+                  <label>30 mins</label>
+                </div>
               </div>
             </div>
-          </Card>
-        </section>
+            )}
+        </section>;
+    }
+
+    return (
+      <div>
+        {intervalDiv}
         <section className={containerStyles.formSection}>
-          <Card className={styles.timePickerContainer}>
+          {wrapper(
+            <div className={styles.timePickerContainer}>
             <div className={styles.timePickerRow}>
               <div>Select Start time</div>
               <div className={styles.timePickerSelectContainer}>
@@ -264,7 +266,8 @@ class TimePicker extends Component {
                 </div>
               </div>
             </div>
-          </Card>
+            </div>
+          )}
         </section>
       </div>
     );

@@ -1,0 +1,25 @@
+.timeSelect {
+  width: 80px;
+  margin: 10px;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 10px;
+}
+
+.radioRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.cardTitle {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}

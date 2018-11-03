@@ -148,6 +148,8 @@ class CreatePage extends Component {
               updateEndTime={this.updateEndTime}
               updateInterval={this.updateInterval}
               interval={this.state.interval}
+              withInterval
+              card
             />
             <BottomAppBar>
               <div className={styles.bottomBarContent}>

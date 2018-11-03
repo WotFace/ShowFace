@@ -1,10 +1,9 @@
-import React, { createRef } from 'react';
+import React from 'react';
 import { format } from 'date-fns';
 import classnames from 'classnames';
 import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
-import { getAuthInput } from '../utils/auth';
 import Divider from './Divider';
 
 import _ from 'lodash';

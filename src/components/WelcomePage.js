@@ -5,30 +5,11 @@ import { NavLink } from 'react-router-dom';
 import MaterialIcon from '@material/react-material-icon';
 import Button from '@material/react-button';
 import classnames from 'classnames';
-import Slider from 'react-slick';
 
 import styles from './WelcomePage.module.scss';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-
-import slider1 from '../screen.png';
-import slider2 from '../screen2.png';
-import slider3 from '../screen3.png';
-import slider4 from '../screen4.png';
 
 class WelcomePage extends Component {
   render() {
-    const sliderSettings = {
-      arrows: false,
-      dots: true,
-      infinite: true,
-      speed: 500,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      swipeToSlide: true,
-      autoplay: true,
-    };
-
     return (
       <div className={styles.background}>
         <div id={styles.halfPage}>
@@ -41,46 +22,33 @@ class WelcomePage extends Component {
           <QuickCreate />
         </div>
         <div className={styles.carouselContainer}>
-          <Slider className={styles.slider} {...sliderSettings}>
-            <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={slider1} />
-            </div>
-            <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={slider2} />
-            </div>
-            <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={slider3} />
-            </div>
-            <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={slider4} />
-            </div>
-          </Slider>
+          <Card className={styles.carouselCard} />
         </div>
         <div className={styles.descriptionContainer}>
           <div className={styles.descriptionItems}>
             <MaterialIcon icon="bar_chart" className={styles.descriptionIcon} />
             <h2 className={styles.descriptionItemsHeader}>Beautiful Visualizations</h2>
-            <h3>
+            <h2>
               View everyone's schedules in a timetable-style heatmap. Immediately see who is busy at
               any particular time and easily identify the timeslots with the highest availability!
-            </h3>
+            </h2>
           </div>
           <div className={styles.descriptionItems}>
             <MaterialIcon icon="dashboard" className={styles.descriptionIcon} />
             <h2 className={styles.descriptionItemsHeader}>Intuitive Interface</h2>
-            <h3>
+            <h2>
               Our drag-to-highlight feature provides you with the efficiency of painting over large
               swaths of the timetable, yet retaining the precision required to indicate single
               slots.
-            </h3>
+            </h2>
           </div>
           <div className={styles.descriptionItems}>
             <MaterialIcon icon="phonelink" className={styles.descriptionIcon} />
             <h2 className={styles.descriptionItemsHeader}>Powerful Functionality</h2>
-            <h3>
+            <h2>
               Get the best suggested meeting time, send automated reminders, share calendar invites!
               Organizing a meeting has never been easier!
-            </h3>
+            </h2>
           </div>
         </div>
         <div className={styles.readyContainer}>

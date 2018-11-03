@@ -23,7 +23,6 @@ import ShareModal from './ShareModal';
 import Modal from 'react-modal';
 import './ReactModalOverride.scss';
 
-
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
@@ -515,15 +514,12 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
 }
 
 function getOptimisticResponseForDeleteResponse() {
-
 }
 
 function getOptimisticResponseForDeleteRespondents() {
-
 }
 
 function getOptimisticResponseForEditShowRespondentStatus() {
-
 }
 
 function ShowPageWithQueries(props) {

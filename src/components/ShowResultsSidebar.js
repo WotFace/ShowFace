@@ -106,6 +106,12 @@ class ShowResultsSidebar extends React.Component {
     this.closeMenu();
   };
 
+  handleEditResponse = () => {
+    const { selectedRespondent } = this.state;
+    this.closeMenu();
+    // route to edit user info
+  }
+
   renderMenuContents = (respondent, respondersRespondentsObj) => {
     if (respondent) {
       const currentUser = getFirebaseUserInfo();
@@ -113,7 +119,7 @@ class ShowResultsSidebar extends React.Component {
       const isRespondentHidden = false;
       let userInMeeting = null;
       if (currentUser != null) {
-        userInMeeting = _.findKey(respondersRespondentsObj, function(a) {
+        userInMeeting = _.findKey(respondersRespondentsObj, function (a) {
           return a.user && a.user.email === currentUser.email;
         });
       }
@@ -124,6 +130,12 @@ class ShowResultsSidebar extends React.Component {
             <ListItemGraphic graphic={<MaterialIcon icon={isRespondentHidden ? 'visibility_off' : 'visibility'} />} />
             <ListItemText primaryText={isRespondentHidden ? 'Un-hide' : 'Hide'} />
           </ListItem>
+          {(!respondent.user || (userInMeeting && userInMeeting.user.role == 'admin')) ? (
+            <ListItem onClick={() => {}}>
+              <ListItemGraphic graphic={<MaterialIcon icon='edit' />} />
+              <ListItemText primaryText='Edit response' />
+            </ListItem>
+          ) : <div />}
           {(userInMeeting && userInMeeting.role == 'admin') ? (
             <ListItem onClick={this.handleEditKeyRespondentStatus}>
               <ListItemGraphic graphic={<MaterialIcon icon={(respondent.isKeyRespondent ? true : false) ? 'star_border' : 'star'} />} />

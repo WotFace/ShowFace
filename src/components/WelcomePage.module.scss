@@ -64,6 +64,10 @@
 }
 
 .background {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background: url('../background.svg') no-repeat;
   @include backgroundScreens;
 }
@@ -108,44 +112,27 @@
   }
 }
 
-.carouselContainer {
-  // width: 60%;
-  // display: flex;
-  // justify-content: center;
-  margin: 20px 0px 10px 0px;
-  .carouselCard {
-    background-image: url('../screen.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    @media screen and (max-width: 999px) {
-      width: 100%;
-      padding-top: 60.25%;
-    }
-    @media screen and (min-width: 1000px) {
-      width: 60%;
-      padding-top: 32.25%;
-    }
-  }
-}
-
 .slider {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.wrapper {
-  width: 40px;
+.imageContainer {
+  max-width: 100%;
 }
 
-.imageContainer {
-  display: inline;
+
+.carouselContainer {
+  width: 60%;
+  margin: 20px 0px 10px 0px;
   @media screen and (max-width: 999px) {
-    max-width: 100%;
+    padding-top: 40px; 
+    width: 100%;
     height: auto;
   }
   @media screen and (min-width: 1000px) {
-    max-width: 60%;
+    width: 65%;
     height: auto;
   }
 }
@@ -159,6 +146,8 @@
 .readyContainer {
   padding: 100px 10%;
   display: flex;
+  width: 80%;
+
 
   .readyColumnText {
     .readyText {
@@ -218,5 +207,5 @@
   padding: 150px 10% 50px 10%;
   display: flex;
   background-size: 200%;
-
+  width: 80%;
 }

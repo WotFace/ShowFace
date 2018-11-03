@@ -38,15 +38,13 @@ class WelcomePage extends Component {
         </div>
         <div className={styles.carouselContainer}>
             <Slider className={styles.slider} {...sliderSettings}>
-            <div className={styles.wrapper}>
               <div className={styles.imageContainer}>
                 <img className={styles.carouselImage} src={card} />
               </div>
-            </div>
 
-            <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={card} />
-            </div>
+              <div className={styles.imageContainer}>
+                <img className={styles.carouselImage} src={card} />
+              </div>
             </Slider>
         </div>
         <div className={styles.descriptionContainer}>

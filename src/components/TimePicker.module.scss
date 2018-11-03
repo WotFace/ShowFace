@@ -20,6 +20,22 @@
 }
 
 .cardTitle {
-    margin-top: 10px;
-    margin-bottom: 5px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.timePickerRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 5px;
+}
+
+.timePickerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px 5px 10px;
 }

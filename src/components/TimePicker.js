@@ -199,48 +199,52 @@ class TimePicker extends Component {
           </Card>
         </section>
         <section className={containerStyles.formSection}>
-          <Card>
-            <div>
-              Select Start time
-              <Select
-                outlined
-                className={styles.timeSelect}
-                value={this.state.startHour}
-                label=""
-                onChange={this.setStartHour}
-                options={startHourOptions}
-              />
-              hours
-              <Select
-                outlined
-                className={styles.timeSelect}
-                value={this.state.startMin}
-                label=""
-                onChange={this.setStartMin}
-                options={startMinOptions}
-              />
-              minutes
+          <Card className={styles.timePickerContainer}>
+            <div className={styles.timePickerRow}>
+              <div>Select Start time</div>
+              <div>
+                <Select
+                  outlined
+                  className={styles.timeSelect}
+                  value={this.state.startHour}
+                  label=""
+                  onChange={this.setStartHour}
+                  options={startHourOptions}
+                />
+                hours
+                <Select
+                  outlined
+                  className={styles.timeSelect}
+                  value={this.state.startMin}
+                  label=""
+                  onChange={this.setStartMin}
+                  options={startMinOptions}
+                />
+                mins &nbsp;
+              </div>
             </div>
-            <div>
-              Select End time
-              <Select
-                outlined
-                className={styles.timeSelect}
-                value={this.state.endHour}
-                label=""
-                onChange={this.setEndHour}
-                options={endHourOptions}
-              />
-              hours
-              <Select
-                outlined
-                className={styles.timeSelect}
-                value={this.state.endMin}
-                label=""
-                onChange={this.setEndMin}
-                options={endMinOptions}
-              />
-              minutes
+            <div className={styles.timePickerRow}>
+              <div>Select End time</div>
+              <div>
+                <Select
+                  outlined
+                  className={styles.timeSelect}
+                  value={this.state.endHour}
+                  label=""
+                  onChange={this.setEndHour}
+                  options={endHourOptions}
+                />
+                hours
+                <Select
+                  outlined
+                  className={styles.timeSelect}
+                  value={this.state.endMin}
+                  label=""
+                  onChange={this.setEndMin}
+                  options={endMinOptions}
+                />
+                mins &nbsp;
+              </div>
             </div>
           </Card>
         </section>

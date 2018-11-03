@@ -110,11 +110,11 @@ class ShowResultsSidebar extends React.Component {
     this.closeMenu();
   };
 
-  handleEditResponse = () => {
-    const { selectedRespondent } = this.state;
-    this.closeMenu();
-    // route to edit user info
-  };
+  // handleEditResponse = () => {
+  //   const { selectedRespondent } = this.state;
+  //   this.closeMenu();
+  //   // route to edit user info
+  // };
 
   renderMenuContents = (respondent, respondersRespondentsObj) => {
     if (respondent) {
@@ -140,12 +140,12 @@ class ShowResultsSidebar extends React.Component {
               <ListItemGraphic graphic={<MaterialIcon icon={isRespondentHidden ? 'visibility_off' : 'visibility'} />} />
               <ListItemText primaryText={isRespondentHidden ? 'Un-hide' : 'Hide'} />
             </ListItem>
-            {(!respondent.user || (userInMeeting && userInMeeting.user.role == 'admin')) ? (
+            {/* {(!respondent.user || (userInMeeting && userInMeeting.user.role == 'admin')) ? (
               <ListItem onClick={this.handleEditResponse}>
                 <ListItemGraphic graphic={<MaterialIcon icon='edit' />} />
                 <ListItemText primaryText='Edit response' />
               </ListItem>
-            ) : <div />}
+            ) : <div />} */}
             {(userInMeeting && userInMeeting.role == 'admin') ? (
               <ListItem onClick={this.handleEditKeyRespondentStatus}>
                 <ListItemGraphic graphic={<MaterialIcon icon={(respondent.isKeyRespondent ? true : false) ? 'star_border' : 'star'} />} />

@@ -260,10 +260,10 @@ class ShowPageComponent extends Component {
                     You can allow others to respond again in settings tab.
                   </p>
                 ) : (
-                    <p className="mdc-typography--body1">
-                      You can contact meeting organizers to enable response again.
+                  <p className="mdc-typography--body1">
+                    You can contact meeting organizers to enable response again.
                   </p>
-                  )}
+                )}
               </>
             )}
             <div className={styles.copyUrlInputContainer}>
@@ -311,8 +311,8 @@ class ShowPageComponent extends Component {
                   )}
                 />
               ) : (
-                  <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
-                )}
+                <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
+              )}
               <Route
                 path={match.url + '/results'}
                 render={() => <ShowResults show={latestSavedShow} />}
@@ -392,11 +392,11 @@ function getOptimisticResponseForShow(name, email, responses, show) {
     const firebaseUser = getFirebaseUserInfo();
     const user = firebaseUser
       ? {
-        __typename: 'User',
-        name: firebaseUser.displayName, // TODO: Use user's name on our server
-        uid: firebaseUser.uid,
-        email,
-      }
+          __typename: 'User',
+          name: firebaseUser.displayName, // TODO: Use user's name on our server
+          uid: firebaseUser.uid,
+          email,
+        }
       : null;
     newRespondents = [
       ...respondents,

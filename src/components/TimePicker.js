@@ -143,7 +143,6 @@ class TimePicker extends Component {
     }
   };
 
-
   render() {
     const unselectedOption = {
       label: '-',
@@ -171,17 +170,26 @@ class TimePicker extends Component {
       } else {
         return <div>{children}</div>;
       }
-    }
+    };
 
     let intervalDiv;
     if (this.props.withInterval) {
-      intervalDiv = <section className={containerStyles.formSection}>
-          {wrapper(<div>
+      intervalDiv = (
+        <section className={containerStyles.formSection}>
+          {wrapper(
+            <div>
               <div className={styles.cardTitle}>Select Time Interval</div>
               <div className={styles.radioRow}>
                 <div className={styles.radioGroup}>
                   <div className="mdc-radio" onChange={() => this.setInterval(15)}>
-                    <input className="mdc-radio__native-control" type="radio" name="radios" id="radio-1" readOnly checked={this.state.interval === 15} />
+                    <input
+                      className="mdc-radio__native-control"
+                      type="radio"
+                      name="radios"
+                      id="radio-1"
+                      readOnly
+                      checked={this.state.interval === 15}
+                    />
                     <div className="mdc-radio__background">
                       <div className="mdc-radio__outer-circle" />
                       <div className="mdc-radio__inner-circle" />
@@ -192,7 +200,14 @@ class TimePicker extends Component {
 
                 <div className={styles.radioGroup}>
                   <div className="mdc-radio" onChange={() => this.setInterval(30)}>
-                    <input className="mdc-radio__native-control" type="radio" name="radios" id="radio-2" readOnly checked={this.state.interval === 30} />
+                    <input
+                      className="mdc-radio__native-control"
+                      type="radio"
+                      name="radios"
+                      id="radio-2"
+                      readOnly
+                      checked={this.state.interval === 30}
+                    />
                     <div className="mdc-radio__background">
                       <div className="mdc-radio__outer-circle" />
                       <div className="mdc-radio__inner-circle" />
@@ -201,9 +216,10 @@ class TimePicker extends Component {
                   <label>30 mins</label>
                 </div>
               </div>
-            </div>
-            )}
-        </section>;
+            </div>,
+          )}
+        </section>
+      );
     }
 
     return (
@@ -212,61 +228,61 @@ class TimePicker extends Component {
         <section className={containerStyles.formSection}>
           {wrapper(
             <div className={styles.timePickerContainer}>
-            <div className={styles.timePickerRow}>
-              <div>Select Start time</div>
-              <div className={styles.timePickerSelectContainer}>
-                <div>
-                  <Select
-                    outlined
-                    className={styles.timeSelect}
-                    value={this.state.startHour}
-                    label=""
-                    onChange={this.setStartHour}
-                    options={startHourOptions}
-                  />
-                  hours
-                </div>
-                <div>
-                  <Select
-                    outlined
-                    className={styles.timeSelect}
-                    value={this.state.startMin}
-                    label=""
-                    onChange={this.setStartMin}
-                    options={startMinOptions}
-                  />
-                  mins &nbsp;
-                </div>
-              </div>
-            </div>
-            <div className={styles.timePickerRow}>
-              <div>Select End time</div>
-              <div className={styles.timePickerSelectContainer}>
-                <div>
-                  <Select
-                    outlined
-                    className={styles.timeSelect}
-                    value={this.state.endHour}
-                    label=""
-                    onChange={this.setEndHour}
-                    options={endHourOptions}
-                  />
-                  hours
-                </div>
-                <div>
-                  <Select
-                    outlined
-                    className={styles.timeSelect}
-                    value={this.state.endMin}
-                    label=""
-                    onChange={this.setEndMin}
-                    options={endMinOptions}
-                  />
-                  mins &nbsp;
+              <div className={styles.timePickerRow}>
+                <div>Select Start time</div>
+                <div className={styles.timePickerSelectContainer}>
+                  <div>
+                    <Select
+                      outlined
+                      className={styles.timeSelect}
+                      value={this.state.startHour}
+                      label=""
+                      onChange={this.setStartHour}
+                      options={startHourOptions}
+                    />
+                    hours
+                  </div>
+                  <div>
+                    <Select
+                      outlined
+                      className={styles.timeSelect}
+                      value={this.state.startMin}
+                      label=""
+                      onChange={this.setStartMin}
+                      options={startMinOptions}
+                    />
+                    mins &nbsp;
+                  </div>
                 </div>
               </div>
-            </div>
-            </div>
+              <div className={styles.timePickerRow}>
+                <div>Select End time</div>
+                <div className={styles.timePickerSelectContainer}>
+                  <div>
+                    <Select
+                      outlined
+                      className={styles.timeSelect}
+                      value={this.state.endHour}
+                      label=""
+                      onChange={this.setEndHour}
+                      options={endHourOptions}
+                    />
+                    hours
+                  </div>
+                  <div>
+                    <Select
+                      outlined
+                      className={styles.timeSelect}
+                      value={this.state.endMin}
+                      label=""
+                      onChange={this.setEndMin}
+                      options={endMinOptions}
+                    />
+                    mins &nbsp;
+                  </div>
+                </div>
+              </div>
+            </div>,
           )}
         </section>
       </div>

@@ -145,7 +145,7 @@ class ShowPageComponent extends Component {
     }
 
     if (responseAllowed) { // Check if settings is allowed
-      links.unshift({
+      links.push({
         text: 'Settings',
         icon: 'settings',
         path: `${this.meetingPageBaseUrl()}/settings`,

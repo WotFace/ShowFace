@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { startOfToday, endOfToday } from 'date-fns';
+import { startOfToday } from 'date-fns';
 
 import Card from '@material/react-card';
 import Select from '@material/react-select';
@@ -12,57 +12,102 @@ class TimePicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      startTime: startOfToday(),
-      endTime: endOfToday(),
+      startHour: 10,
+      startMin: 0,
+      endHour: 20,
+      endMin: 0,
       interval: this.props.interval || 15,
     };
+
+    this.props.updateStartTime(this.startTime());
+    this.props.updateEndTime(this.endTime());
   }
 
   resetEndTime = () => {
-    this.setState({ endTime: startOfToday() })
-    this.props.updateEndTime(this.state.endTime);
+    this.setState({ endHour: "Unselected" });
+    this.setState({ endMin: 'Unselected' });
+    this.props.updateEndTime(this.endTime());
+  }
+
+  resetStartTime = () => {
+    this.setState({ startHour: "Unselected" });
+    this.setState({ startMin: 'Unselected' });
+    this.props.updateStartTime(this.startTime());
+  }
+
+  dateForTime = (hour, min) => {
+    if (hour === 'Unselected' || min === 'Unselected') {
+      return null
+    }
+    var startOfDay = startOfToday();
+    startOfDay.setHours(hour);
+    startOfDay.setMinutes(min)
+    return startOfDay;
+  }
+
+  startTime = () => {
+    return this.dateForTime(this.state.startHour, this.state.startMin);
+  }
+
+  endTime = () => {
+    return this.dateForTime(this.state.endHour, this.state.endMin);
   }
 
   setStartHour = (event) => {
-    const value = event.target.value;
-    this.setState({ [event.target.value]: value });
-    if (value) {
-      this.state.startTime.setHours(value);
+    var value = event.target.value
+    if (event.target.value != 'Unselected') {
+      value = parseInt(event.target.value);
     }
-    this.props.updateStartTime(this.state.startTime);
+    this.setState({ startHour: value });
+    this.props.updateStartTime(this.startTime());
     this.resetEndTime();
   };
 
   setStartMin = (event) => {
-    const value = event.target.value;
-    this.setState({ [event.target.value]: value });
-    if (value) {
-      this.state.startTime.setMinutes(value);
+    var value = event.target.value;
+    if (event.target.value != 'Unselected') {
+      value = parseInt(event.target.value);
     }
-    this.props.updateStartTime(this.state.startTime);
+    this.setState({ startMin: value });
+    this.props.updateStartTime(this.startTime());
     this.resetEndTime();
   };
 
   setEndHour = (event) => {
-    const value = event.target.value;
-    this.setState({ [event.target.value]: value });
-    if (value) {
-      this.state.endTime.setHours(value);
+    var value = event.target.value;
+    if (event.target.value != 'Unselected') {
+      value = parseInt(event.target.value);
     }
-    this.props.updateEndTime(this.state.endTime);
+    this.setState({ endHour: value });
+
+    // Special case for last hour
+    if (value === 24) {
+      this.setState({endMin: 0});
+    }
+
+    // Special case when start time is already set and end time is being set to something
+    // before the start time
+    if (value === this.state.startHour) {
+      this.setState({ endMin: 'Unselected' });
+    }
+    this.props.updateEndTime(this.endTime());
   };
 
   setEndMin = (event) => {
-    const value = event.target.value;
-    this.setState({ [event.target.value]: value });
-    if (value) {
-      this.state.endTime.setMinutes(value);
+    var value = event.target.value
+    if (event.target.value != 'Unselected') {
+      value = parseInt(event.target.value);
     }
-    this.props.updateEndTime(this.state.endTime);
+    this.setState({ endMin: value });
+    this.props.updateEndTime(this.endTime());
   };
 
   setInterval = (interval) => {
     this.setState({ interval: interval });
+
+    // Reset the minutes which now may be inaccurate
+    this.resetStartTime()
+    this.resetEndTime()
   };
 
   getstartHours = () => {
@@ -74,8 +119,8 @@ class TimePicker extends Component {
   }
 
   getEndMins = () => {
-    const startHour = this.state.startTime.getHours()
-    const endHour = this.state.endTime.getHours()
+    const startHour = this.state.startHour
+    const endHour = this.state.endHour
 
     if (endHour === 24) {
       return [0]
@@ -84,37 +129,22 @@ class TimePicker extends Component {
     if (startHour !== endHour) {
       return this.getstartMins()
     } else {
-      return _.range(this.state.startTime.getMinutes() + this.state.interval, 60, this.state.interval);
+      return _.range(this.state.startMin + this.state.interval, 60, this.state.interval);
     }
   }
 
   render() {
     const unselectedOption = {
       label: '-',
-      value: -1,
-      // disabled: true,
-      selected: true,
-      // hidden: true,
+      value: "Unselected",
+      disabled: true,
+      hidden: true,
     }
 
-    const startHourOptions = this.getstartHours().map((hour) => ({ value: hour, label: hour }));
-    const startMinOptions = this.getstartMins().map((min) => ({ value: min, label: min }));
-    var endHourOptions = _.range(this.state.startTime.getHours(), 25).map((hour) => ({ value: hour, label: hour }));
-
-    // Hack for now
-    if (this.state.startTime.getMinutes() === startMinOptions[startMinOptions.length - 1].value) {
-      endHourOptions.splice(1, 1);
-    }
-
-    const endMinOptions = this.getEndMins().map((min) => ({ value: min, label: min }));
-    
-    console.log("MINS");
-    console.log(this.getstartMins());
-    console.log(this.getEndMins()); 
-
-    console.log(endHourOptions);
-    console.log(endMinOptions);
-    // console.log(differentHour);
+    const startHourOptions = [unselectedOption].concat(this.getstartHours().map((hour) => ({ value: hour, label: hour })));
+    const startMinOptions = [unselectedOption].concat(this.getstartMins().map((min) => ({ value: min, label: min })));
+    const endHourOptions = [unselectedOption].concat(_.range(this.state.startHour, 25).map((hour) => ({ value: hour, label: hour })));
+    const endMinOptions = [unselectedOption].concat(this.getEndMins().map((min) => ({ value: min, label: min })));
 
     return (
       <div>
@@ -164,17 +194,17 @@ class TimePicker extends Component {
           <Card>
             <div>
               Select Start time
-              <Select outlined defaultValue={19}
+              <Select outlined
                 className={styles.timeSelect}
-                value={this.state.startTime.getHours()}
+                value={this.state.startHour}
                 label=""
                 onChange={this.setStartHour}
                 options={startHourOptions}
               />
               hours
-              <Select outlined defaultValue={19}
+              <Select outlined
                 className={styles.timeSelect}
-                value={this.state.startTime.getMinutes()}
+                value={this.state.startMin}
                 label=""
                 onChange={this.setStartMin}
                 options={startMinOptions}
@@ -183,17 +213,17 @@ class TimePicker extends Component {
             </div>
             <div>
               Select End time
-              <Select outlined defaultValue={19}
+              <Select outlined
                 className={styles.timeSelect}
-                value={this.state.endTime.getHours()}
+                value={this.state.endHour}
                 label=""
                 onChange={this.setEndHour}
                 options={endHourOptions}
               />
               hours
-              <Select outlined defaultValue={19}
+              <Select outlined
                 className={styles.timeSelect}
-                value={this.state.endTime.getMinutes()}
+                value={this.state.endMin}
                 label=""
                 onChange={this.setEndMin}
                 options={endMinOptions}

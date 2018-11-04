@@ -173,7 +173,7 @@ class ShowResultsSidebar extends React.Component {
 
   renderMenuContents = (respondent, respondersRespondentsObj) => {
     if (!respondent) {
-      console.log('renderMenuContents: No respondent!');
+      // console.log('renderMenuContents: No respondent!');
       return <div />;
     }
 

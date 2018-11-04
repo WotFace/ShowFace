@@ -109,7 +109,6 @@ class ShowResults extends Component {
       return max;
     };
     const maxSelectable = calcMaxSelectable();
-    console.log('ksntoe', partitionedRespondents, hiddenResponders);
 
     // TODO: Deduplicate dates, startTime, endTime between ShowResults and ShowRespond
     return (

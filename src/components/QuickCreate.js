@@ -1,26 +1,40 @@
 import React, { Component } from 'react';
 import Button from '@material/react-button';
-import { NavLink } from 'react-router-dom';
-import classnames from 'classnames';
+import { Redirect } from 'react-router-dom';
 import queryString from 'query-string';
 import NoLabelTextField from './NoLabelTextField';
 
 import styles from './QuickCreate.module.scss';
-import sharedStyles from './SharedStyles.module.scss';
 
 class QuickCreate extends Component {
   state = {
     name: '',
+    redirectTo: null,
   };
 
   handleInputChange = (event) => {
     this.setState({ name: event.target.value });
   };
 
-  render() {
+  handleFormSubmit = (e) => {
+    e.preventDefault();
     const { name } = this.state;
+    this.setState({
+      redirectTo: {
+        pathname: '/new',
+        search: queryString.stringify({ name }),
+      },
+    });
+  };
+
+  render() {
+    const { name, redirectTo } = this.state;
+    if (redirectTo) {
+      return <Redirect to={redirectTo} />;
+    }
+
     return (
-      <div id={styles.formContainer}>
+      <form id={styles.formContainer} onSubmit={this.handleFormSubmit}>
         <div className={styles.pollNameField}>
           <NoLabelTextField
             placeholder="What are you meeting for?"
@@ -30,18 +44,10 @@ class QuickCreate extends Component {
             onChange={this.handleInputChange}
           />
         </div>
-        <NavLink
-          className={classnames(sharedStyles.buttonLink, styles.buttonContainer)}
-          to={{
-            pathname: '/new',
-            search: queryString.stringify({ name }),
-          }}
-        >
-          <Button id={styles.createPollButton} raised>
-            Create new meeting
-          </Button>
-        </NavLink>
-      </div>
+        <Button type="submit" id={styles.createPollButton} raised>
+          Create meeting
+        </Button>
+      </form>
     );
   }
 }

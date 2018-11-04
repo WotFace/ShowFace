@@ -10,9 +10,9 @@ import { getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
 import { datifyShowsResponse } from '../utils/datetime';
 import { userShowsToDict } from '../utils/userShows';
+import Loading from './errorsLoaders/Loading';
+import Error from './errorsLoaders/Error';
 import QuickCreate from './QuickCreate';
-import Loading from './Loading';
-import Error from './Error';
 
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './DashboardPage.module.scss';

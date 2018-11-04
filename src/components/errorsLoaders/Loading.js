@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactLoading from 'react-loading';
-import styles from './Loading.module.scss';
+import styles from './ErrorsLoaders.module.scss';
 
 export default function Loading({ text }) {
   return (

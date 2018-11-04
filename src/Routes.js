@@ -9,7 +9,7 @@ import WelcomePage from './components/WelcomePage';
 import CreatePage from './components/CreatePage';
 import LoginPage from './components/LoginPage';
 import DashboardPage from './components/DashboardPage';
-import NotFoundPage from './components/NotFoundPage';
+import NotFoundPage from './components/errorsLoaders/NotFoundPage';
 
 const disableAppBar = ['/login'];
 

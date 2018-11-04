@@ -3,13 +3,12 @@ import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { format } from 'date-fns';
 import classnames from 'classnames';
+import _ from 'lodash';
 import Timeline from './Timeline';
 import BottomAppBar from './BottomAppBar';
 import { respondentsToDict, partitionRespondentsByAttendance } from '../utils/response';
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';
-
-import _ from 'lodash';
 
 class ShowResults extends Component {
   state = {

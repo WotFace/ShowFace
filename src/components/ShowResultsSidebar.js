@@ -51,7 +51,8 @@ class ShowResultsSidebar extends React.Component {
                 selectedRespondentKey: responder,
                 selectedRespondentId: respondersRespondentsObj[responder].id,
                 selectedRespondent: respondersRespondentsObj[responder],
-              }, () => {
+              },
+              () => {
                 this.setState({
                   isMenuOpen: true,
                 });
@@ -63,17 +64,29 @@ class ShowResultsSidebar extends React.Component {
             graphic={
               <MaterialIcon
                 icon={respondent.isKeyRespondent ? 'star' : 'star_border'}
-                className={respondent.isKeyRespondent ? styles.keyRespondentActive : styles.keyRespondentInactive} />
+                className={
+                  respondent.isKeyRespondent
+                    ? styles.keyRespondentActive
+                    : styles.keyRespondentInactive
+                }
+              />
             }
           />
           <ListItemText
             className={styles.listText}
             primaryText={displayName}
-            secondaryText={(respondent.user ? (respondent.user.email + ' • ') : '') + (respondent.role) + (' • ' + ((respondent.response.length == 0) ? 'not responded' : 'responded'))}
+            secondaryText={
+              (respondent.user ? respondent.user.email + ' • ' : '') +
+              respondent.role +
+              (' • ' + (respondent.response.length == 0 ? 'not responded' : 'responded'))
+            }
           />
-          {respondent.id == (this.state.selectedRespondent ? this.state.selectedRespondent.id : false) ?
-            (<div ref={this.setAnchorElement} />) :
-            (<div ref={null} />)}
+          {respondent.id ==
+          (this.state.selectedRespondent ? this.state.selectedRespondent.id : false) ? (
+            <div ref={this.setAnchorElement} />
+          ) : (
+            <div ref={null} />
+          )}
         </ListItem>
       );
     } else {
@@ -98,7 +111,8 @@ class ShowResultsSidebar extends React.Component {
                 selectedRespondentKey: responder,
                 selectedRespondentId: respondersRespondentsObj[responder].id,
                 selectedRespondent: respondersRespondentsObj[responder],
-              }, () => {
+              },
+              () => {
                 this.setState({
                   isMenuOpen: true,
                 });
@@ -110,22 +124,34 @@ class ShowResultsSidebar extends React.Component {
             graphic={
               <MaterialIcon
                 icon={respondent.isKeyRespondent ? 'star' : 'star_border'}
-                className={respondent.isKeyRespondent ? styles.keyRespondentActive : styles.keyRespondentInactive} />
+                className={
+                  respondent.isKeyRespondent
+                    ? styles.keyRespondentActive
+                    : styles.keyRespondentInactive
+                }
+              />
             }
           />
           <ListItemText
             className={styles.listText}
             primaryText={displayName}
-            secondaryText={(respondent.user ? (respondent.user.email + ' • ') : '') + (respondent.role) + (' • ' + ((respondent.response.length == 0) ? 'not responded' : 'responded'))}
+            secondaryText={
+              (respondent.user ? respondent.user.email + ' • ' : '') +
+              respondent.role +
+              (' • ' + (respondent.response.length == 0 ? 'not responded' : 'responded'))
+            }
           />
-          {respondent.id == (this.state.selectedRespondent ? this.state.selectedRespondent.id : false) ?
-            (<div ref={this.setAnchorElement} />) :
-            (<div ref={null} />)}
-          <MaterialIcon className={styles.hiddenIcon} icon='visibility_off' />
+          {respondent.id ==
+          (this.state.selectedRespondent ? this.state.selectedRespondent.id : false) ? (
+            <div ref={this.setAnchorElement} />
+          ) : (
+            <div ref={null} />
+          )}
+          <MaterialIcon className={styles.hiddenIcon} icon="visibility_off" />
         </ListItem>
       );
     }
-  }
+  };
 
   handleDeleteResponse = () => {
     const { selectedRespondent } = this.state;
@@ -204,7 +230,7 @@ class ShowResultsSidebar extends React.Component {
       });
       let userInMeeting = null;
       if (currentUser != null) {
-        userInMeeting = _.findKey(respondersRespondentsObj, function (a) {
+        userInMeeting = _.findKey(respondersRespondentsObj, function(a) {
           return a.user && a.user.email === currentUser.email;
         });
       }
@@ -212,14 +238,24 @@ class ShowResultsSidebar extends React.Component {
       return (
         <div>
           <div className={styles.listItemHeader}>
-            <p>{respondent.user ? respondent.user.name : respondent.anonymousName} <br />
-            <span className={styles.listItemSubText}>{(respondent.user ? (respondent.user.email + ' • ') : '') + respondent.role}</span></p>
+            <p>
+              {respondent.user ? respondent.user.name : respondent.anonymousName} <br />
+              <span className={styles.listItemSubText}>
+                {(respondent.user ? respondent.user.email + ' • ' : '') + respondent.role}
+              </span>
+            </p>
           </div>
           <Divider />
           <List>
             <ListItem onClick={this.handleHideUser}>
-              <ListItemGraphic graphic={<MaterialIcon icon={(hiddenRespondentIndex == -1) ? 'visibility_off' : 'visibility'} />} />
-              <ListItemText primaryText={(hiddenRespondentIndex == -1) ? 'Hide' : 'Un-hide'} />
+              <ListItemGraphic
+                graphic={
+                  <MaterialIcon
+                    icon={hiddenRespondentIndex == -1 ? 'visibility_off' : 'visibility'}
+                  />
+                }
+              />
+              <ListItemText primaryText={hiddenRespondentIndex == -1 ? 'Hide' : 'Un-hide'} />
             </ListItem>
             {/* {(!respondent.user || (userInMeeting && userInMeeting.user.role == 'admin')) ? (
               <ListItem onClick={this.handleEditResponse}>
@@ -227,30 +263,62 @@ class ShowResultsSidebar extends React.Component {
                 <ListItemText primaryText='Edit response' />
               </ListItem>
             ) : <div />} */}
-            {(userInMeeting && userInMeeting.role == 'admin') ? (
+            {userInMeeting && userInMeeting.role == 'admin' ? (
               <ListItem onClick={this.handleEditKeyRespondentStatus}>
-                <ListItemGraphic graphic={<MaterialIcon icon={(respondent.isKeyRespondent ? true : false) ? 'star_border' : 'star'} />} />
-                <ListItemText primaryText={(respondent.isKeyRespondent ? true : false) ? 'Remove key respondent' : 'Make key respondent'} />
+                <ListItemGraphic
+                  graphic={
+                    <MaterialIcon
+                      icon={(respondent.isKeyRespondent ? true : false) ? 'star_border' : 'star'}
+                    />
+                  }
+                />
+                <ListItemText
+                  primaryText={
+                    (respondent.isKeyRespondent
+                    ? true
+                    : false)
+                      ? 'Remove key respondent'
+                      : 'Make key respondent'
+                  }
+                />
               </ListItem>
-            ) : <div />}
-            {(userInMeeting && userInMeeting.role == 'admin') ? (
+            ) : (
+              <div />
+            )}
+            {userInMeeting && userInMeeting.role == 'admin' ? (
               <ListItem onClick={this.handleEditRespondentRoleStatus}>
-                <ListItemGraphic graphic={<MaterialIcon icon={(respondent.role == 'admin') ? 'person_add_disabled' : 'person_add'} />} />
-                <ListItemText primaryText={(respondent.role == 'admin') ? 'Revoke admin' : 'Make admin'} />
+                <ListItemGraphic
+                  graphic={
+                    <MaterialIcon
+                      icon={respondent.role == 'admin' ? 'person_add_disabled' : 'person_add'}
+                    />
+                  }
+                />
+                <ListItemText
+                  primaryText={respondent.role == 'admin' ? 'Revoke admin' : 'Make admin'}
+                />
               </ListItem>
-            ) : <div />}
-            {((userInMeeting && userInMeeting.role == 'admin') || (!respondent.user && respondent.anonymousName)) ? (
+            ) : (
+              <div />
+            )}
+            {(userInMeeting && userInMeeting.role == 'admin') ||
+            (!respondent.user && respondent.anonymousName) ? (
               <ListItem onClick={this.handleDeleteResponse}>
                 <ListItemGraphic graphic={<MaterialIcon icon="clear_all" />} />
                 <ListItemText primaryText="Clear response" />
               </ListItem>
-            ) : <div />}
-            {((userInMeeting && userInMeeting.role == 'admin') || (!respondent.user && respondent.anonymousName)) ? (
+            ) : (
+              <div />
+            )}
+            {(userInMeeting && userInMeeting.role == 'admin') ||
+            (!respondent.user && respondent.anonymousName) ? (
               <ListItem onClick={this.handleDeleteRespondents}>
                 <ListItemGraphic graphic={<MaterialIcon icon="delete" />} />
                 <ListItemText primaryText="Remove" />
               </ListItem>
-            ) : <div />}
+            ) : (
+              <div />
+            )}
           </List>
         </div>
       );
@@ -300,11 +368,19 @@ class ShowResultsSidebar extends React.Component {
                 <List twoLine>
                   {attending.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
-                    return this.renderHiddenRespondent(responder, respondent, respondersRespondentsObj);
+                    return this.renderHiddenRespondent(
+                      responder,
+                      respondent,
+                      respondersRespondentsObj,
+                    );
                   })}
                   {notAttending.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
-                    return this.renderHiddenRespondent(responder, respondent, respondersRespondentsObj);
+                    return this.renderHiddenRespondent(
+                      responder,
+                      respondent,
+                      respondersRespondentsObj,
+                    );
                   })}
                 </List>
               </section>

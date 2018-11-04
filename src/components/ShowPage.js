@@ -510,14 +510,11 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
   };
 }
 
-function getOptimisticResponseForDeleteResponse() {
-}
+function getOptimisticResponseForDeleteResponse() {}
 
-function getOptimisticResponseForDeleteRespondents() {
-}
+function getOptimisticResponseForDeleteRespondents() {}
 
-function getOptimisticResponseForEditShowRespondentStatus() {
-}
+function getOptimisticResponseForEditShowRespondentStatus() {}
 
 function ShowPageWithQueries(props) {
   const slug = props.match.params.showId;

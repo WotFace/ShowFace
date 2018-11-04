@@ -79,7 +79,7 @@
   padding: 100px 10% 50px 10%;
   display: flex;
   text-align: center;
-  
+
   @media screen and (max-width: 999px) {
     flex-direction: column;
     padding-top: 200px;
@@ -97,12 +97,12 @@
       padding: 0px 32px;
     }
   }
-  
+
   .descriptionIcon {
     font-size: 100px;
     color: $mdc-theme-secondary;
   }
-  
+
   .descriptionItems {
     color: $mdc-theme-primary;
     padding-bottom: 50px;
@@ -122,12 +122,11 @@
   max-width: 100%;
 }
 
-
 .carouselContainer {
   width: 60%;
   margin: 20px 0px 10px 0px;
   @media screen and (max-width: 999px) {
-    padding-top: 40px; 
+    padding-top: 40px;
     width: 100%;
     height: auto;
   }
@@ -147,7 +146,6 @@
   padding: 100px 10%;
   display: flex;
   width: 80%;
-
 
   .readyColumnText {
     .readyText {
@@ -195,7 +193,7 @@
       display: flex;
       align-items: center;
       justify-content: space-evenly;
-      flex: 50%
+      flex: 50%;
     }
   }
 }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import QuickCreate from './QuickCreate';
-import Card from '@material/react-card';
 import { NavLink } from 'react-router-dom';
 import MaterialIcon from '@material/react-material-icon';
 import Button from '@material/react-button';
@@ -43,16 +42,16 @@ class WelcomePage extends Component {
         <div className={styles.carouselContainer}>
           <Slider className={styles.slider} {...sliderSettings}>
             <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={slider1} />
+              <img className={styles.carouselImage} src={slider1} alt="ShowFace Screenshot 1" />
             </div>
             <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={slider2} />
+              <img className={styles.carouselImage} src={slider2} alt="ShowFace Screenshot 2" />
             </div>
             <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={slider3} />
+              <img className={styles.carouselImage} src={slider3} alt="ShowFace Screenshot 3" />
             </div>
             <div className={styles.imageContainer}>
-              <img className={styles.carouselImage} src={slider4} />
+              <img className={styles.carouselImage} src={slider4} alt="ShowFace Screenshot 4" />
             </div>
           </Slider>
         </div>

@@ -9,6 +9,8 @@ import { respondentsToDict, partitionRespondentsByAttendance } from '../utils/re
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';
 
+import _ from 'lodash';
+
 class ShowResults extends Component {
   state = {
     selectedTime: null,
@@ -16,6 +18,7 @@ class ShowResults extends Component {
 
     // State to restore scroll position when back button pressed
     bodyScrollTop: 0,
+    hiddenUserIdList: [],
   };
 
   sidebarRef = createRef();
@@ -65,6 +68,24 @@ class ShowResults extends Component {
     );
   }
 
+  handleHideUser = (hiddenUserIdArray) => {
+    this.setState({ hiddenUserIdList: hiddenUserIdArray });
+  };
+
+  handleHideRespondents = (respondents) => {
+    const { hiddenUserIdList } = this.state;
+    _.remove(respondents, function(a) {
+      const indexInList = _.findIndex(hiddenUserIdList, function(b) {
+        return b == a.id;
+      });
+      if (indexInList == -1) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  };
+
   render() {
     const { show } = this.props;
     const { selectedTime, isShowingDetails } = this.state;
@@ -77,10 +98,12 @@ class ShowResults extends Component {
       renderableRespondents,
       selectedTime,
     );
-
+    const hiddenRespondents = respondents.slice();
+    this.handleHideRespondents(hiddenRespondents);
+    const hiddenRenderableRespondents = respondentsToDict(hiddenRespondents);
     const calcMaxSelectable = () => {
       let max = 0;
-      for (let r of renderableRespondents.values()) {
+      for (let r of hiddenRenderableRespondents.values()) {
         if (r.size > max) max = r.size;
       }
       return max;
@@ -97,7 +120,7 @@ class ShowResults extends Component {
             startTime={startTime}
             endTime={endTime}
             interval={interval}
-            respondents={respondents}
+            respondents={hiddenRespondents}
             maxSelectable={maxSelectable}
             onCellHover={this.handleCellHover}
           />
@@ -109,6 +132,7 @@ class ShowResults extends Component {
               )}
               partitionedRespondents={partitionedRespondents}
               time={selectedTime}
+              onHideUser={this.handleHideUser}
               onDeleteResponse={this.props.onDeleteResponse}
               onDeleteRespondents={this.props.onDeleteRespondents}
               onEditRespondentStatus={this.props.onEditRespondentStatus}

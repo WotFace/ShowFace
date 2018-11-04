@@ -268,24 +268,32 @@ class ShowResultsSidebar extends React.Component {
         <div className={styles.sidebarContainer}>
           <section className={styles.attendees}>
             {time ? <h2 className={styles.pollTime}>{format(time, 'D MMM hh:mmA')}</h2> : null}
-            <section className={styles.attendeeListSection}>
-              <h3>Available</h3>
-              <List twoLine>
-                {attending.map((responder) => {
-                  const respondent = respondersRespondentsObj[responder];
-                  return this.renderRespondent(responder, respondent, respondersRespondentsObj);
-                })}
-              </List>
-            </section>
-            <section className={styles.attendeeListSection}>
-              <h3>Not Available</h3>
-              <List twoLine>
-                {notAttending.map((responder) => {
-                  const respondent = respondersRespondentsObj[responder];
-                  return this.renderRespondent(responder, respondent, respondersRespondentsObj);
-                })}
-              </List>
-            </section>
+            {attending.length > 0 ? (
+              <section className={styles.attendeeListSection}>
+                <h3>Available</h3>
+                <List twoLine>
+                  {attending.map((responder) => {
+                    const respondent = respondersRespondentsObj[responder];
+                    return this.renderRespondent(responder, respondent, respondersRespondentsObj);
+                  })}
+                </List>
+              </section>
+            ) : (
+              <div />
+            )}
+            {notAttending.length > 0 ? (
+              <section className={styles.attendeeListSection}>
+                <h3>Not Available</h3>
+                <List twoLine>
+                  {notAttending.map((responder) => {
+                    const respondent = respondersRespondentsObj[responder];
+                    return this.renderRespondent(responder, respondent, respondersRespondentsObj);
+                  })}
+                </List>
+              </section>
+            ) : (
+              <div />
+            )}
             {hiddenRespondentIds.length != 0 ? (
               <section className={styles.attendeeListSection}>
                 <h3>Hidden</h3>

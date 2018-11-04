@@ -42,11 +42,10 @@ class SocialLogin extends Component {
     var name = '';
     var email = '';
 
-    this.props.onLogInStart();
-
     auth()
       .signInWithPopup(provider)
       .then(async (result) => {
+        this.props.onLogInStart();
         authInput = await getAuthInput();
         const { data } = await client.query({
           query: this.GET_USER_QUERY,

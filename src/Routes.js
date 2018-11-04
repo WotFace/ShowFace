@@ -19,7 +19,7 @@ const Routes = () => (
     <Switch>
       <Redirect exact from="/poll" to="/" />
       <Route exact path="/" component={WelcomePage} />
-      <Route path="/meeting/:showId" component={ShowPage} />
+      <Route exact path="/meeting/:showId/(respond|results)?" component={ShowPage} />
       <Route exact path="/new" component={CreatePage} />
       <Route exact path="/login" component={LoginPage} />
       <Route exact path="/dashboard" component={DashboardPage} />

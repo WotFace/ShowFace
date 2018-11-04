@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Holdable, defineHold } from 'react-touch';
 import classnames from 'classnames';
 import { isWithinRange, differenceInMinutes, addMinutes, format } from 'date-fns';
 import _ from 'lodash';
 import memoize from 'memoize-one';
 import { respondentsToDict } from '../utils/response';
 import DateMap from '../utils/DateMap';
+import { disableMobileScroll, enableMobileScroll } from '../utils/scrollToggle';
+import HoldableDiv from './helpers/HoldableDiv';
 import styles from './Timeline.module.scss';
 
 // Return start times between 2 times
@@ -79,20 +80,17 @@ class TimeBox extends Component {
   }
 
   handlePointerEvent = (callbackFn) => (e) => callbackFn(this.props.startTimeWithDate, e);
+  handleLongPress = this.handlePointerEvent(this.props.onLongPress);
   handlePointerDown = this.handlePointerEvent(this.props.onPointerDown);
   handlePointerMove = this.handlePointerEvent(this.props.onPointerMove);
   handlePointerUp = this.handlePointerEvent(this.props.onPointerUp);
   handlePointerEnter = this.handlePointerEvent(this.props.onPointerEnter);
   handlePointerCancel = this.handlePointerEvent(this.props.onPointerCancel);
 
-  handleLongPress = () => this.props.onLongPress(this.props.startTimeWithDate);
-
   // On some browsers, the component will automatically capture the pointer,
   // but we need the pointer events to be sent to the component that's under
   // the cursor.
   onGotPointerCapture = (e) => e.target.releasePointerCapture(e.pointerId);
-
-  holdConfig = defineHold({ holdFor: 200 });
 
   render() {
     const { responseCount, maxSelectable, isSelecting, isDeselecting, isOddCol } = this.props;
@@ -105,27 +103,25 @@ class TimeBox extends Component {
           }
         : null;
 
-    // Specifying touch-action none here is necessary as Safari does not
-    // support the touch-action CSS attribute.
     return (
-      <Holdable config={this.holdConfig} onHoldComplete={this.handleLongPress}>
-        <div
-          className={classnames(
-            styles.timeBox,
-            isSelecting && styles.selecting,
-            isDeselecting && styles.deselecting,
-            isOddCol && styles.oddCol,
-          )}
-          style={divStyle}
-          onPointerDown={this.handlePointerDown}
-          onPointerMove={this.handlePointerMove}
-          onPointerUp={this.handlePointerUp}
-          onPointerEnter={this.handlePointerEnter}
-          onPointerLeave={this.handlePointerLeave}
-          onPointerCancel={this.handlePointerCancel}
-          onGotPointerCapture={this.onGotPointerCapture}
-        />
-      </Holdable>
+      <HoldableDiv
+        holdFor={200}
+        className={classnames(
+          styles.timeBox,
+          isSelecting && styles.selecting,
+          isDeselecting && styles.deselecting,
+          isOddCol && styles.oddCol,
+        )}
+        style={divStyle}
+        onLongPress={this.handleLongPress}
+        onPointerDown={this.handlePointerDown}
+        onPointerMove={this.handlePointerMove}
+        onPointerUp={this.handlePointerUp}
+        onPointerEnter={this.handlePointerEnter}
+        onPointerLeave={this.handlePointerLeave}
+        onPointerCancel={this.handlePointerCancel}
+        onGotPointerCapture={this.onGotPointerCapture}
+      />
     );
   }
 }
@@ -223,6 +219,7 @@ class Timeline extends Component {
       const isSelected = this.isSelected(startTime);
       dragState = isSelected ? DragStateEnum.dragDeselecting : DragStateEnum.dragSelecting;
       this.setState({ dragState, dragStartTime: startTime, dragCurrentTime: startTime });
+      disableMobileScroll();
     }
 
     if (this.state.dragState !== DragStateEnum.none) {
@@ -276,6 +273,7 @@ class Timeline extends Component {
       dragStartTime: null,
       dragCurrentTime: null,
     });
+    enableMobileScroll();
   };
 
   render() {
@@ -312,6 +310,7 @@ class Timeline extends Component {
                 isDeselecting={isSelecting && dragState === DragStateEnum.dragDeselecting}
                 responseCount={this.getResponseCount(startTimeWithDate)}
                 isOddCol={idx % 2 === 1}
+                onTouchStart={this.handleTouchStart}
                 onPointerDown={this.handlePointerDown}
                 onPointerMove={this.handlePointerMove}
                 onPointerUp={this.handlePointerEnd}
@@ -326,6 +325,9 @@ class Timeline extends Component {
     });
 
     const headerCells = sortedDates.map((date) => <DateHeader date={date} key={date} />);
+
+    // Specifying touch-action none here is necessary as Safari does not
+    // support the touch-action CSS attribute.
     const touchAction = dragState === DragStateEnum.none ? 'auto' : 'none';
 
     return (
@@ -333,7 +335,6 @@ class Timeline extends Component {
         touch-action={touchAction}
         id="timeline"
         className={classnames(className, styles.timelineWrapper)}
-        style={{ touchAction }}
       >
         <div
           className={styles.timeline}

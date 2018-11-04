@@ -49,7 +49,6 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.1",
     "react-slick": "^0.23.2",
-    "react-touch": "^0.4.4",
     "react-transition-group": "^1.2.1",
     "redux": "^4.0.1",
     "redux-persist": "^5.10.0",

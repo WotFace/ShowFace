@@ -6,6 +6,12 @@ body {
   margin: 0;
   padding: 0;
   font-family: $mdc-typography-font-family;
+
+  // Make iOS fire onclick events on body. Necessary to dismiss MDC menus.
+  // See https://github.com/material-components/material-components-web/issues/693#issuecomment-391648995
+  @supports (-webkit-overflow-scrolling: touch) {
+    cursor: pointer;
+  }
 }
 
 h1 {

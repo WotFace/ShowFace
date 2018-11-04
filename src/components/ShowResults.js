@@ -6,7 +6,11 @@ import classnames from 'classnames';
 import _ from 'lodash';
 import Timeline from './Timeline';
 import BottomAppBar from './BottomAppBar';
-import { respondentsToDict, partitionRespondentsByAttendance } from '../utils/response';
+import {
+  respondentToEmailOrName,
+  respondentsToDict,
+  partitionRespondentsByAttendance,
+} from '../utils/response';
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';
 
@@ -17,7 +21,7 @@ class ShowResults extends Component {
 
     // State to restore scroll position when back button pressed
     bodyScrollTop: 0,
-    hiddenUserIdList: [],
+    hiddenResponders: new Set(),
   };
 
   sidebarRef = createRef();
@@ -67,27 +71,24 @@ class ShowResults extends Component {
     );
   }
 
-  handleHideUser = (hiddenUserIdArray) => {
-    this.setState({ hiddenUserIdList: hiddenUserIdArray });
+  handleHideUnhideUser = (responder) => {
+    const { hiddenResponders } = this.state;
+    if (hiddenResponders.has(responder)) {
+      hiddenResponders.delete(responder);
+    } else {
+      hiddenResponders.add(responder);
+    }
+    this.setState({ hiddenResponders });
   };
 
-  handleHideRespondents = (respondents) => {
-    const { hiddenUserIdList } = this.state;
-    _.remove(respondents, function(a) {
-      const indexInList = _.findIndex(hiddenUserIdList, function(b) {
-        return b === a.id;
-      });
-      if (indexInList === -1) {
-        return false;
-      } else {
-        return true;
-      }
-    });
-  };
+  getNonHiddenRespondents(respondents) {
+    const { hiddenResponders } = this.state;
+    return respondents.filter((r) => !hiddenResponders.has(respondentToEmailOrName(r)));
+  }
 
   render() {
     const { show } = this.props;
-    const { selectedTime, isShowingDetails } = this.state;
+    const { selectedTime, isShowingDetails, hiddenResponders } = this.state;
 
     const { dates, startTime, endTime, interval } = show;
     const respondents = show.respondents || [];
@@ -96,18 +97,19 @@ class ShowResults extends Component {
       respondents,
       renderableRespondents,
       selectedTime,
+      hiddenResponders,
     );
-    const hiddenRespondents = respondents.slice();
-    this.handleHideRespondents(hiddenRespondents);
-    const hiddenRenderableRespondents = respondentsToDict(hiddenRespondents);
+    const nonHiddenRespondents = this.getNonHiddenRespondents(respondents);
+    const nonHiddenRenderableRespondents = respondentsToDict(nonHiddenRespondents);
     const calcMaxSelectable = () => {
       let max = 0;
-      for (let r of hiddenRenderableRespondents.values()) {
+      for (let r of nonHiddenRenderableRespondents.values()) {
         if (r.size > max) max = r.size;
       }
       return max;
     };
     const maxSelectable = calcMaxSelectable();
+    console.log('ksntoe', partitionedRespondents, hiddenResponders);
 
     // TODO: Deduplicate dates, startTime, endTime between ShowResults and ShowRespond
     return (
@@ -119,7 +121,7 @@ class ShowResults extends Component {
             startTime={startTime}
             endTime={endTime}
             interval={interval}
-            respondents={hiddenRespondents}
+            respondents={nonHiddenRespondents}
             maxSelectable={maxSelectable}
             onCellHover={this.handleCellHover}
           />
@@ -131,7 +133,7 @@ class ShowResults extends Component {
               )}
               partitionedRespondents={partitionedRespondents}
               time={selectedTime}
-              onHideUser={this.handleHideUser}
+              onHideUnhideUser={this.handleHideUnhideUser}
               onDeleteResponse={this.props.onDeleteResponse}
               onDeleteRespondents={this.props.onDeleteRespondents}
               onEditRespondentStatus={this.props.onEditRespondentStatus}

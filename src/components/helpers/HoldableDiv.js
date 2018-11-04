@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 export default class HoldableDiv extends Component {
+  divRef = React.createRef();
   holding = null; // Shape: { timeout: setInterval return value, event: touch start event }
 
   stopHolding() {
@@ -10,11 +11,20 @@ export default class HoldableDiv extends Component {
     }
   }
 
+  componentDidMount() {
+    this.divRef.current.addEventListener('touchstart', this.handleTouchStart);
+  }
+
+  componentWillUnmount() {
+    this.divRef.current.removeEventListener('touchstart', this.handleTouchStart);
+  }
+
   handleTouchStart = (event) => {
     if (this.holding) {
       this.stopHolding();
       return;
     }
+
     this.holding = {
       timeout: setTimeout(this.handleLongPress, this.props.holdFor),
       event,
@@ -39,7 +49,6 @@ export default class HoldableDiv extends Component {
       <div
         {...otherProps}
         ref={this.divRef}
-        onTouchStart={this.handleTouchStart}
         onTouchMove={this.handleTouchMove}
         onTouchEnd={this.handleTouchStop}
         onTouchCancel={this.handleTouchStop}

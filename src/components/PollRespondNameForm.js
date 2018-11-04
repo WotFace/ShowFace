@@ -104,12 +104,13 @@ class PollRespondNameForm extends Component {
   }
 
   render() {
+    const { canContinueAsSignedInUser } = this.props;
     return (
       <div className={styles.container}>
         <Card className={styles.card}>
-          {this.renderWithAccountSection()}
+          {canContinueAsSignedInUser ? this.renderWithAccountSection() : this.renderNameSection()}
           <Divider className={styles.divider} text="OR" />
-          {this.renderNameSection()}
+          {canContinueAsSignedInUser ? this.renderNameSection() : this.renderWithAccountSection()}
         </Card>
       </div>
     );

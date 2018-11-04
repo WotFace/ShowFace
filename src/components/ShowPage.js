@@ -7,7 +7,7 @@ import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import IconButton from '@material/react-icon-button';
 import { withAlert } from 'react-alert';
-import { Query, Mutation } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
@@ -509,12 +509,6 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
     _upsertResponse: getOptimisticResponseForShow(name, email, responses, show),
   };
 }
-
-function getOptimisticResponseForDeleteResponse() {}
-
-function getOptimisticResponseForDeleteRespondents() {}
-
-function getOptimisticResponseForEditShowRespondentStatus() {}
 
 function ShowPageWithQueries(props) {
   const slug = props.match.params.showId;

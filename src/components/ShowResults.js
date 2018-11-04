@@ -76,9 +76,9 @@ class ShowResults extends Component {
     const { hiddenUserIdList } = this.state;
     _.remove(respondents, function(a) {
       const indexInList = _.findIndex(hiddenUserIdList, function(b) {
-        return b == a.id;
+        return b === a.id;
       });
-      if (indexInList == -1) {
+      if (indexInList === -1) {
         return false;
       } else {
         return true;

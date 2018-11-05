@@ -5,14 +5,18 @@ import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
 import classnames from 'classnames';
+import Button from '@material/react-button';
 import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
 import Divider from './Divider';
 import styles from './ShowResultsSidebar.module.scss';
+import Modal from 'react-modal';
 
 class ShowResultsSidebar extends React.Component {
   state = {
     isMenuOpen: false,
+    isModalOpen: false,
+    selectedAction: '',
     selectedRespondentKey: '',
     selectedRespondent: null,
   };
@@ -21,6 +25,9 @@ class ShowResultsSidebar extends React.Component {
 
   openMenu = () => this.setState({ isMenuOpen: true });
   closeMenu = () => this.setState({ isMenuOpen: false });
+
+  openModal = () => this.setState({ isModalOpen: true });
+  closeModal = () => this.setState({ isModalOpen: false });
 
   renderRespondent = (responder, respondent, respondersRespondentsObj, isHidden) => {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
@@ -78,20 +85,21 @@ class ShowResultsSidebar extends React.Component {
   handleDeleteResponse = () => {
     const { selectedRespondent } = this.state;
     //TODO: add dialog box to confirm choice
-    this.closeMenu();
+    this.closeModal();
     this.props.onDeleteResponse(selectedRespondent.id);
   };
 
   handleDeleteRespondents = () => {
     const { selectedRespondent } = this.state;
-    this.closeMenu();
+    this.setState({ selectedAction: 'delete' });
+    this.closeModal();
     this.props.onDeleteRespondents(selectedRespondent.id);
   };
 
   handleEditKeyRespondentStatus = () => {
     const { selectedRespondent } = this.state;
     const isKeyRespondent = !selectedRespondent.isKeyRespondent;
-    this.closeMenu();
+    this.closeModal();
     this.props.onEditRespondentStatus(
       selectedRespondent.id,
       selectedRespondent.role,
@@ -102,7 +110,7 @@ class ShowResultsSidebar extends React.Component {
   handleEditRespondentRoleStatus = () => {
     const { selectedRespondent } = this.state;
     const respondentRole = selectedRespondent.role === 'member' ? 'admin' : 'member';
-    this.closeMenu();
+    this.closeModal();
     this.props.onEditRespondentStatus(
       selectedRespondent.id,
       respondentRole,
@@ -112,8 +120,8 @@ class ShowResultsSidebar extends React.Component {
 
   handleHideUser = () => {
     const { selectedRespondentKey } = this.state;
-    this.props.onHideUnhideUser(selectedRespondentKey);
     this.closeMenu();
+    this.props.onHideUnhideUser(selectedRespondentKey);
   };
 
   // handleEditResponse = () => {
@@ -165,7 +173,7 @@ class ShowResultsSidebar extends React.Component {
 
     if (userInMeeting && userInMeeting.role === 'admin') {
       listItems.push(
-        <ListItem key="keyrespondent" onClick={this.handleEditKeyRespondentStatus}>
+        <ListItem key="keyrespondent" onClick={this.handleClickKeyRespondentAction}>
           <ListItemGraphic
             graphic={<MaterialIcon icon={respondent.isKeyRespondent ? 'star_border' : 'star'} />}
           />
@@ -180,7 +188,7 @@ class ShowResultsSidebar extends React.Component {
 
     if (userInMeeting && userInMeeting.role === 'admin') {
       listItems.push(
-        <ListItem key="admintoggle" onClick={this.handleEditRespondentRoleStatus}>
+        <ListItem key="admintoggle" onClick={this.handleClickAdminAction}>
           <ListItemGraphic
             graphic={
               <MaterialIcon
@@ -199,14 +207,14 @@ class ShowResultsSidebar extends React.Component {
         (!respondent.user && respondent.anonymousName))
     ) {
       listItems.push(
-        <ListItem key="clearresp" onClick={this.handleDeleteResponse}>
+        <ListItem key="clearresp" onClick={this.handleClickClearAction}>
           <ListItemGraphic graphic={<MaterialIcon icon="clear_all" />} />
           <ListItemText primaryText="Clear response" />
         </ListItem>,
       );
 
       listItems.push(
-        <ListItem key="rmresp" onClick={this.handleDeleteRespondents}>
+        <ListItem key="rmresp" onClick={this.handleClickDeleteAction}>
           <ListItemGraphic graphic={<MaterialIcon icon="delete" />} />
           <ListItemText primaryText="Remove" />
         </ListItem>,
@@ -229,9 +237,94 @@ class ShowResultsSidebar extends React.Component {
     );
   };
 
+  renderModalContents = (action) => {
+    const { isModalOpen, selectedRespondent } = this.state;
+
+    let message;
+    let userName;
+    if (selectedRespondent) {
+      userName = selectedRespondent.user
+        ? selectedRespondent.user.name
+        : selectedRespondent.anonymousName;
+    }
+
+    switch (action) {
+      case 'clear':
+        message = 'Clear ' + userName + "'s response?";
+        break;
+      case 'delete':
+        message = 'Remove ' + userName + ' permanently from the meeting?';
+        break;
+      case 'keyRespondent':
+        message = selectedRespondent.isKeyRespondent
+          ? 'Remove ' + userName + ' as key respondent?'
+          : 'Make ' + userName + ' a key respondent?';
+        break;
+      case 'admin':
+        message =
+          selectedRespondent.role === 'admin'
+            ? 'Remove ' + userName + "'s admin privileges?"
+            : 'Make ' + userName + ' an admin of this meeting?';
+        break;
+      default:
+        message = '';
+        break;
+    }
+
+    return (
+      <Modal
+        isOpen={isModalOpen}
+        onAfterOpen={this.afterOpenModal}
+        onRequestClose={this.closeModal}
+        contentLabel="Actions"
+      >
+        <div className={styles.modalContainer}>
+          <p>{message}</p>
+          <div className={styles.modalButtonContainer}>
+            <Button onClick={this.closeModal}>CANCEL</Button>
+            {action === 'clear' ? <Button onClick={this.handleDeleteResponse}>OK</Button> : null}
+            {action === 'admin' ? (
+              <Button onClick={this.handleEditRespondentRoleStatus}>OK</Button>
+            ) : null}
+            {action === 'delete' ? (
+              <Button onClick={this.handleDeleteRespondents}>OK</Button>
+            ) : null}
+            {action === 'keyRespondent' ? (
+              <Button onClick={this.handleEditKeyRespondentStatus}>OK</Button>
+            ) : null}
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
+  handleClickKeyRespondentAction = () => {
+    this.setState({ selectedAction: 'keyRespondent' });
+    this.closeMenu();
+    this.openModal();
+  };
+
+  handleClickAdminAction = () => {
+    this.setState({ selectedAction: 'admin' });
+    this.closeMenu();
+    this.openModal();
+  };
+
+  handleClickClearAction = () => {
+    this.setState({ selectedAction: 'clear' });
+    this.closeMenu();
+    this.openModal();
+  };
+
+  handleClickDeleteAction = () => {
+    this.setState({ selectedAction: 'delete' });
+    this.closeMenu();
+    this.openModal();
+  };
+
   render() {
     const { className, partitionedRespondents, time, bestTime, interval } = this.props;
-    const { selectedRespondentKey, isMenuOpen } = this.state;
+    const { selectedRespondentKey, isMenuOpen, selectedAction } = this.state;
 
     const { hidden, attending, notAttending, respondersRespondentsObj } = partitionedRespondents;
 
@@ -347,6 +440,7 @@ class ShowResultsSidebar extends React.Component {
               selectedRespondentKey,
             )}
           </MenuSurface>
+          {this.renderModalContents(selectedAction)}
         </div>
       </div>
     );

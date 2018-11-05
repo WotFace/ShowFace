@@ -45,6 +45,11 @@
   }
 }
 
+.contentLogo {
+  width: 19em;
+  bottom: 1em;
+}
+
 #googleButton {
   @include mdc-button-filled-accessible(#dd4b39);
 }

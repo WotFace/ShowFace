@@ -17,6 +17,7 @@ import { getAuthInput } from '../utils/auth';
 import SocialLogin from './SocialLogin';
 
 import styles from './LoginPage.module.scss';
+import logo from '../logo.png';
 
 class LoginPage extends Component {
   LOGIN_TAB_IDX = 0;
@@ -133,6 +134,7 @@ class LoginPage extends Component {
     return (
       <div className={styles.outerContainer}>
         <div className={styles.innerContainer}>
+          <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
           <Card className={classnames(styles.card, styles.socialCard)}>
             <SocialLogin
               onLogInStart={this.handleSocialLogInStart}

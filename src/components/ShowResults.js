@@ -99,15 +99,11 @@ class ShowResults extends Component {
       hiddenResponders,
     );
     const nonHiddenRespondents = this.getNonHiddenRespondents(respondents);
-    const nonHiddenRenderableRespondents = respondentsToDict(nonHiddenRespondents);
-    const calcMaxSelectable = () => {
-      let max = 0;
-      for (let r of nonHiddenRenderableRespondents.values()) {
-        if (r.size > max) max = r.size;
-      }
-      return max;
-    };
-    const maxSelectable = calcMaxSelectable();
+
+    const totalNumResponders = Object.keys(partitionedRespondents.respondersRespondentsObj).length;
+    const numHidden = partitionedRespondents.hidden.length;
+    // TODO: Subtract yet to responds as well
+    const maxSelectable = totalNumResponders - numHidden;
 
     // TODO: Deduplicate dates, startTime, endTime between ShowResults and ShowRespond
     return (

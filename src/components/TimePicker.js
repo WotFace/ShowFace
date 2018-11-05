@@ -115,7 +115,8 @@ class TimePicker extends Component {
     this.setState({ interval: interval });
 
     // Reset the minutes which now may be inaccurate
-    this.setToDefaultTimes();
+    this.resetStartTime();
+    this.resetEndTime();
     this.props.updateInterval(interval);
   };
 

@@ -1,3 +1,5 @@
+@import '../mdc';
+
 .outerContainer {
   max-width: 20em;
   margin-left: auto;
@@ -41,4 +43,17 @@
   .submitButton {
     margin-top: 1em;
   }
+}
+
+.contentLogo {
+  width: 19em;
+  bottom: 1em;
+}
+
+#googleButton {
+  @include mdc-button-filled-accessible(#dd4b39);
+}
+
+#facebookButton {
+  @include mdc-button-filled-accessible(#3b5998);
 }

@@ -9,12 +9,17 @@ $sidebar-hidden-breakpoint: largephone;
   // this hack is ensures that the list items follow the parent
   @media (max-width: mdc-layout-grid-breakpoint-min($sidebar-hidden-breakpoint)) {
     width: 90vw;
+    margin-top: 4em;
   }
 }
 
 .attendees {
   .attendeeListSection {
-    margin-bottom: 2em;
+    margin-bottom: 1em;
+  }
+
+  .attendeeListHeader {
+    margin: 0;
   }
 }
 
@@ -34,6 +39,7 @@ $sidebar-hidden-breakpoint: largephone;
 }
 
 .pollTime {
+  margin-top: 0;
   margin-bottom: 1em;
 }
 
@@ -58,8 +64,21 @@ $sidebar-hidden-breakpoint: largephone;
   color: #757575;
 }
 
+.header {
+  .hoveringHeaderContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .hoveringTextContainer {
+      flex: 1;
+    }
+  }
+}
+
 .modalContainer {
-  padding: 24px;
+  background-color: #f7f6f4;
+  padding: 12px 24px;
   .modalButtonContainer {
     float: right;
   }

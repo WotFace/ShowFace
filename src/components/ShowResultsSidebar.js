@@ -1,8 +1,10 @@
 import React from 'react';
-import { format, isThisSecond } from 'date-fns';
+import { format } from 'date-fns';
+import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
+import classnames from 'classnames';
 import Button from '@material/react-button';
 import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
@@ -270,7 +272,7 @@ class ShowResultsSidebar extends React.Component {
         contentLabel="Actions"
       >
         <div className={styles.modalContainer}>
-          <h3>{message}</h3>
+          <p>{message}</p>
           <div className={styles.modalButtonContainer}>
             <Button onClick={this.closeModal}>CANCEL</Button>
             {action === 'clear' ? (<Button onClick={this.handleDeleteResponse}>OK</Button>) : null}
@@ -308,18 +310,60 @@ class ShowResultsSidebar extends React.Component {
   };
 
   render() {
-    const { className, partitionedRespondents, time } = this.props;
+    const { className, partitionedRespondents, time, bestTime, interval } = this.props;
     const { selectedRespondentKey, isMenuOpen, selectedAction } = this.state;
 
     const { hidden, attending, notAttending, respondersRespondentsObj } = partitionedRespondents;
+
+    const dateFormat = 'D MMM hh:mmA';
+    let header;
+    if (time) {
+      header = (
+        <div className={styles.header}>
+          <div className={styles.hoveringHeaderContainer}>
+            <div className={styles.hoveringTextContainer}>
+              <div className="mdc-typography--overline">Hovering</div>
+              <h2 className={classnames('mdc-typography--headline5', styles.pollTime)}>
+                {format(time, dateFormat)}
+              </h2>
+            </div>
+            <IconButton onClick={this.props.onDeselectClick}>
+              <MaterialIcon icon="close" />
+            </IconButton>
+          </div>
+        </div>
+      );
+    } else if (bestTime) {
+      header = (
+        <div className={styles.header}>
+          <div className="mdc-typography--overline">Best Time to Meet</div>
+          <h2 className={classnames('mdc-typography--headline5', styles.pollTime)}>
+            {format(bestTime.interval.start, dateFormat)} -{' '}
+            {format(bestTime.interval.end + interval * 60 * 1000, dateFormat)}
+          </h2>
+        </div>
+      );
+    } else {
+      header = (
+        <div className={styles.header}>
+          <div className="mdc-typography--overline">Best Time to Meet</div>
+          <h2 className={classnames('mdc-typography--subtitle1', styles.pollTime)}>
+            No best time to meet. Hover your cursor over a time slot to view responses at that time.
+          </h2>
+        </div>
+      );
+    }
+
     return (
       <div className={className}>
         <div className={styles.sidebarContainer}>
           <section className={styles.attendees}>
-            {time ? <h2 className={styles.pollTime}>{format(time, 'D MMM hh:mmA')}</h2> : null}
+            {header}
             {attending.length > 0 && (
               <section className={styles.attendeeListSection}>
-                <h3>Available</h3>
+                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
+                  Available
+                </h3>
                 <List twoLine>
                   {attending.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
@@ -335,7 +379,9 @@ class ShowResultsSidebar extends React.Component {
             )}
             {notAttending.length > 0 && (
               <section className={styles.attendeeListSection}>
-                <h3>Not Available</h3>
+                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
+                  Not Available
+                </h3>
                 <List twoLine>
                   {notAttending.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
@@ -351,7 +397,9 @@ class ShowResultsSidebar extends React.Component {
             )}
             {hidden.length > 0 && (
               <section className={styles.attendeeListSection}>
-                <h3>Hidden</h3>
+                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
+                  Hidden
+                </h3>
                 <List twoLine>
                   {hidden.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];

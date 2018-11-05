@@ -3,7 +3,7 @@
 // https://core.ac.uk/download/pdf/35457835.pdf
 
 import _ from 'lodash';
-import { kLargest, kMaxRanges } from './bestTime';
+import { kLargest, kMaxRanges, bestMeetings } from './bestTime';
 
 test('kLargest', () => {
   // Array of tests in the format [k, test, expectedResults]
@@ -98,3 +98,72 @@ function perfTester() {
 // test('perf', () => {
 // perfTester();
 // });
+
+test('bestMeetings', () => {
+  const entries = [
+    [1542651300000, ['anon Kirk', 'anon Spock']],
+    [1542652200000, ['anon Kirk', 'anon Spock']],
+    [1542653100000, ['anon Kirk', 'anon Spock']],
+    [1542654000000, ['anon Kirk', 'anon Spock']],
+    [1542654900000, ['anon Kirk', 'anon Spock']],
+    [1542655800000, ['anon Kirk', 'anon Spock']],
+    [1542656700000, ['anon Kirk', 'anon Spock']],
+    [1542657600000, ['anon Kirk']],
+    [1542658500000, ['anon Kirk']],
+    [1542659400000, ['anon Kirk']],
+    [1542660300000, ['anon Kirk']],
+    [1542661200000, ['anon Kirk']],
+    [1542662100000, ['anon Kirk']],
+    [1543425300000, ['anon Kirk', 'anon Spock']],
+    [1543426200000, ['anon Kirk', 'anon Spock']],
+    [1543427100000, ['anon Kirk', 'anon Spock']],
+    [1543428000000, ['anon Kirk', 'anon Spock']],
+    [1543428900000, ['anon Kirk']],
+    [1543429800000, ['anon Kirk']],
+    [1543430700000, ['anon Kirk']],
+    [1543433400000, ['anon Kirk', 'anon Spock']],
+    [1543434300000, ['anon Kirk', 'anon Spock']],
+    [1543435200000, ['anon Kirk', 'anon Spock']],
+    [1543436100000, ['anon Kirk', 'anon Spock']],
+    [1543437000000, ['anon Kirk', 'anon Spock']],
+    [1543437900000, ['anon Kirk', 'anon Spock']],
+    [1543438800000, ['anon Kirk', 'anon Spock']],
+    [1542645000000, ['anon Kirk']],
+    [1542645900000, ['anon Kirk']],
+    [1542646800000, ['anon Kirk']],
+    [1542647700000, ['anon Kirk']],
+    [1543441500000, ['anon Kirk']],
+    [1543442400000, ['anon Kirk']],
+    [1543443300000, ['anon Kirk']],
+    [1543444200000, ['anon Kirk']],
+    [1542649500000, ['anon Spock']],
+    [1542650400000, ['anon Spock']],
+    [1543432500000, ['anon Spock']],
+    [1543423500000, ['anon Spock']],
+    [1543424400000, ['anon Spock']],
+    [1542664800000, ['anon Spock']],
+    [1542665700000, ['anon Spock']],
+    [1542666600000, ['anon Spock']],
+    [1542667500000, ['anon Spock']],
+    [1542668400000, ['anon Spock']],
+    [1542669300000, ['anon Spock']],
+    [1543446900000, ['anon Spock']],
+    [1543447800000, ['anon Spock']],
+    [1543448700000, ['anon Spock']],
+    [1543449600000, ['anon Spock']],
+    [1543450500000, ['anon Spock']],
+    [1543451400000, ['anon Spock']],
+    [1543452300000, ['anon Spock']],
+    [1543453200000, ['anon Spock']],
+    [1543454100000, ['anon Spock']],
+    [1542673800000, ['anon Spock']],
+    [1542674700000, ['anon Spock']],
+    [1542675600000, ['anon Spock']],
+    [1542676500000, ['anon Spock']],
+    [1542677400000, ['anon Spock']],
+    [1542678300000, ['anon Spock']],
+  ].map(([a, b]) => [a, new Set(b)]);
+
+  const bm = bestMeetings(entries, 15);
+  // console.log('bm', bm);
+});

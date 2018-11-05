@@ -12,9 +12,9 @@ class TimePicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      startHour: 10,
+      startHour: 9,
       startMin: 0,
-      endHour: 20,
+      endHour: 17,
       endMin: 0,
       interval: this.props.interval || 15,
     };
@@ -33,6 +33,15 @@ class TimePicker extends Component {
     this.setState({ startHour: 'Unselected' });
     this.setState({ startMin: 'Unselected' });
     this.props.updateStartTime(this.startTime());
+  };
+
+  setToDefaultTimes = () => {
+    this.setState({ startHour: 9 });
+    this.setState({ startMin: 17 });
+    this.setState({ endHour: 0 });
+    this.setState({ endMin: 0 });
+    this.props.updateStartTime(this.startTime());
+    this.props.updateEndTime(this.endTime());
   };
 
   dateForTime = (hour, min) => {
@@ -108,6 +117,7 @@ class TimePicker extends Component {
     // Reset the minutes which now may be inaccurate
     this.resetStartTime();
     this.resetEndTime();
+    this.props.updateInterval(interval);
   };
 
   getstartHours = () => {

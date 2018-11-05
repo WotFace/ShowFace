@@ -46,12 +46,14 @@ $sidebar-hidden-breakpoint: largephone;
   }
 }
 
+.listText {
+  // Disable clicks on Chrome to prevent some weird error when the text is
+  // clicked in certain circumstances.
+  pointer-events: none;
+}
+
 .hiddenIcon {
   position: absolute;
   right: 16px;
   color: #757575;
-}
-
-.displayNone {
-  display: none;
 }

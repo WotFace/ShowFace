@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
+import classnames from 'classnames';
 import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
 import Divider from './Divider';
@@ -236,19 +237,32 @@ class ShowResultsSidebar extends React.Component {
     const dateFormat = 'D MMM hh:mmA';
     let header;
     if (time) {
-      header = <h2 className={styles.pollTime}>{format(time, dateFormat)}</h2>;
+      header = (
+        <div className={styles.header}>
+          <div className="mdc-typography--overline">Hovering</div>
+          <h2 className={classnames('mdc-typography--headline5', styles.pollTime)}>
+            {format(time, dateFormat)}
+          </h2>
+        </div>
+      );
     } else if (bestTime) {
       header = (
-        <h2 className={styles.pollTime}>
-          {format(bestTime.interval.start, dateFormat)} -{' '}
-          {format(bestTime.interval.end, dateFormat)}
-        </h2>
+        <div className={styles.header}>
+          <div className="mdc-typography--overline">Best Time to Meet</div>
+          <h2 className={classnames('mdc-typography--headline5', styles.pollTime)}>
+            {format(bestTime.interval.start, dateFormat)} -{' '}
+            {format(bestTime.interval.end, dateFormat)}
+          </h2>
+        </div>
       );
     } else {
       header = (
-        <h2 className={styles.pollTime}>
-          No best time to meet. Select a time slot to view responses at that time.
-        </h2>
+        <div className={styles.header}>
+          <div className="mdc-typography--overline">Best Time to Meet</div>
+          <h2 className={classnames('mdc-typography--subtitle1', styles.pollTime)}>
+            No best time to meet. Hover your cursor over a time slot to view responses at that time.
+          </h2>
+        </div>
       );
     }
 
@@ -259,7 +273,9 @@ class ShowResultsSidebar extends React.Component {
             {header}
             {attending.length > 0 && (
               <section className={styles.attendeeListSection}>
-                <h3>Available</h3>
+                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
+                  Available
+                </h3>
                 <List twoLine>
                   {attending.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
@@ -275,7 +291,9 @@ class ShowResultsSidebar extends React.Component {
             )}
             {notAttending.length > 0 && (
               <section className={styles.attendeeListSection}>
-                <h3>Not Available</h3>
+                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
+                  Not Available
+                </h3>
                 <List twoLine>
                   {notAttending.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
@@ -291,7 +309,9 @@ class ShowResultsSidebar extends React.Component {
             )}
             {hidden.length > 0 && (
               <section className={styles.attendeeListSection}>
-                <h3>Hidden</h3>
+                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
+                  Hidden
+                </h3>
                 <List twoLine>
                   {hidden.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];

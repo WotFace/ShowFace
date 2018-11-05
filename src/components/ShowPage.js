@@ -44,6 +44,10 @@ class ShowPageComponent extends Component {
     Modal.setAppElement('body');
   }
 
+  meetingPageBaseUrl() {
+    return `/meeting/${this.props.match.params.showId}`;
+  }
+
   openModal() {
     this.setState({ modalIsOpen: true });
   }
@@ -160,12 +164,16 @@ class ShowPageComponent extends Component {
   };
 
   renderTabBar = (responseAllowed) => {
-    const { match, location, history } = this.props;
+    const { location, history } = this.props;
     const { pendingSubmission } = this.state;
-    var links = [{ text: 'Results', icon: 'list', path: `${match.url}/results` }];
+    var links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
     var responseIcon = pendingSubmission ? 'warning' : 'add';
     if (responseAllowed) {
-      links.unshift({ text: 'Respond', icon: `${responseIcon}`, path: `${match.url}/respond` });
+      links.unshift({
+        text: 'Respond',
+        icon: `${responseIcon}`,
+        path: `${this.meetingPageBaseUrl()}/respond`,
+      });
     }
 
     const { pathname } = location;
@@ -235,7 +243,7 @@ class ShowPageComponent extends Component {
     const show = this.latestShow(true);
     const latestSavedShow = this.latestShow(false);
 
-    if (!latestSavedShow) {
+    if (!latestSavedShow || !show) {
       return (
         <Error
           title="We couldn&apos;t find this poll"
@@ -247,12 +255,23 @@ class ShowPageComponent extends Component {
     const adminAccess = this.amIAdmin();
     const responseAllowed = !latestSavedShow.isReadOnly || adminAccess;
 
+    const baseUrl = this.meetingPageBaseUrl();
+    const lastPathComponent = match.params[0]; // undefined if URL is /meeting/<slug>
+
+    // Redirects if necessary, according to show settings
+    if (!lastPathComponent && responseAllowed) {
+      return <Redirect to={`${baseUrl}/respond`} />;
+    }
+    if (!responseAllowed && (!lastPathComponent || lastPathComponent === 'respond')) {
+      return <Redirect to={`${baseUrl}/results`} />;
+    }
+
     return (
       <div className={styles.container}>
         <Prompt
           when={!!pendingSubmission}
           message={(location) =>
-            location.pathname.startsWith(match.url)
+            location.pathname.startsWith(this.meetingPageBaseUrl())
               ? true
               : 'You have unsaved changes. Are you sure you want to leave this page?'
           }
@@ -301,47 +320,26 @@ class ShowPageComponent extends Component {
         </section>
         {this.renderTabBar(responseAllowed)}
         <section id="show">
-          {show && (
-            <React.Fragment>
-              <Route
-                exact
-                path={match.url}
-                component={() => (
-                  <Redirect to={`/meeting/${this.props.match.params.showId}/respond`} />
-                )}
-              />
-              {responseAllowed ? (
-                <Route
-                  path={match.url + '/respond'}
-                  render={() => (
-                    <ShowRespond
-                      show={show}
-                      hasSetName={hasSetName}
-                      onSetName={this.handleSetName}
-                      onSelectTimes={this.handleSelectTimes}
-                      onDeselectTimes={this.handleDeselectTimes}
-                      hasPendingSubmissions={!!pendingSubmission}
-                      isSaving={upsertResponsesLoading}
-                      onSubmit={this.handleSubmit}
-                    />
-                  )}
-                />
-              ) : (
-                <Redirect to={`/meeting/${this.props.match.params.showId}/results`} />
-              )}
-              <Route
-                path={match.url + '/results'}
-                render={() => (
-                  <ShowResults
-                    show={latestSavedShow}
-                    onDeleteResponse={this.handleDeleteResponse}
-                    onDeleteRespondents={this.handleDeleteRespondents}
-                    onEditRespondentStatus={this.handleEditRespondentStatus}
-                    onUserAction={this.onUserAction}
-                  />
-                )}
-              />
-            </React.Fragment>
+          {lastPathComponent === 'respond' && (
+            <ShowRespond
+              show={show}
+              hasSetName={hasSetName}
+              onSetName={this.handleSetName}
+              onSelectTimes={this.handleSelectTimes}
+              onDeselectTimes={this.handleDeselectTimes}
+              hasPendingSubmissions={!!pendingSubmission}
+              isSaving={upsertResponsesLoading}
+              onSubmit={this.handleSubmit}
+            />
+          )}
+          {lastPathComponent === 'results' && (
+            <ShowResults
+              show={latestSavedShow}
+              onDeleteResponse={this.handleDeleteResponse}
+              onDeleteRespondents={this.handleDeleteRespondents}
+              onEditRespondentStatus={this.handleEditRespondentStatus}
+              onUserAction={this.onUserAction}
+            />
           )}
         </section>
       </div>

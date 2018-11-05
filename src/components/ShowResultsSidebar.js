@@ -243,7 +243,9 @@ class ShowResultsSidebar extends React.Component {
     let message;
     let userName;
     if (selectedRespondent) {
-      userName = selectedRespondent.user ? selectedRespondent.user.name : selectedRespondent.anonymousName;
+      userName = selectedRespondent.user
+        ? selectedRespondent.user.name
+        : selectedRespondent.anonymousName;
     }
 
     switch (action) {
@@ -251,13 +253,18 @@ class ShowResultsSidebar extends React.Component {
         message = 'Clear ' + userName + "'s response?";
         break;
       case 'delete':
-        message = 'Remove ' + userName + " permanently from the meeting?";
+        message = 'Remove ' + userName + ' permanently from the meeting?';
         break;
       case 'keyRespondent':
-        message = selectedRespondent.isKeyRespondent ? ("Remove " + userName + " as key respondent?") : ("Make " + userName + " a key respondent?");
+        message = selectedRespondent.isKeyRespondent
+          ? 'Remove ' + userName + ' as key respondent?'
+          : 'Make ' + userName + ' a key respondent?';
         break;
       case 'admin':
-        message = (selectedRespondent.role === 'admin') ? ("Remove " + userName + "'s admin privileges?") : ("Make " + userName + " an admin of this meeting?");
+        message =
+          selectedRespondent.role === 'admin'
+            ? 'Remove ' + userName + "'s admin privileges?"
+            : 'Make ' + userName + ' an admin of this meeting?';
         break;
       default:
         message = '';
@@ -275,10 +282,16 @@ class ShowResultsSidebar extends React.Component {
           <p>{message}</p>
           <div className={styles.modalButtonContainer}>
             <Button onClick={this.closeModal}>CANCEL</Button>
-            {action === 'clear' ? (<Button onClick={this.handleDeleteResponse}>OK</Button>) : null}
-            {action === 'admin' ? (<Button onClick={this.handleEditRespondentRoleStatus}>OK</Button>) : null}
-            {action === 'delete' ? (<Button onClick={this.handleDeleteRespondents}>OK</Button>) : null}
-            {action === 'keyRespondent' ? (<Button onClick={this.handleEditKeyRespondentStatus}>OK</Button>) : null}
+            {action === 'clear' ? <Button onClick={this.handleDeleteResponse}>OK</Button> : null}
+            {action === 'admin' ? (
+              <Button onClick={this.handleEditRespondentRoleStatus}>OK</Button>
+            ) : null}
+            {action === 'delete' ? (
+              <Button onClick={this.handleDeleteRespondents}>OK</Button>
+            ) : null}
+            {action === 'keyRespondent' ? (
+              <Button onClick={this.handleEditKeyRespondentStatus}>OK</Button>
+            ) : null}
           </div>
         </div>
       </Modal>

@@ -154,6 +154,7 @@ export function bestMeetings(entries, numResponders, interval) {
   );
   // TODO: Calculate a suitable k based on size of `sizes` (i.e. n). Ensure that k < n.
   const bestRanges = kMaxRanges(sizes.length, sizes);
+  if (bestRanges.length === 1 && bestRanges[0].val === 0) return [];
 
   // Convert best ranges to [timestamp, attendees]
   let bestTimes = bestRanges.map((r) => dividedEntries.slice(r.start, r.end + 1));

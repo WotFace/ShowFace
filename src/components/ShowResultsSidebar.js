@@ -1,50 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { format } from 'date-fns';
 import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
 import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
-import { bestMeetings } from '../utils/bestTime';
 import Divider from './Divider';
 import styles from './ShowResultsSidebar.module.scss';
-
-const dateFormat = 'D MMM hh:mmA';
-
-class BestTime extends Component {
-  // TODO: Override shouldComponentUpdate to fix unnecessary renders
-  render() {
-    const { renderableRespondents, partitionedRespondents, interval } = this.props;
-    const entries = Array.from(renderableRespondents.entries());
-    const numResponders = Object.keys(partitionedRespondents.respondersRespondentsObj).length;
-    const bestTimes = bestMeetings(entries, numResponders, interval);
-
-    if (bestTimes.length === 0) {
-      return <div>No best time to meet</div>;
-    }
-
-    const selectedBestTime = bestTimes[0]; // TODO: Let user choose
-
-    // console.log(
-    // 'bt',
-    // bestTimes.map(({ interval: { start, end } }) => ({
-    // start: format(start, dateFormat),
-    // end: format(end, dateFormat),
-    // })),
-    // );
-
-    return (
-      <div>
-        Best time to meet
-        {format(selectedBestTime.interval.start, dateFormat)} to{' '}
-        {format(
-          selectedBestTime.interval.end + interval * 60 * 1000, // Add 1 time interval as this "end" date is the start of the last time interval
-          dateFormat,
-        )}
-      </div>
-    );
-  }
-}
 
 class ShowResultsSidebar extends React.Component {
   state = {
@@ -266,20 +228,35 @@ class ShowResultsSidebar extends React.Component {
   };
 
   render() {
-    const { className, renderableRespondents, partitionedRespondents, time, interval } = this.props;
+    const { className, partitionedRespondents, time, bestTime } = this.props;
     const { selectedRespondentKey, isMenuOpen } = this.state;
 
     const { hidden, attending, notAttending, respondersRespondentsObj } = partitionedRespondents;
+
+    const dateFormat = 'D MMM hh:mmA';
+    let header;
+    if (time) {
+      header = <h2 className={styles.pollTime}>{format(time, dateFormat)}</h2>;
+    } else if (bestTime) {
+      header = (
+        <h2 className={styles.pollTime}>
+          {format(bestTime.interval.start, dateFormat)} -{' '}
+          {format(bestTime.interval.end, dateFormat)}
+        </h2>
+      );
+    } else {
+      header = (
+        <h2 className={styles.pollTime}>
+          No best time to meet. Select a time slot to view responses at that time.
+        </h2>
+      );
+    }
+
     return (
       <div className={className}>
         <div className={styles.sidebarContainer}>
-          <BestTime
-            renderableRespondents={renderableRespondents}
-            partitionedRespondents={partitionedRespondents}
-            interval={interval}
-          />
           <section className={styles.attendees}>
-            {time ? <h2 className={styles.pollTime}>{format(time, 'D MMM hh:mmA')}</h2> : null}
+            {header}
             {attending.length > 0 && (
               <section className={styles.attendeeListSection}>
                 <h3>Available</h3>

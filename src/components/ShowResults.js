@@ -3,13 +3,15 @@ import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { format } from 'date-fns';
 import classnames from 'classnames';
-import Timeline from './Timeline';
-import BottomAppBar from './BottomAppBar';
+import { bestMeetings } from '../utils/bestTime';
 import {
   respondentToEmailOrName,
   respondentsToDict,
+  partitionRespondentsAtTime,
   partitionRespondentsByAttendance,
 } from '../utils/response';
+import Timeline from './Timeline';
+import BottomAppBar from './BottomAppBar';
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';
 
@@ -26,6 +28,8 @@ class ShowResults extends Component {
   sidebarRef = createRef();
 
   handleCellHover = (selectedTime) => this.setState({ selectedTime });
+
+  handleDeselectClick = () => this.setState({ selectedTime: null });
 
   handleDetailToggleClick = () => {
     const { isShowingDetails, bodyScrollTop } = this.state;
@@ -47,12 +51,50 @@ class ShowResults extends Component {
     }
   };
 
-  renderBottomBar(partitionedRespondents) {
-    const { selectedTime, isShowingDetails } = this.state;
+  renderAttendingLine(partitionedRespondents) {
     const { attending, notAttending } = partitionedRespondents;
-
     const attendingCount = attending.length === 0 ? 0 : attending.length;
     const notAttendingCount = notAttending.length === 0 ? 0 : notAttending.length;
+    return (
+      <>
+        {attendingCount} attending, {notAttendingCount} not attending
+      </>
+    );
+  }
+
+  renderBottomBar(partitionedRespondents, bestTime) {
+    const { selectedTime, isShowingDetails } = this.state;
+    const useBestTime = !selectedTime;
+
+    const dateFormat = 'D MMM hh:mmA';
+    let textContent;
+
+    if (useBestTime) {
+      if (bestTime) {
+        textContent = (
+          <>
+            <strong>Best Time to Meet</strong>
+            <br />
+            {format(bestTime.interval.start, dateFormat)} -{' '}
+            {format(bestTime.interval.end, dateFormat)}
+            <br />
+            {this.renderAttendingLine(partitionedRespondents)}
+          </>
+        );
+      } else {
+        textContent = 'No best time to meet. Select a time slot to view responses at that time.';
+      }
+    } else {
+      textContent = (
+        <>
+          <strong>Selecting</strong>
+          <br />
+          {format(selectedTime, dateFormat)}
+          <br />
+          {this.renderAttendingLine(partitionedRespondents)}
+        </>
+      );
+    }
 
     return (
       <BottomAppBar className={styles.bottomBar}>
@@ -60,11 +102,12 @@ class ShowResults extends Component {
           <IconButton onClick={this.handleDetailToggleClick}>
             <MaterialIcon icon={isShowingDetails ? 'grid_on' : 'format_list_bulleted'} />
           </IconButton>
-          <span className={styles.mainText}>
-            {format(selectedTime, 'D MMM hh:mmA')}
-            <br />
-            {attendingCount} attending, {notAttendingCount} not attending
-          </span>
+          <span className={styles.mainText}>{textContent}</span>
+          {selectedTime && (
+            <IconButton onClick={this.handleDeselectClick}>
+              <MaterialIcon icon="close" />
+            </IconButton>
+          )}
         </div>
       </BottomAppBar>
     );
@@ -91,16 +134,27 @@ class ShowResults extends Component {
 
     const { dates, startTime, endTime, interval } = show;
     const respondents = show.respondents || [];
+    const totalNumResponders = respondents.length;
     const renderableRespondents = respondentsToDict(respondents);
-    const partitionedRespondents = partitionRespondentsByAttendance(
-      respondents,
-      renderableRespondents,
-      selectedTime,
-      hiddenResponders,
-    );
+
+    let bestTime;
+    if (!selectedTime) {
+      const entries = Array.from(renderableRespondents.entries());
+      const bestTimes = bestMeetings(entries, totalNumResponders, interval);
+      if (bestTimes.length > 0) bestTime = bestTimes[0];
+    }
+
+    const partitionedRespondents =
+      selectedTime || !bestTime
+        ? partitionRespondentsAtTime(
+            respondents,
+            renderableRespondents,
+            selectedTime,
+            hiddenResponders,
+          )
+        : partitionRespondentsByAttendance(respondents, bestTime.attendees, hiddenResponders);
     const nonHiddenRespondents = this.getNonHiddenRespondents(respondents);
 
-    const totalNumResponders = Object.keys(partitionedRespondents.respondersRespondentsObj).length;
     const numHidden = partitionedRespondents.hidden.length;
     // TODO: Subtract yet to responds as well
     const maxSelectable = totalNumResponders - numHidden;
@@ -125,18 +179,18 @@ class ShowResults extends Component {
                 styles.sidebar,
                 isShowingDetails ? null : styles.hiddenOnMobile,
               )}
-              renderableRespondents={renderableRespondents}
               partitionedRespondents={partitionedRespondents}
               time={selectedTime}
+              bestTime={bestTime}
+              showBestTime={selectedTime && bestTime}
               onHideUnhideUser={this.handleHideUnhideUser}
               onDeleteResponse={this.props.onDeleteResponse}
               onDeleteRespondents={this.props.onDeleteRespondents}
               onEditRespondentStatus={this.props.onEditRespondentStatus}
-              interval={interval}
             />
           </div>
         </div>
-        {this.renderBottomBar(partitionedRespondents)}
+        {this.renderBottomBar(partitionedRespondents, bestTime)}
       </div>
     );
   }

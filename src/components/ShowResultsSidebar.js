@@ -20,24 +20,24 @@ class ShowResultsSidebar extends React.Component {
   openMenu = () => this.setState({ isMenuOpen: true });
   closeMenu = () => this.setState({ isMenuOpen: false });
 
-  renderRespondent = (responder, respondent, respondersRespondentsObj) => {
+  renderRespondent = (responder, respondent, respondersRespondentsObj, isHidden) => {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
 
     return (
       <ListItem
         key={responder}
         onClick={() => {
+          if (this.state.isMenuOpen) return;
           this.setState(
             {
               selectedRespondentKey: responder,
               selectedRespondentId: respondersRespondentsObj[responder].id,
               selectedRespondent: respondersRespondentsObj[responder],
             },
-            () => {
-              this.setState({
-                isMenuOpen: true,
-              });
-            },
+            // Open menu after setting the selected respondent and before
+            // opening the menu so that a ref to the anchor element will be
+            // bound when the menu opens.
+            this.openMenu,
           );
         }}
       >
@@ -68,58 +68,7 @@ class ShowResultsSidebar extends React.Component {
         ) : (
           <div />
         )}
-      </ListItem>
-    );
-  };
-
-  renderHiddenRespondent = (responder, respondent, respondersRespondentsObj) => {
-    const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
-    return (
-      <ListItem
-        key={responder}
-        onClick={() => {
-          this.setState(
-            {
-              selectedRespondentKey: responder,
-              selectedRespondentId: respondersRespondentsObj[responder].id,
-              selectedRespondent: respondersRespondentsObj[responder],
-            },
-            () => {
-              this.setState({
-                isMenuOpen: true,
-              });
-            },
-          );
-        }}
-      >
-        <ListItemGraphic
-          graphic={
-            <MaterialIcon
-              icon={respondent.isKeyRespondent ? 'star' : 'star_border'}
-              className={
-                respondent.isKeyRespondent
-                  ? styles.keyRespondentActive
-                  : styles.keyRespondentInactive
-              }
-            />
-          }
-        />
-        <ListItemText
-          className={styles.listText}
-          primaryText={displayName}
-          secondaryText={
-            (respondent.user ? respondent.user.email + ' • ' : '') +
-            respondent.role +
-            (' • ' + (respondent.response.length === 0 ? 'not responded' : 'responded'))
-          }
-        />
-        {respondent.id ===
-        (this.state.selectedRespondent ? this.state.selectedRespondent.id : false) ? (
-          <div ref={this.activeItemRef} />
-        ) : (
-          <div />
-        )}
-        <MaterialIcon className={styles.hiddenIcon} icon="visibility_off" />
+        {isHidden ? <MaterialIcon className={styles.hiddenIcon} icon="visibility_off" /> : <div />}
       </ListItem>
     );
   };
@@ -293,7 +242,12 @@ class ShowResultsSidebar extends React.Component {
                 <List twoLine>
                   {attending.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
-                    return this.renderRespondent(responder, respondent, respondersRespondentsObj);
+                    return this.renderRespondent(
+                      responder,
+                      respondent,
+                      respondersRespondentsObj,
+                      false,
+                    );
                   })}
                 </List>
               </section>
@@ -304,7 +258,12 @@ class ShowResultsSidebar extends React.Component {
                 <List twoLine>
                   {notAttending.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
-                    return this.renderRespondent(responder, respondent, respondersRespondentsObj);
+                    return this.renderRespondent(
+                      responder,
+                      respondent,
+                      respondersRespondentsObj,
+                      false,
+                    );
                   })}
                 </List>
               </section>
@@ -315,10 +274,11 @@ class ShowResultsSidebar extends React.Component {
                 <List twoLine>
                   {hidden.map((responder) => {
                     const respondent = respondersRespondentsObj[responder];
-                    return this.renderHiddenRespondent(
+                    return this.renderRespondent(
                       responder,
                       respondent,
                       respondersRespondentsObj,
+                      true,
                     );
                   })}
                 </List>

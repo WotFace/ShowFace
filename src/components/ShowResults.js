@@ -187,6 +187,7 @@ class ShowResults extends Component {
               onDeleteResponse={this.props.onDeleteResponse}
               onDeleteRespondents={this.props.onDeleteRespondents}
               onEditRespondentStatus={this.props.onEditRespondentStatus}
+              onDeselectClick={this.handleDeselectClick}
             />
           </div>
         </div>

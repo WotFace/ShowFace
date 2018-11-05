@@ -1,5 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
+import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
@@ -239,10 +240,17 @@ class ShowResultsSidebar extends React.Component {
     if (time) {
       header = (
         <div className={styles.header}>
-          <div className="mdc-typography--overline">Hovering</div>
-          <h2 className={classnames('mdc-typography--headline5', styles.pollTime)}>
-            {format(time, dateFormat)}
-          </h2>
+          <div className={styles.hoveringHeaderContainer}>
+            <div className={styles.hoveringTextContainer}>
+              <div className="mdc-typography--overline">Hovering</div>
+              <h2 className={classnames('mdc-typography--headline5', styles.pollTime)}>
+                {format(time, dateFormat)}
+              </h2>
+            </div>
+            <IconButton onClick={this.props.onDeselectClick}>
+              <MaterialIcon icon="close" />
+            </IconButton>
+          </div>
         </div>
       );
     } else if (bestTime) {

@@ -63,3 +63,15 @@ $sidebar-hidden-breakpoint: largephone;
   right: 16px;
   color: #757575;
 }
+
+.header {
+  .hoveringHeaderContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .hoveringTextContainer {
+      flex: 1;
+    }
+  }
+}

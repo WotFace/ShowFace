@@ -7,7 +7,7 @@ import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import IconButton from '@material/react-icon-button';
 import { withAlert } from 'react-alert';
-import { Query, Mutation } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
@@ -145,6 +145,22 @@ class ShowPageComponent extends Component {
     const { slug } = show;
     this.props.upsertResponses(slug, name, email, responses);
     this.setState({ pendingSubmission: null });
+  };
+
+  handleDeleteRespondents = (id) => {
+    const slug = this.props.match.params.showId;
+    this.props.deleteRespondents(slug, [id]);
+  };
+
+  handleDeleteResponse = (id) => {
+    const slug = this.props.match.params.showId;
+    this.props.deleteResponse(slug, id);
+  };
+
+  handleEditRespondentStatus = (id, role, isKeyRespondent) => {
+    const slug = this.props.match.params.showId;
+    this.props.editShowRespondentStatus(slug, id, role, isKeyRespondent);
+    //TODO: add rerender method
   };
 
   renderTabBar = (responseAllowed) => {
@@ -316,7 +332,15 @@ class ShowPageComponent extends Component {
               onSubmit={this.handleSubmit}
             />
           )}
-          {lastPathComponent === 'results' && <ShowResults show={latestSavedShow} />}
+          {lastPathComponent === 'results' && (
+            <ShowResults
+              show={latestSavedShow}
+              onDeleteResponse={this.handleDeleteResponse}
+              onDeleteRespondents={this.handleDeleteRespondents}
+              onEditRespondentStatus={this.handleEditRespondentStatus}
+              onUserAction={this.onUserAction}
+            />
+          )}
         </section>
       </div>
     );
@@ -324,6 +348,19 @@ class ShowPageComponent extends Component {
 }
 
 ShowPageComponent.fragments = {
+  respondent: gql`
+    fragment ShowPageShowRespondent on Respondent {
+      id
+      anonymousName
+      user {
+        email
+        name
+        uid
+      }
+      role
+      response
+    }
+  `,
   show: gql`
     fragment ShowPageShow on Show {
       id
@@ -337,15 +374,7 @@ ShowPageComponent.fragments = {
       endTime
       interval
       respondents {
-        id
-        anonymousName
-        user {
-          email
-          name
-          uid
-        }
-        role
-        response
+        ...ShowPageShowRespondent
       }
     }
   `,
@@ -358,6 +387,7 @@ const GET_SHOW_QUERY = gql`
     }
   }
   ${ShowPageComponent.fragments.show}
+  ${ShowPageComponent.fragments.respondent}
 `;
 
 const UPSERT_RESPONSES_MUTATION = gql`
@@ -377,6 +407,53 @@ const UPSERT_RESPONSES_MUTATION = gql`
     }
   }
   ${ShowPageComponent.fragments.show}
+  ${ShowPageComponent.fragments.respondent}
+`;
+
+const EDIT_SHOW_RESPONDENT_STATUS = gql`
+  mutation EditShowRespondentStatus(
+    $slug: String!
+    $id: String!
+    $role: String
+    $isKeyRespondent: Boolean
+    $auth: AuthInput
+  ) {
+    editShowRespondentStatus(
+      auth: $auth
+      where: { slug: $slug, id: $id }
+      data: { role: $role, isKeyRespondent: $isKeyRespondent }
+    ) {
+      id
+      respondents {
+        ...ShowPageShowRespondent
+      }
+    }
+  }
+  ${ShowPageComponent.fragments.respondent}
+`;
+
+const DELETE_RESPONDENTS = gql`
+  mutation DeleteRespondents($slug: String!, $id: [String!]!, $auth: AuthInput) {
+    deleteRespondents(auth: $auth, where: { slug: $slug, id: $id }) {
+      id
+      respondents {
+        ...ShowPageShowRespondent
+      }
+    }
+  }
+  ${ShowPageComponent.fragments.respondent}
+`;
+
+const DELETE_RESPONSE = gql`
+  mutation DeleteResponse($slug: String!, $id: String!, $auth: AuthInput) {
+    deleteResponse(auth: $auth, where: { slug: $slug, id: $id }) {
+      id
+      respondents {
+        ...ShowPageShowRespondent
+      }
+    }
+  }
+  ${ShowPageComponent.fragments.respondent}
 `;
 
 function getOptimisticResponseForShow(name, email, responses, show) {
@@ -438,26 +515,59 @@ function ShowPageWithQueries(props) {
       {(getShowResult) => (
         <Mutation mutation={UPSERT_RESPONSES_MUTATION}>
           {(upsertResponses, upsertResponsesResult) => (
-            <ShowPageComponent
-              {...props}
-              getShowResult={datifyShowResponse(getShowResult, 'data.show')}
-              upsertResponses={async (slug, name, email, responses) => {
-                const auth = await getAuthInput();
-                upsertResponses({
-                  variables: { slug, name, email, auth, responses },
-                  optimisticResponse: getOptimisticResponseForUpsertResponses(
-                    name,
-                    email,
-                    responses,
-                    getShowResult,
-                  ),
-                });
-              }}
-              upsertResponsesResult={datifyShowResponse(
-                upsertResponsesResult,
-                'data._upsertResponse',
+            <Mutation mutation={DELETE_RESPONSE}>
+              {(deleteResponse, deleteResponseResult) => (
+                <Mutation mutation={DELETE_RESPONDENTS}>
+                  {(deleteRespondents, deleteRespondentsResult) => (
+                    <Mutation mutation={EDIT_SHOW_RESPONDENT_STATUS}>
+                      {(editShowRespondentStatus, editShowRespondentStatusResult) => (
+                        <ShowPageComponent
+                          {...props}
+                          getShowResult={datifyShowResponse(getShowResult, 'data.show')}
+                          upsertResponses={async (slug, name, email, responses) => {
+                            const auth = await getAuthInput();
+                            upsertResponses({
+                              variables: { slug, name, email, auth, responses },
+                              optimisticResponse: getOptimisticResponseForUpsertResponses(
+                                name,
+                                email,
+                                responses,
+                                getShowResult,
+                              ),
+                            });
+                          }}
+                          upsertResponsesResult={datifyShowResponse(
+                            upsertResponsesResult,
+                            'data._upsertResponse',
+                          )}
+                          deleteResponse={async (slug, id) => {
+                            const auth = await getAuthInput();
+                            deleteResponse({
+                              variables: { slug, id, auth },
+                            });
+                          }}
+                          deleteResponseResult={deleteResponseResult}
+                          deleteRespondents={async (slug, id) => {
+                            const auth = await getAuthInput();
+                            deleteRespondents({
+                              variables: { slug, id, auth },
+                            });
+                          }}
+                          deleteRespondentsResult={deleteRespondentsResult}
+                          editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
+                            const auth = await getAuthInput();
+                            editShowRespondentStatus({
+                              variables: { slug, id, role, isKeyRespondent, auth },
+                            });
+                          }}
+                          editShowRespondentStatusResult={editShowRespondentStatusResult}
+                        />
+                      )}
+                    </Mutation>
+                  )}
+                </Mutation>
               )}
-            />
+            </Mutation>
           )}
         </Mutation>
       )}

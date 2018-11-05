@@ -3,9 +3,14 @@ import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { format } from 'date-fns';
 import classnames from 'classnames';
+import _ from 'lodash';
 import Timeline from './Timeline';
 import BottomAppBar from './BottomAppBar';
-import { respondentsToDict, partitionRespondentsByAttendance } from '../utils/response';
+import {
+  respondentToEmailOrName,
+  respondentsToDict,
+  partitionRespondentsByAttendance,
+} from '../utils/response';
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';
 
@@ -16,6 +21,7 @@ class ShowResults extends Component {
 
     // State to restore scroll position when back button pressed
     bodyScrollTop: 0,
+    hiddenResponders: new Set(),
   };
 
   sidebarRef = createRef();
@@ -65,9 +71,24 @@ class ShowResults extends Component {
     );
   }
 
+  handleHideUnhideUser = (responder) => {
+    const { hiddenResponders } = this.state;
+    if (hiddenResponders.has(responder)) {
+      hiddenResponders.delete(responder);
+    } else {
+      hiddenResponders.add(responder);
+    }
+    this.setState({ hiddenResponders });
+  };
+
+  getNonHiddenRespondents(respondents) {
+    const { hiddenResponders } = this.state;
+    return respondents.filter((r) => !hiddenResponders.has(respondentToEmailOrName(r)));
+  }
+
   render() {
     const { show } = this.props;
-    const { selectedTime, isShowingDetails } = this.state;
+    const { selectedTime, isShowingDetails, hiddenResponders } = this.state;
 
     const { dates, startTime, endTime, interval } = show;
     const respondents = show.respondents || [];
@@ -76,11 +97,13 @@ class ShowResults extends Component {
       respondents,
       renderableRespondents,
       selectedTime,
+      hiddenResponders,
     );
-
+    const nonHiddenRespondents = this.getNonHiddenRespondents(respondents);
+    const nonHiddenRenderableRespondents = respondentsToDict(nonHiddenRespondents);
     const calcMaxSelectable = () => {
       let max = 0;
-      for (let r of renderableRespondents.values()) {
+      for (let r of nonHiddenRenderableRespondents.values()) {
         if (r.size > max) max = r.size;
       }
       return max;
@@ -97,7 +120,7 @@ class ShowResults extends Component {
             startTime={startTime}
             endTime={endTime}
             interval={interval}
-            respondents={respondents}
+            respondents={nonHiddenRespondents}
             maxSelectable={maxSelectable}
             onCellHover={this.handleCellHover}
           />
@@ -109,6 +132,10 @@ class ShowResults extends Component {
               )}
               partitionedRespondents={partitionedRespondents}
               time={selectedTime}
+              onHideUnhideUser={this.handleHideUnhideUser}
+              onDeleteResponse={this.props.onDeleteResponse}
+              onDeleteRespondents={this.props.onDeleteRespondents}
+              onEditRespondentStatus={this.props.onEditRespondentStatus}
             />
           </div>
         </div>

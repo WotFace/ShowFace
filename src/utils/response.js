@@ -45,7 +45,12 @@ export function respondentsToDict(respondents) {
  * last key, `respondersRespondentsObj`, points to an object associating
  * Responders with Respondents.
  */
-export function partitionRespondentsByAttendance(respondents, respondentsDict, time) {
+export function partitionRespondentsByAttendance(
+  respondents,
+  respondentsDict,
+  time,
+  hiddenUserIds,
+) {
   const respondersRespondentsObj = _.zipObject(
     respondents.map(respondentToEmailOrName),
     respondents,
@@ -53,8 +58,11 @@ export function partitionRespondentsByAttendance(respondents, respondentsDict, t
   const responders = Object.keys(respondersRespondentsObj);
   const respondersAtTime = new Set(respondentsDict.get(time));
 
-  const [attending, possiblyNotAttending] = _.partition(responders, (r) => respondersAtTime.has(r));
+  const [hidden, nonHiddenResponders] = _.partition(responders, (r) => hiddenUserIds.has(r));
+  const [attending, possiblyNotAttending] = _.partition(nonHiddenResponders, (r) =>
+    respondersAtTime.has(r),
+  );
   // TODO: Partition possiblyNotAttending further into non-responses and not attendings
   const notAttending = possiblyNotAttending;
-  return { attending, possiblyNotAttending, notAttending, respondersRespondentsObj };
+  return { hidden, attending, possiblyNotAttending, notAttending, respondersRespondentsObj };
 }

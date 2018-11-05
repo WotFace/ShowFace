@@ -1,4 +1,16 @@
 @import '../mdc-variables';
+@import '../mdc';
+
+$sidebar-hidden-breakpoint: largephone;
+
+.sidebarContainer {
+  // for some reason when the sidebar is called from the bottomBar,
+  // it doesn't recognize the parent container's boundaries,
+  // this hack is ensures that the list items follow the parent
+  @media (max-width: mdc-layout-grid-breakpoint-min($sidebar-hidden-breakpoint)) {
+    width: 90vw;
+  }
+}
 
 .attendees {
   .attendeeListSection {
@@ -17,19 +29,31 @@
 .icon {
   position: absolute;
   vertical-align: -webkit-baseline-middle;
-  right: 32px;
-  margin-top: -2px;
+  right: 8px;
   color: $mdc-theme-primary;
-}
-
-.borderAccept {
-  border: 1px solid green;
-}
-
-.borderReject {
-  border: 1px solid red;
 }
 
 .pollTime {
   margin-bottom: 1em;
+}
+
+.listItemHeader {
+  padding-left: 16px;
+  padding-right: 16px;
+  .listItemSubText {
+    color: #757575;
+    font-size: 14px;
+  }
+}
+
+.listText {
+  // Disable clicks on Chrome to prevent some weird error when the text is
+  // clicked in certain circumstances.
+  pointer-events: none;
+}
+
+.hiddenIcon {
+  position: absolute;
+  right: 16px;
+  color: #757575;
 }

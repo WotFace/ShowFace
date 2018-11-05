@@ -7,6 +7,7 @@ import { getAuthInput } from '../utils/auth';
 import Button from '@material/react-button';
 import GoogleIcon from '../icons/google.svg';
 import FacebookIcon from '../icons/facebook.svg';
+import styles from './LoginPage.module.scss';
 
 class SocialLogin extends Component {
   fragments = {
@@ -81,12 +82,14 @@ class SocialLogin extends Component {
         {(client) => (
           <>
             <Button
+              id={styles.googleButton}
               icon={<img src={GoogleIcon} />}
               onClick={() => this.socialAuth(googleAuthProvider, client)}
             >
               Log in with Google
             </Button>
             <Button
+              id={styles.facebookButton}
               icon={<img src={FacebookIcon} />}
               onClick={() => this.socialAuth(facebookAuthProvider, client)}
             >

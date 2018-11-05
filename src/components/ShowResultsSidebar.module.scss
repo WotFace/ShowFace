@@ -57,3 +57,10 @@ $sidebar-hidden-breakpoint: largephone;
   right: 16px;
   color: #757575;
 }
+
+.modalContainer {
+  padding: 24px;
+  .modalButtonContainer {
+    float: right;
+  }
+}

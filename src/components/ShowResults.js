@@ -64,6 +64,9 @@ class ShowResults extends Component {
 
   renderBottomBar(partitionedRespondents, bestTime) {
     const { selectedTime, isShowingDetails } = this.state;
+    const {
+      show: { interval },
+    } = this.props;
     const useBestTime = !selectedTime;
 
     const dateFormat = 'D MMM hh:mmA';
@@ -76,7 +79,7 @@ class ShowResults extends Component {
             <strong>Best Time to Meet</strong>
             <br />
             {format(bestTime.interval.start, dateFormat)} -{' '}
-            {format(bestTime.interval.end, dateFormat)}
+            {format(bestTime.interval.end + interval * 60 * 1000, dateFormat)}
             <br />
             {this.renderAttendingLine(partitionedRespondents)}
           </>
@@ -182,6 +185,7 @@ class ShowResults extends Component {
               partitionedRespondents={partitionedRespondents}
               time={selectedTime}
               bestTime={bestTime}
+              interval={interval}
               showBestTime={selectedTime && bestTime}
               onHideUnhideUser={this.handleHideUnhideUser}
               onDeleteResponse={this.props.onDeleteResponse}

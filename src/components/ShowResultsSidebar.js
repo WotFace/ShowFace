@@ -230,7 +230,7 @@ class ShowResultsSidebar extends React.Component {
   };
 
   render() {
-    const { className, partitionedRespondents, time, bestTime } = this.props;
+    const { className, partitionedRespondents, time, bestTime, interval } = this.props;
     const { selectedRespondentKey, isMenuOpen } = this.state;
 
     const { hidden, attending, notAttending, respondersRespondentsObj } = partitionedRespondents;
@@ -259,7 +259,7 @@ class ShowResultsSidebar extends React.Component {
           <div className="mdc-typography--overline">Best Time to Meet</div>
           <h2 className={classnames('mdc-typography--headline5', styles.pollTime)}>
             {format(bestTime.interval.start, dateFormat)} -{' '}
-            {format(bestTime.interval.end, dateFormat)}
+            {format(bestTime.interval.end + interval * 60 * 1000, dateFormat)}
           </h2>
         </div>
       );

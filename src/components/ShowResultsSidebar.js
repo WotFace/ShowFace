@@ -192,8 +192,9 @@ class ShowResultsSidebar extends React.Component {
     }
 
     if (
-      (userInMeeting && userInMeeting.role === 'admin') ||
-      (!respondent.user && respondent.anonymousName)
+      !isHidden &&
+      ((userInMeeting && userInMeeting.role === 'admin') ||
+        (!respondent.user && respondent.anonymousName))
     ) {
       listItems.push(
         <ListItem key="clearresp" onClick={this.handleDeleteResponse}>

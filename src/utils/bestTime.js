@@ -5,6 +5,8 @@
 import _ from 'lodash';
 import quickselect from 'quickselect';
 import Heap from 'heap';
+import createIntervalTree from 'interval-tree-1d';
+import { union, intersection, equal } from './set';
 
 // Adapted from the default compare function from the
 // quickselect repo. Reversed so that all items in the
@@ -115,3 +117,108 @@ export function kMaxRanges(K, input) {
 }
 
 // TODO: Implement fn to generate best times from ShowFace responses.
+
+export function bestMeetings(entries, numResponders, interval) {
+  if (entries.length === 0) return [];
+
+  entries.sort((a, b) => b[0] - a[0]);
+  const intervalMs = interval * 60 * 1000;
+
+  const dividedEntries = [];
+  for (const entry of entries) {
+    if (dividedEntries.length === 0) {
+      dividedEntries.push(entry);
+      continue;
+    }
+
+    // Add absurdly low responder count (effectively -inf) when there was a
+    // gap with 0 responders. This ensures that kMaxRanges will not suggest a
+    // meeting that crosses a time where nobody can make it.
+    const lastTime = dividedEntries[dividedEntries.length - 1][0];
+    if (lastTime - entry[0] > intervalMs) {
+      dividedEntries.push([0, Number.MIN_SAFE_INTEGER]);
+    }
+
+    dividedEntries.push(entry);
+  }
+
+  const sizes = dividedEntries.map(
+    // ([time, responders]) => (responders instanceof Set ? responders.size : responders),
+    // ([time, responders]) => (responders instanceof Set ? Math.pow(responders.size, 3) : responders),
+    // ([time, responders]) =>
+    // responders instanceof Set ? Math.pow(Math.log(responders.size), 9) : responders,
+    ([time, responders]) =>
+      responders instanceof Set
+        ? Math.pow((numResponders + responders.size) / numResponders, 15)
+        : responders,
+  );
+  // TODO: Calculate a suitable k based on size of `sizes` (i.e. n). Ensure that k < n.
+  const bestRanges = kMaxRanges(sizes.length, sizes);
+
+  // Convert best ranges to [timestamp, attendees]
+  let bestTimes = bestRanges.map((r) => dividedEntries.slice(r.start, r.end + 1));
+
+  // Filter out time intervals where attendees change during the meeting.
+  // i.e. The union of all attendees at the various intervals != the
+  // intersection
+  bestTimes = bestTimes.filter((t) => {
+    const attendeeSets = t.map(([a, b]) => b);
+
+    const attendeeUnion = attendeeSets.reduce(union, new Set());
+    const attendeeIntersection = attendeeSets.reduce(intersection, new Set(attendeeSets[0]));
+    return attendeeUnion.size === attendeeIntersection.size;
+  });
+
+  // Convert to intervals and attendee sets
+  bestTimes = bestTimes.map((t) => ({
+    interval: { start: t[t.length - 1][0], end: t[0][0] },
+    attendees: t[0][1], // All bestTimes have the same attendees throughout the meeting
+  }));
+
+  // TODO: Remove subranges with the same attendees
+  // Facts:
+  // * There will not be 2 bestTimes with the same interval.
+  // * Subranges will have the same or more attendees than the outer range
+  const tree = createIntervalTree();
+  const bestTimeMap = new Map();
+  const getBestTimeKey = (t) => `${t.interval.start}${t.interval.end}`;
+  const bestTimesToRemove = [];
+  bestTimes.forEach((t) => {
+    const key = getBestTimeKey(t);
+    tree.insert([t.interval.start, t.interval.end, t.attendees, key]);
+    bestTimeMap.set(key, t);
+  });
+  // TODO: For each bestTime, find intersecting ranges, ignoring ranges which are not subranges, and ignoring ranges with different attendees, and remove them from bestTimes
+  for (let i = 0; i < bestTimes.length; i++) {
+    const t = bestTimes[i];
+    if (bestTimesToRemove.includes(t)) continue;
+
+    const {
+      interval: { start, end },
+      attendees,
+    } = t;
+    // Remove all subranges of t with different attendees
+    const toRemove = []; // Intervals to be removed from tree in this loop
+    tree.queryInterval(start, end, (interval) => {
+      const [intStart, intEnd, intAttendees, key] = interval;
+      // Don't remove t
+      const originalBestTime = bestTimeMap.get(key);
+      if (t === originalBestTime) return;
+
+      // Return if not subrange
+      if (intStart < start || intEnd > end) return;
+
+      // Return if attendees not the same
+      if (!equal(attendees, intAttendees)) return;
+
+      // Mark interval for removal from from bestTimes and tree.
+      // Can't mutate tree while querying.
+      toRemove.push(interval);
+      bestTimesToRemove.push(originalBestTime);
+    });
+    toRemove.forEach((r) => tree.remove(r));
+  }
+
+  bestTimes = _.difference(bestTimes, bestTimesToRemove);
+  return bestTimes;
+}

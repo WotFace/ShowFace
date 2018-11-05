@@ -3,7 +3,6 @@ import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { format } from 'date-fns';
 import classnames from 'classnames';
-import _ from 'lodash';
 import Timeline from './Timeline';
 import BottomAppBar from './BottomAppBar';
 import {
@@ -130,12 +129,14 @@ class ShowResults extends Component {
                 styles.sidebar,
                 isShowingDetails ? null : styles.hiddenOnMobile,
               )}
+              renderableRespondents={renderableRespondents}
               partitionedRespondents={partitionedRespondents}
               time={selectedTime}
               onHideUnhideUser={this.handleHideUnhideUser}
               onDeleteResponse={this.props.onDeleteResponse}
               onDeleteRespondents={this.props.onDeleteRespondents}
               onEditRespondentStatus={this.props.onEditRespondentStatus}
+              interval={interval}
             />
           </div>
         </div>

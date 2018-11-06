@@ -23,6 +23,8 @@
     "apollo-link": "^1.2.3",
     "apollo-link-error": "^1.1.1",
     "apollo-link-http": "^1.5.5",
+    "babel-loader": "^8.0.4",
+    "cra-append-sw": "^2.6.0",
     "date-fns": "^1.29.0",
     "firebase": "^5.5.5",
     "graphql": "^14.0.2",
@@ -63,8 +65,8 @@
     "prettier": "^1.14.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts start && cra-append-sw --mode dev ./src/sw-append.js",
+    "build": "react-scripts build && cra-append-sw ./src/sw-append.js",
     "test": "react-scripts test --env=jsdom",
     "lint": "eslint src",
     "prettify": "prettier --write src/*.js src/**/*.js"

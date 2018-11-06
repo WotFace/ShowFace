@@ -7,7 +7,6 @@ import { ApolloProvider } from 'react-apollo';
 import { auth } from './firebase';
 import Routes from './Routes.js';
 import apolloClient from './apolloClient';
-import store from './store';
 
 import './App.scss';
 
@@ -22,6 +21,7 @@ export default class App extends Component {
   }
 
   render() {
+    const { store } = this.props;
     return (
       <AlertProvider template={AlertTemplate} {...alertOptions}>
         <Provider store={store}>

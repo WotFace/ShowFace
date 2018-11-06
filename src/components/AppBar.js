@@ -1,18 +1,21 @@
 import React, { Component, createRef } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import IconButton from '@material/react-icon-button';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import classnames from 'classnames';
+import { getRegistration } from '../serviceWorker';
 import { isSignedIn } from '../utils/auth';
 import { auth } from '../firebase';
+import { BoomzButton, BoomzMenuItem, BoomzIconButton } from './BoomzButton';
 
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './AppBar.module.scss';
 import logo from '../logo.png';
 
-export default class AppBar extends Component {
+class AppBar extends Component {
   state = {
     isMenuOpen: false,
   };
@@ -22,9 +25,45 @@ export default class AppBar extends Component {
   openMenu = () => this.setState({ isMenuOpen: true });
   closeMenu = () => this.setState({ isMenuOpen: false });
 
+  handleUpdateClick = () => {
+    // Source: https://github.com/nusmodifications/nusmods/pull/1047/files#diff-9d6bd6e0b057775fc0d2e9603db2b5f5R33
+    const registration = getRegistration();
+    if (!registration || !registration.waiting) {
+      // Just to ensure registration.waiting is available before
+      // calling postMessage()
+      return;
+    }
+    registration.waiting.postMessage('skipWaiting');
+  };
+
+  renderDefaultSharedButtonSet() {
+    return (
+      <>
+        {this.props.promptRefresh && (
+          <BoomzButton className={styles.barButton} onClick={this.handleUpdateClick}>
+            Update ShowFace!
+          </BoomzButton>
+        )}
+      </>
+    );
+  }
+
+  renderDefaultSharedMenuItems() {
+    return (
+      <>
+        {this.props.promptRefresh && (
+          <BoomzMenuItem onClick={this.handleUpdateClick}>
+            <span className="mdc-list-item__text">Update ShowFace!</span>
+          </BoomzMenuItem>
+        )}
+      </>
+    );
+  }
+
   renderDefaultSignedInButtonSet() {
     return (
       <>
+        {this.renderDefaultSharedButtonSet()}
         <Link to="/dashboard" className={sharedStyles.buttonLink}>
           <Button>Dashboard</Button>
         </Link>
@@ -49,6 +88,7 @@ export default class AppBar extends Component {
         aria-orientation="vertical"
         onClick={this.closeMenu}
       >
+        {this.renderDefaultSharedMenuItems()}
         <Link to="/dashboard" className={sharedStyles.buttonLink}>
           <li className="mdc-list-item" role="menuitem">
             <span className="mdc-list-item__text">Dashboard</span>
@@ -70,7 +110,8 @@ export default class AppBar extends Component {
   renderDefaultSignedOutButtonSet() {
     return (
       <>
-        <Link to="/login" className={sharedStyles.buttonLink}>
+        {this.renderDefaultSharedButtonSet()}
+        <Link to="/login" className={classnames(sharedStyles.buttonLink, styles.barButton)}>
           <Button>Log In</Button>
         </Link>
       </>
@@ -86,6 +127,7 @@ export default class AppBar extends Component {
         aria-orientation="vertical"
         onClick={this.closeMenu}
       >
+        {this.renderDefaultSharedMenuItems()}
         <Link to="/login" className={classnames(sharedStyles.buttonLink, 'mdc-list-item__text')}>
           <li className="mdc-list-item" role="menuitem">
             <span className="mdc-list-item__text">Log In</span>
@@ -113,6 +155,8 @@ export default class AppBar extends Component {
 
     const signedIn = isSignedIn();
 
+    const MenuIconButton = this.props.promptRefresh ? BoomzIconButton : IconButton;
+
     return (
       <div className={styles.container}>
         <Link to={signedIn ? '/dashboard' : '/'}>
@@ -127,9 +171,12 @@ export default class AppBar extends Component {
           className={classnames(styles.menuContainer, 'mdc-menu-surface--anchor')}
           ref={this.menuAnchorRef}
         >
-          <IconButton className={styles.menuButton} onClick={this.openMenu}>
-            <MaterialIcon icon="menu" />
-          </IconButton>
+          {/* Wrap icon button in div to fix React insertBefore crash on rerender */}
+          <div>
+            <MenuIconButton className={styles.menuButton} onClick={this.openMenu}>
+              <MaterialIcon icon="menu" />
+            </MenuIconButton>
+          </div>
           <MenuSurface
             className="mdc-menu"
             open={this.state.isMenuOpen}
@@ -146,3 +193,11 @@ export default class AppBar extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    promptRefresh: state.ui.promptRefresh,
+  };
+}
+
+export default connect(mapStateToProps)(AppBar);

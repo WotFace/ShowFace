@@ -9,7 +9,7 @@ import classnames from 'classnames';
 import { getRegistration } from '../serviceWorker';
 import { isSignedIn } from '../utils/auth';
 import { auth } from '../firebase';
-import BoomzButton from './BoomzButton';
+import { BoomzButton, BoomzMenuItem, BoomzIconButton } from './BoomzButton';
 
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './AppBar.module.scss';
@@ -37,15 +37,24 @@ class AppBar extends Component {
   };
 
   renderDefaultSharedButtonSet() {
-    console.log('oesnt', this.props);
     return (
       <>
         {this.props.promptRefresh && (
-          <>
-            <BoomzButton className={styles.barButton} onClick={this.handleUpdateClick}>
-              Update ShowFace!
-            </BoomzButton>
-          </>
+          <BoomzButton className={styles.barButton} onClick={this.handleUpdateClick}>
+            Update ShowFace!
+          </BoomzButton>
+        )}
+      </>
+    );
+  }
+
+  renderDefaultSharedMenuItems() {
+    return (
+      <>
+        {this.props.promptRefresh && (
+          <BoomzMenuItem onClick={this.handleUpdateClick}>
+            <span className="mdc-list-item__text">Update ShowFace!</span>
+          </BoomzMenuItem>
         )}
       </>
     );
@@ -79,6 +88,7 @@ class AppBar extends Component {
         aria-orientation="vertical"
         onClick={this.closeMenu}
       >
+        {this.renderDefaultSharedMenuItems()}
         <Link to="/dashboard" className={sharedStyles.buttonLink}>
           <li className="mdc-list-item" role="menuitem">
             <span className="mdc-list-item__text">Dashboard</span>
@@ -117,6 +127,7 @@ class AppBar extends Component {
         aria-orientation="vertical"
         onClick={this.closeMenu}
       >
+        {this.renderDefaultSharedMenuItems()}
         <Link to="/login" className={classnames(sharedStyles.buttonLink, 'mdc-list-item__text')}>
           <li className="mdc-list-item" role="menuitem">
             <span className="mdc-list-item__text">Log In</span>
@@ -144,6 +155,8 @@ class AppBar extends Component {
 
     const signedIn = isSignedIn();
 
+    const MenuIconButton = this.props.promptRefresh ? BoomzIconButton : IconButton;
+
     return (
       <div className={styles.container}>
         <Link to={signedIn ? '/dashboard' : '/'}>
@@ -158,9 +171,9 @@ class AppBar extends Component {
           className={classnames(styles.menuContainer, 'mdc-menu-surface--anchor')}
           ref={this.menuAnchorRef}
         >
-          <IconButton className={styles.menuButton} onClick={this.openMenu}>
+          <MenuIconButton className={styles.menuButton} onClick={this.openMenu}>
             <MaterialIcon icon="menu" />
-          </IconButton>
+          </MenuIconButton>
           <MenuSurface
             className="mdc-menu"
             open={this.state.isMenuOpen}

@@ -23,7 +23,7 @@ class LoginPage extends Component {
   LOGIN_TAB_IDX = 0;
 
   state = {
-    selectedTab: 0,
+    selectedTab: this.props.match.url === '/login' ? 0 : 1,
     nameInput: '',
     emailInput: '',
     passwordInput: '',

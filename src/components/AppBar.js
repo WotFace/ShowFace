@@ -171,9 +171,12 @@ class AppBar extends Component {
           className={classnames(styles.menuContainer, 'mdc-menu-surface--anchor')}
           ref={this.menuAnchorRef}
         >
-          <MenuIconButton className={styles.menuButton} onClick={this.openMenu}>
-            <MaterialIcon icon="menu" />
-          </MenuIconButton>
+          {/* Wrap icon button in div to fix React insertBefore crash on rerender */}
+          <div>
+            <MenuIconButton className={styles.menuButton} onClick={this.openMenu}>
+              <MaterialIcon icon="menu" />
+            </MenuIconButton>
+          </div>
           <MenuSurface
             className="mdc-menu"
             open={this.state.isMenuOpen}

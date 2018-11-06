@@ -25,6 +25,9 @@ serviceWorker.register({
   },
 });
 
+// Uncomment the next line to display sw refresh prompt.
+// setTimeout(() => store.dispatch(promptRefresh()), 500);
+
 if (module.hot) {
   module.hot.accept('./App', () => {
     const NextApp = require('./App').default;

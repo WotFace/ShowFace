@@ -56,6 +56,15 @@ function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
+      // Source: https://github.com/nusmodifications/nusmods/blob/bd2b9d632c0476b1065c4a86e40f0616892dddf2/www/src/js/bootstrapping/service-worker.js#L60-L66
+      // Refresh the service worker regularly so that the user gets the update
+      // notice if they leave the tab open for a while
+      const updateIntervalId = window.setInterval(() => {
+        if (navigator.onLine) {
+          registration.update();
+        }
+      }, 60 * 60 * 1000);
+
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
         if (installingWorker == null) {
@@ -72,6 +81,18 @@ function registerValidSW(swUrl, config) {
                   'tabs for this page are closed. See http://bit.ly/CRA-PWA.',
               );
 
+              // Source: https://developers.google.com/web/tools/workbox/guides/advanced-recipes#offer_a_page_reload_for_users
+              // When the user asks to refresh the UI, we'll need to reload the window
+              let preventDevToolsReloadLoop;
+              navigator.serviceWorker.addEventListener('controllerchange', function(event) {
+                // Ensure refresh is only called once.
+                // This works around a bug in "force update on reload".
+                if (preventDevToolsReloadLoop) return;
+                preventDevToolsReloadLoop = true;
+                console.log('Controller loaded');
+                window.location.reload();
+              });
+
               // Execute callback
               if (config && config.onUpdate) {
                 config.onUpdate(registration);
@@ -86,6 +107,7 @@ function registerValidSW(swUrl, config) {
               if (config && config.onSuccess) {
                 config.onSuccess(registration);
               }
+              window.clearInterval(updateIntervalId);
             }
           }
         };

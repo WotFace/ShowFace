@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import store from './store';
 import * as serviceWorker from './serviceWorker';
+import store from './store';
+import { promptRefresh } from './actions/ui';
 
 // Polyfills
 import 'pepjs';
@@ -18,7 +19,11 @@ renderApp(App);
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 // TODO: Provide config dict with onUpdate callback
-serviceWorker.register();
+serviceWorker.register({
+  onUpdate() {
+    store.dispatch(promptRefresh());
+  },
+});
 
 if (module.hot) {
   module.hot.accept('./App', () => {

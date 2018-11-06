@@ -64,7 +64,7 @@ class TimePicker extends Component {
 
   setStartHour = (event) => {
     var value = event.target.value;
-    if (event.target.value != 'Unselected') {
+    if (event.target.value !== 'Unselected') {
       value = parseInt(event.target.value);
     }
     this.setState({ startHour: value });
@@ -74,7 +74,7 @@ class TimePicker extends Component {
 
   setStartMin = (event) => {
     var value = event.target.value;
-    if (event.target.value != 'Unselected') {
+    if (event.target.value !== 'Unselected') {
       value = parseInt(event.target.value);
     }
     this.setState({ startMin: value });
@@ -84,7 +84,7 @@ class TimePicker extends Component {
 
   setEndHour = (event) => {
     var value = event.target.value;
-    if (event.target.value != 'Unselected') {
+    if (event.target.value !== 'Unselected') {
       value = parseInt(event.target.value);
     }
     this.setState({ endHour: value });
@@ -104,7 +104,7 @@ class TimePicker extends Component {
 
   setEndMin = (event) => {
     var value = event.target.value;
-    if (event.target.value != 'Unselected') {
+    if (event.target.value !== 'Unselected') {
       value = parseInt(event.target.value);
     }
     this.setState({ endMin: value });

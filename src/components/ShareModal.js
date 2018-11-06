@@ -63,7 +63,7 @@ class ShareModal extends Component {
 
         <div className={styles.shareRow}>
           <Button
-            icon={<img className={styles.socialIcon} src={TelegramIcon} />}
+            icon={<img className={styles.socialIcon} src={TelegramIcon} alt="Telegram logo" />}
             onClick={this.openTelegram}
             outlined
           >
@@ -71,7 +71,7 @@ class ShareModal extends Component {
           </Button>
 
           <Button
-            icon={<img className={styles.socialIcon} src={WhatsAppIcon} />}
+            icon={<img className={styles.socialIcon} src={WhatsAppIcon} alt="WhatsApp logo" />}
             onClick={this.openWhatsApp}
             outlined
           >

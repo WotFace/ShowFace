@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, withRouter, Link, Prompt } from 'react-router-dom';
+import { withRouter, Link, Prompt } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
@@ -25,7 +25,6 @@ import './ReactModalOverride.scss';
 
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
-import clipboardIcon from '../clipboard-regular.svg'; // https://fontawesome.com/license
 
 class ShowPageComponent extends Component {
   constructor(props) {

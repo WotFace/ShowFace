@@ -83,14 +83,14 @@ class SocialLogin extends Component {
           <>
             <Button
               id={styles.googleButton}
-              icon={<img src={GoogleIcon} />}
+              icon={<img src={GoogleIcon} alt="Google logo" />}
               onClick={() => this.socialAuth(googleAuthProvider, client)}
             >
               Log in with Google
             </Button>
             <Button
               id={styles.facebookButton}
-              icon={<img src={FacebookIcon} />}
+              icon={<img src={FacebookIcon} alt="Facebook logo" />}
               onClick={() => this.socialAuth(facebookAuthProvider, client)}
             >
               Log in with Facebook

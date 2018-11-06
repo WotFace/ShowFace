@@ -10,6 +10,14 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read http://bit.ly/CRA-PWA
 
+// Large parts of this file are copied from NUSMods.
+// https://github.com/nusmodifications/nusmods/blob/bd2b9d632c0476b1065c4a86e40f0616892dddf2/www/src/js/bootstrapping/service-worker.js
+
+let currentRegistration;
+export function getRegistration() {
+  return currentRegistration;
+}
+
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -52,66 +60,73 @@ export function register(config) {
   }
 }
 
+// Code taken from https://developers.google.com/web/tools/workbox/guides/advanced-recipes
+function onNewServiceWorker(registration, callback) {
+  if (registration.waiting) {
+    // SW is waiting to activate. Can occur if multiple clients open and
+    // one of the clients is refreshed.
+    callback();
+    return;
+  }
+  const listenInstalledStateChange = () => {
+    if (!registration.installing) {
+      return;
+    }
+    registration.installing.addEventListener('statechange', (event) => {
+      if (event.target.state === 'installed') {
+        // A new service worker is available, inform the user
+        callback();
+      }
+    });
+  };
+  if (registration.installing) {
+    listenInstalledStateChange();
+  } else {
+    // We are currently controlled so a new SW may be found...
+    // Add a listener in case a new SW is found,
+    registration.addEventListener('updatefound', listenInstalledStateChange);
+  }
+}
+
 function registerValidSW(swUrl, config) {
-  navigator.serviceWorker
+  const { serviceWorker } = navigator;
+  if (!serviceWorker) {
+    return;
+  }
+
+  serviceWorker
     .register(swUrl)
     .then((registration) => {
-      // Source: https://github.com/nusmodifications/nusmods/blob/bd2b9d632c0476b1065c4a86e40f0616892dddf2/www/src/js/bootstrapping/service-worker.js#L60-L66
+      // Track updates to the Service Worker.
+      if (!serviceWorker.controller) {
+        // The window client isn't currently controlled so it's a new service
+        // worker that will activate immediately
+        return;
+      }
+
       // Refresh the service worker regularly so that the user gets the update
       // notice if they leave the tab open for a while
       const updateIntervalId = window.setInterval(() => {
-        if (navigator.onLine) {
-          registration.update();
-        }
+        registration.update();
       }, 60 * 60 * 1000);
 
-      registration.onupdatefound = () => {
-        const installingWorker = registration.installing;
-        if (installingWorker == null) {
-          return;
+      // When the user asks to refresh the UI, we'll need to reload the window
+      let preventDevToolsReloadLoop;
+      serviceWorker.addEventListener('controllerchange', () => {
+        // Ensure refresh is only called once - This works around a bug in "force update on reload".
+        if (preventDevToolsReloadLoop) return;
+        preventDevToolsReloadLoop = true;
+        window.location.reload();
+      });
+
+      onNewServiceWorker(registration, () => {
+        currentRegistration = registration;
+        // Execute callback
+        if (config && config.onUpdate) {
+          config.onUpdate(registration);
         }
-        installingWorker.onstatechange = () => {
-          if (installingWorker.state === 'installed') {
-            if (navigator.serviceWorker.controller) {
-              // At this point, the updated precached content has been fetched,
-              // but the previous service worker will still serve the older
-              // content until all client tabs are closed.
-              console.log(
-                'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See http://bit.ly/CRA-PWA.',
-              );
-
-              // Source: https://developers.google.com/web/tools/workbox/guides/advanced-recipes#offer_a_page_reload_for_users
-              // When the user asks to refresh the UI, we'll need to reload the window
-              let preventDevToolsReloadLoop;
-              navigator.serviceWorker.addEventListener('controllerchange', function(event) {
-                // Ensure refresh is only called once.
-                // This works around a bug in "force update on reload".
-                if (preventDevToolsReloadLoop) return;
-                preventDevToolsReloadLoop = true;
-                console.log('Controller loaded');
-                window.location.reload();
-              });
-
-              // Execute callback
-              if (config && config.onUpdate) {
-                config.onUpdate(registration);
-              }
-            } else {
-              // At this point, everything has been precached.
-              // It's the perfect time to display a
-              // "Content is cached for offline use." message.
-              console.log('Content is cached for offline use.');
-
-              // Execute callback
-              if (config && config.onSuccess) {
-                config.onSuccess(registration);
-              }
-              window.clearInterval(updateIntervalId);
-            }
-          }
-        };
-      };
+        window.clearInterval(updateIntervalId);
+      });
     })
     .catch((error) => {
       console.error('Error during service worker registration:', error);

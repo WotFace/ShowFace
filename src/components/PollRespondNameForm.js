@@ -77,7 +77,7 @@ class PollRespondNameForm extends Component {
     return (
       <form className={styles.nameForm} onSubmit={this.handleNameFormSubmit}>
         <div className="mdc-typography--headline6">
-          Respond {canContinueAsSignedInUser ? 'as someone else' : 'with a pseudonym'}
+          Respond {canContinueAsSignedInUser ? 'as someone else' : 'with a display name'}
         </div>
         <div className={classnames(styles.descText, 'mdc-typography--caption')}>
           Quicky and easily respond to a poll. Your responses can be changed by anyone.

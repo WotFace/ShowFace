@@ -1,0 +1,26 @@
+@import '../mdc';
+
+$btn-color: $mdc-theme-secondary;
+
+// Source: https://codepen.io/olam/pen/zcqea
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 change-color($btn-color, $alpha: 0.8);
+  }
+  70% {
+    box-shadow: 0 0 0 0.6em change-color($btn-color, $alpha: 0.0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 change-color($btn-color, $alpha: 0.0);
+  }
+}
+
+button.button {
+  @include mdc-button-filled-accessible(lighten($mdc-theme-secondary, 25%));
+  box-shadow: 0 0 0 rgba(204, 169, 44, 0.4);
+  animation: pulse 1.7s infinite;
+
+  &:hover {
+    animation: none;
+  }
+}

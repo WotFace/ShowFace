@@ -11,11 +11,9 @@ import LoginPage from './components/LoginPage';
 import DashboardPage from './components/DashboardPage';
 import NotFoundPage from './components/errorsLoaders/NotFoundPage';
 
-const disableAppBar = ['/login', '/signup'];
-
 const Routes = () => (
   <>
-    <AppBar pathToDisable={disableAppBar} />
+    <AppBar pathBlacklist={['/login', '/signup']} />
     <Switch>
       <Redirect exact from="/poll" to="/" />
       <Route exact path="/" component={WelcomePage} />

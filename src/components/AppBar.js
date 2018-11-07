@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import IconButton from '@material/react-icon-button';
 import Button from '@material/react-button';
@@ -147,15 +148,12 @@ class AppBar extends Component {
   }
 
   render() {
-    const { pathToDisable } = this.props;
-    const pathname = window.location.pathname;
-
-    if (pathToDisable.indexOf(pathname) > -1) {
-      return null;
-    }
+    // Don't render AppBar on blacklisted pages
+    const { pathBlacklist } = this.props;
+    const pathname = this.props.location.pathname;
+    if (pathBlacklist.includes(pathname)) return null;
 
     // TODO: Change buttons on login/signup/dashboard pages
-    // TODO: Consider putting AppBar in every page instead, and allow pages to provide buttons
 
     const signedIn = isSignedIn();
 
@@ -204,4 +202,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(AppBar);
+export default compose(
+  withRouter,
+  connect(mapStateToProps),
+)(AppBar);

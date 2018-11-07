@@ -36,6 +36,10 @@ class AppBar extends Component {
     registration.waiting.postMessage('skipWaiting');
   };
 
+  componentDidMount() {
+    auth().onAuthStateChanged(() => this.forceUpdate());
+  }
+
   renderDefaultSharedButtonSet() {
     return (
       <>

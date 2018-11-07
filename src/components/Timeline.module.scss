@@ -67,8 +67,8 @@ $empty-cell-color: white;
 
 .timelineLabel {
   background-color: $mdc-theme-surface;
-  font-family: 'Fira Mono', monospace;
-  font-size: 12px;
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
 }
 
 ol {

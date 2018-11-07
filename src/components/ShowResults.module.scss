@@ -34,6 +34,7 @@ $sidebar-hidden-breakpoint: largephone;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-variant-numeric: tabular-nums;
 
   .mainText {
     flex: 1;

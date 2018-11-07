@@ -163,6 +163,9 @@ export function bestMeetings(entries, numResponders, interval) {
   // i.e. The union of all attendees at the various intervals != the
   // intersection
   bestTimes = bestTimes.filter((t) => {
+    // Also filter out empty arrays
+    if (t.length === 0) return false;
+
     const attendeeSets = t.map(([a, b]) => b);
 
     const attendeeUnion = attendeeSets.reduce(union, new Set());

@@ -208,7 +208,7 @@ export default withAlert((props) => (
         {...props}
         createUser={async (name, email) => {
           const auth = await getAuthInput();
-          createUser({ variables: { name, email, auth } });
+          return createUser({ variables: { name, email, auth } });
         }}
         createUserResult={result}
       />

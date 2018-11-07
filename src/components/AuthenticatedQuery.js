@@ -44,7 +44,7 @@ export default class AuthenticatedQuery extends Component {
     // this.
     if (requiresAuth && !auth) {
       if (authRefreshed === true) {
-        return <Redirect to="/" />;
+        return <Redirect to="/login" />;
       }
       return null;
     }

@@ -10,6 +10,7 @@ import CreatePage from './components/CreatePage';
 import LoginPage from './components/LoginPage';
 import DashboardPage from './components/DashboardPage';
 import NotFoundPage from './components/errorsLoaders/NotFoundPage';
+import PrivateRoute from './components/PrivateRoute';
 
 const Routes = () => (
   <>
@@ -20,7 +21,7 @@ const Routes = () => (
       <Route exact path="/meeting/:showId/(respond|results)?" component={ShowPage} />
       <Route exact path="/new" component={CreatePage} />
       <Route exact path="/(login|signup)" component={LoginPage} />
-      <Route exact path="/dashboard" component={DashboardPage} />
+      <PrivateRoute exact path="/dashboard" component={DashboardPage} />
       <Route path="*" component={NotFoundPage} />
     </Switch>
     <GoogleAnalytics />

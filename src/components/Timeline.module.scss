@@ -35,15 +35,15 @@ $empty-cell-color: white;
 
 .timeBox {
   border-style: solid;
-  border-color: $mdc-theme-primary;
-  border-width: 0px;
-  margin: -1px 0 0 -1px;
+  border-color: transparentize(darken($mdc-theme-surface, 40%), 0.8);
+  border-width: 0 0 1px 0;
   background-color: $empty-cell-color;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
 
   &:hover {
-    border-width: 2px 3px 3px 2px;
+    border-color: $mdc-theme-primary;
+    border-width: 2px;
   }
 
   &.oddCol {

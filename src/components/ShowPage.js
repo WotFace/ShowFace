@@ -279,9 +279,10 @@ class ShowPageComponent extends Component {
           <div className={styles.header}>
             <div className={styles.headerWithShareBtn}>
               <h1 className={styles.showNameHeader}>{show && show.name}</h1>
-              <IconButton onClick={this.openModal}>
-                <MaterialIcon className="mdc-tab__icon" icon="share" />
-              </IconButton>
+              <Button onClick={this.openModal} className={styles.shareButton} outlined>
+                <MaterialIcon icon="share" />
+                <span className={styles.buttonContent}>INVITE</span>
+              </Button>
             </div>
             {latestSavedShow.isReadOnly && (
               <>

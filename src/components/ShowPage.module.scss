@@ -1,4 +1,6 @@
 @import '../mdc-variables.scss';
+@import '../mdc';
+$menu-breakpoint: largephone;
 
 .container {
   margin-bottom: 1em;
@@ -42,8 +44,18 @@
 .headerWithShareBtn {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;  
+  align-items: center;
+
+  .shareButton {
+    .buttonContent {
+      margin: 0.3em;
+      @media (max-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
+        display: none;
+      }
+    }
+  }
 }
 
 .showNameHeader {

@@ -32,7 +32,7 @@ class ShowPageComponent extends Component {
     this.state = {
       pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
       hasSetName: false,
-      modalIsOpen: props.isModalOpen || false,
+      modalIsOpen: (props.location.state && props.location.state.isModalOpen) || false,
     };
 
     this.openModal = this.openModal.bind(this);

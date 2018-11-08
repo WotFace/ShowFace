@@ -87,7 +87,11 @@ class CreatePage extends Component {
       // TODO: Beautify
       return <Loading text="Creating" />;
     } else if (data) {
-      return <Redirect to={`/meeting/${data.createNewShow.slug}`} />;
+      return (
+        <Redirect
+          to={{ pathname: `/meeting/${data.createNewShow.slug}`, state: { isModalOpen: true } }}
+        />
+      );
     } else {
       // Not loading. Render form
       // TODO: Display error if it exists

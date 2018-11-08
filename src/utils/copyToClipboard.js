@@ -1,7 +1,8 @@
 const copyToClipboard = (text) => {
   const el = document.createElement('textarea');
   el.value = text;
-  el.setAttribute('readonly', '');
+  el.setAttribute('readonly', false);
+  el.setAttribute('contentEditable', true);
   el.style.position = 'absolute';
   el.style.left = '-9999px';
   document.body.appendChild(el);

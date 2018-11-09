@@ -89,7 +89,10 @@ class CreatePage extends Component {
     } else if (data) {
       return (
         <Redirect
-          to={{ pathname: `/meeting/${data.createNewShow.slug}`, state: { isModalOpen: true } }}
+          to={{
+            pathname: `/meeting/${data.createNewShow.slug}`,
+            state: { inviteImmediately: true },
+          }}
         />
       );
     } else {

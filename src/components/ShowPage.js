@@ -121,13 +121,19 @@ class ShowPageComponent extends Component {
     });
   }
 
+  handleLogIn = () => {
+    // Show log in dialog/page, and make auth page redirect back to this page
+    const { history } = this.props;
+    history.push('/login', { from: history.location });
+  };
+
   renderLoginPrompt = () => {
     return (
       <>
         <p>Log in to be part of this meeting</p>
-        <Link to="/login" className={sharedStyles.buttonLink}>
-          <Button>Log in</Button>
-        </Link>
+        <Button onClick={this.handleLogIn} outlined>
+          Log In or Sign Up
+        </Button>
       </>
     );
   };

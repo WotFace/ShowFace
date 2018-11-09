@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { auth } from '../firebase';
 import { getAuthInput } from '../utils/auth';
 import { Redirect, Route } from 'react-router-dom';
+import styles from './PrivateRoute.module.scss';
+import Button from '@material/react-button';
 
 // Wrapper around Routes components which require authentication, such as
 // DashboardPage. Automatically redirects to Login if user is not authenticated.
@@ -50,7 +52,14 @@ export default class PrivateRoute extends Component {
           } else if (auth) {
             return <Component {...props} />;
           }
-          return null;
+          return (
+            <section className={styles.container}>
+              <h2>Log in to see your meetings</h2>
+              <Button onClick={this.handleLogIn} outlined>
+                Log In or Sign Up
+              </Button>
+            </section>
+          );
         }}
       />
     );

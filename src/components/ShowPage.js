@@ -491,7 +491,8 @@ function ShowPageWithQueries(props) {
                           {...props}
                           getShowResult={datifyShowResponse(getShowResult, 'data.show')}
                           upsertResponses={async (slug, name, email, responses) => {
-                            const auth = await getAuthInput();
+                            // N.B. We don't pass in auth if user wants to use name instead.
+                            const auth = name ? null : await getAuthInput();
                             upsertResponses({
                               variables: { slug, name, email, auth, responses },
                               optimisticResponse: getOptimisticResponseForUpsertResponses(

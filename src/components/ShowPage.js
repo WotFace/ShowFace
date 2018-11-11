@@ -13,7 +13,6 @@ import update from 'immutability-helper';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
 import { datifyShowResponse } from '../utils/datetime';
-import copyToClipboard from '../utils/copyToClipboard';
 import Loading from './errorsLoaders/Loading';
 import Error from './errorsLoaders/Error';
 import ShowRespond from './ShowRespond';
@@ -52,13 +51,6 @@ class ShowPageComponent extends Component {
   closeModal() {
     this.setState({ isInviteModalOpen: false, modalHeadline: null });
   }
-
-  copyUrlToClipboard = () => {
-    copyToClipboard(window.location.href);
-    this.props.alert.show('Url copied to clipboard.', {
-      type: 'success',
-    });
-  };
 
   canSubmit(name) {
     const show = this.latestShow();

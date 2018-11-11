@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Link, Prompt } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
@@ -22,14 +22,12 @@ import ShareModal from './ShareModal';
 import Modal from 'react-modal';
 import './ReactModalOverride.scss';
 
-import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 
 class ShowPageComponent extends Component {
   constructor(props) {
     super();
     this.state = {
-      pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
       hasSetName: false,
       isInviteModalOpen: (props.location.state && props.location.state.inviteImmediately) || false,
     };
@@ -62,17 +60,14 @@ class ShowPageComponent extends Component {
   };
 
   canSubmit(name) {
-    const show = this.latestShow(true);
+    const show = this.latestShow();
     if ((!name && !isSignedIn()) || !show) return false;
     return true;
   }
 
-  latestShow(includePending) {
+  // TODO: Check if this method is still necessary. Will the query have the updated show already?
+  latestShow() {
     const { getShowResult, upsertResponsesResult } = this.props;
-    const { pendingSubmission } = this.state;
-    if (includePending && pendingSubmission) {
-      return pendingSubmission.show;
-    }
     if (upsertResponsesResult.data && upsertResponsesResult.data._upsertResponse) {
       return upsertResponsesResult.data._upsertResponse;
     }
@@ -91,8 +86,9 @@ class ShowPageComponent extends Component {
 
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
-    const show = this.latestShow(true);
-    const { respondents } = show;
+    const show = this.latestShow();
+    const { respondents, slug } = show;
+
     // Find current respondent by anonymousName if name is supplied,
     // if not find by current user's email
     const currentRespondent = name
@@ -110,15 +106,7 @@ class ShowPageComponent extends Component {
     }
 
     const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
-    const showToSave = getOptimisticResponseForShow(name, email, newResponses, show);
-    this.setState({
-      pendingSubmission: {
-        show: showToSave,
-        name,
-        email,
-        responses: newResponses,
-      },
-    });
+    this.props.upsertResponses(slug, name, email, newResponses);
   }
 
   handleLogIn = () => {
@@ -142,15 +130,6 @@ class ShowPageComponent extends Component {
   handleDeselectTimes = (startTimes, name) =>
     this.handleSelectDeselectTimes(startTimes, name, false);
 
-  handleSubmit = () => {
-    const { pendingSubmission } = this.state;
-    if (!pendingSubmission) return;
-    const { name, email, responses, show } = pendingSubmission;
-    const { slug } = show;
-    this.props.upsertResponses(slug, name, email, responses);
-    this.setState({ pendingSubmission: null });
-  };
-
   handleDeleteRespondents = (id) => {
     const slug = this.props.match.params.showId;
     this.props.deleteRespondents(slug, [id]);
@@ -169,13 +148,11 @@ class ShowPageComponent extends Component {
 
   renderTabBar = (responseAllowed) => {
     const { location, history } = this.props;
-    const { pendingSubmission } = this.state;
-    var links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
-    var responseIcon = pendingSubmission ? 'warning' : 'add';
+    const links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
     if (responseAllowed) {
       links.unshift({
         text: 'Respond',
-        icon: `${responseIcon}`,
+        icon: 'add',
         path: `${this.meetingPageBaseUrl()}/respond`,
       });
     }
@@ -205,8 +182,8 @@ class ShowPageComponent extends Component {
   amIAdmin = () => {
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
-    const latestSavedShow = this.latestShow(true);
-    const { respondents } = latestSavedShow;
+    const show = this.latestShow();
+    const { respondents } = show;
     // Find current respondent by current user's email
     const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
 
@@ -215,9 +192,8 @@ class ShowPageComponent extends Component {
 
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
-    const { hasSetName, pendingSubmission } = this.state;
+    const { hasSetName } = this.state;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
-    // TODO: Display something when saving
     const { loading: upsertResponsesLoading, error: upsertResponsesError } = upsertResponsesResult;
 
     if (getShowLoading) {
@@ -244,10 +220,9 @@ class ShowPageComponent extends Component {
       );
     }
 
-    const show = this.latestShow(true);
-    const latestSavedShow = this.latestShow(false);
+    const show = this.latestShow();
 
-    if (!latestSavedShow || !show) {
+    if (!show) {
       return (
         <Error
           title="We couldn&apos;t find this poll"
@@ -257,7 +232,7 @@ class ShowPageComponent extends Component {
     }
 
     const adminAccess = this.amIAdmin();
-    const responseAllowed = !latestSavedShow.isReadOnly || adminAccess;
+    const responseAllowed = !show.isReadOnly || adminAccess;
 
     const baseUrl = this.meetingPageBaseUrl();
     const lastPathComponent = match.params[0]; // undefined if URL is /meeting/<slug>
@@ -272,14 +247,6 @@ class ShowPageComponent extends Component {
 
     return (
       <div className={styles.container}>
-        <Prompt
-          when={!!pendingSubmission}
-          message={(location) =>
-            location.pathname.startsWith(this.meetingPageBaseUrl())
-              ? true
-              : 'You have unsaved changes. Are you sure you want to leave this page?'
-          }
-        />
         <section className={styles.headerSection}>
           <div className={styles.header}>
             <div className={styles.headerWithShareBtn}>
@@ -289,7 +256,7 @@ class ShowPageComponent extends Component {
                 <span className={styles.buttonContent}>INVITE</span>
               </Button>
             </div>
-            {latestSavedShow.isReadOnly && (
+            {show.isReadOnly && (
               <>
                 <p className="mdc-typography--body1">
                   This meeting is closed from further responses.
@@ -332,14 +299,12 @@ class ShowPageComponent extends Component {
               onSetName={this.handleSetName}
               onSelectTimes={this.handleSelectTimes}
               onDeselectTimes={this.handleDeselectTimes}
-              hasPendingSubmissions={!!pendingSubmission}
               isSaving={upsertResponsesLoading}
-              onSubmit={this.handleSubmit}
             />
           )}
           {lastPathComponent === 'results' && (
             <ShowResults
-              show={latestSavedShow}
+              show={show}
               onDeleteResponse={this.handleDeleteResponse}
               onDeleteRespondents={this.handleDeleteRespondents}
               onEditRespondentStatus={this.handleEditRespondentStatus}

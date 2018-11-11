@@ -1,5 +1,3 @@
-@import '../mdc';
-
 .bottomBar {
   margin-top: 1em;
 }
@@ -10,17 +8,9 @@
   justify-content: space-between;
 
   .mainText {
+    flex-grow: 1;
     margin: 0 1rem;
     text-align: center;
     word-break: break-word;
-  }
-
-  .submitButton {
-    @media (max-width: mdc-layout-grid-breakpoint-max(phone)) {
-      // Submit button icon
-      i {
-        display: none;
-      }
-    }
   }
 }

@@ -131,14 +131,19 @@ class ShowRespond extends Component {
     let mainText;
 
     if (isSaving) {
-      mainText = 'Saving...';
+      mainText = <>Saving&hellip;</>;
     } else if (saved) {
-      mainText = 'Saved!';
+      mainText = (
+        <>
+          Saved <strong>{this.responseName()}</strong>
+          &apos;s availability!
+        </>
+      );
     } else {
       mainText = (
         <>
-          Hold and drag on the timeline to select your availability. Responding as{' '}
-          <strong>{this.responseName()}</strong>
+          Hold and drag on the timeline to select <strong>{this.responseName()}</strong>
+          &apos;s availability.
         </>
       );
     }

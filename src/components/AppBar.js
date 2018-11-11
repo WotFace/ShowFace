@@ -150,7 +150,7 @@ class AppBar extends Component {
   render() {
     // Don't render AppBar on blacklisted pages
     const { pathBlacklist } = this.props;
-    const pathname = this.props.location.pathname;
+    const pathname = this.props.location.pathname.toLowerCase();
     if (pathBlacklist.includes(pathname)) return null;
 
     // TODO: Change buttons on login/signup/dashboard pages

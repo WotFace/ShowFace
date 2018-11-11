@@ -234,49 +234,36 @@ class ShowPageComponent extends Component {
 
     return (
       <div className={styles.container}>
-        <section className={styles.headerSection}>
-          <div className={styles.header}>
-            <div className={styles.headerWithShareBtn}>
-              <h1 className={styles.showNameHeader}>{show && show.name}</h1>
-              <Button onClick={this.openModal} outlined icon={<MaterialIcon icon="share" />}>
-                INVITE
-              </Button>
-            </div>
-            {show.isReadOnly && (
-              <>
-                <p className="mdc-typography--body1">
-                  This meeting is closed from further responses.
-                </p>
-
-                {adminAccess ? (
-                  <p className="mdc-typography--body1">
-                    You can allow others to respond again in settings tab.
-                  </p>
-                ) : (
-                  <p className="mdc-typography--body1">
-                    You can contact meeting organizers to enable response again.
-                  </p>
-                )}
-              </>
-            )}
-            <div className={styles.copyUrlInputContainer}>
-              <Modal
-                isOpen={this.state.isInviteModalOpen}
-                onAfterOpen={this.afterOpenModal}
-                onRequestClose={this.closeModal}
-                contentLabel="Share"
-              >
-                <ShareModal
-                  link={window.location.href
-                    .split('/')
-                    .slice(0, -1)
-                    .join('/')}
-                  modalHeadline={this.state.modalHeadline}
-                />
-              </Modal>
-            </div>
-          </div>
-        </section>
+        <div className={styles.header}>
+          <h1 className={styles.showNameHeader}>{show && show.name}</h1>
+          {show.isReadOnly ? (
+            <p className="mdc-typography--body1">
+              This meeting is closed from further responses.
+              <br />
+              {adminAccess
+                ? 'You can allow others to respond again in the settings tab.'
+                : 'Contact the organizers of this meeting to allow responses.'}
+            </p>
+          ) : (
+            <Button onClick={this.openModal} outlined icon={<MaterialIcon icon="share" />}>
+              Invite Attendees
+            </Button>
+          )}
+        </div>
+        <Modal
+          isOpen={this.state.isInviteModalOpen}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal}
+          contentLabel="Share"
+        >
+          <ShareModal
+            link={window.location.href
+              .split('/')
+              .slice(0, -1)
+              .join('/')}
+            modalHeadline={this.state.modalHeadline}
+          />
+        </Modal>
         {this.renderTabBar(responseAllowed)}
         <section id="show">
           {lastPathComponent === 'respond' && (

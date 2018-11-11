@@ -3,7 +3,7 @@ import Card from '@material/react-card';
 import Button from '@material/react-button';
 import classnames from 'classnames';
 import TextField, { Input } from '@material/react-text-field';
-import copyToClipboard from '../utils/copyToClipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { withAlert } from 'react-alert';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
@@ -18,11 +18,6 @@ class ShareModal extends Component {
   state = {
     activeIndex: 0,
     emails: [],
-  };
-
-  copyUrlToClipboard = () => {
-    copyToClipboard(this.props.link);
-    // this.props.alert.success('URL Copied To Clipboard');
   };
 
   openWhatsApp = () => {
@@ -56,9 +51,11 @@ class ShareModal extends Component {
           <TextField outlined className={styles.copyUrlInput} label="">
             <Input type="text" value={this.props.link} />
           </TextField>
-          <Button className={styles.clipboardButton} onClick={this.copyUrlToClipboard} unelevated>
-            Copy
-          </Button>
+          <CopyToClipboard text={this.props.link}>
+            <Button className={styles.clipboardButton} unelevated>
+              Copy
+            </Button>
+          </CopyToClipboard>
         </div>
 
         <div className={styles.shareRow}>

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import Button from '@material/react-button';
 import Card from '@material/react-card';
 import TextField, { Input } from '@material/react-text-field';
 import classnames from 'classnames';
 import { cleanName } from '../utils/string';
 import Divider from './Divider';
+
+import sharedStyles from './SharedStyles.module.scss';
 import styles from './PollRespondNameForm.module.scss';
 
 class PollRespondNameForm extends Component {
@@ -19,12 +21,6 @@ class PollRespondNameForm extends Component {
   cleanName() {
     return cleanName(this.state.name);
   }
-
-  handleLogIn = () => {
-    // Show log in dialog/page, and make auth page redirect back to this page
-    const { history } = this.props;
-    history.push('/login', { from: history.location });
-  };
 
   handleNameChange = (e) => {
     this.setState({ name: e.target.value });
@@ -46,10 +42,11 @@ class PollRespondNameForm extends Component {
     return (
       <>
         <div className="mdc-typography--headline6">
-          {canContinueAsSignedInUser ? 'Respond as yourself' : 'Already have an account?'}
+          {canContinueAsSignedInUser ? 'Use your account' : 'Already have an account?'}
         </div>
         <div className={classnames(styles.descText, 'mdc-typography--caption')}>
-          With an account, only you will be able to edit your responses.
+          With an account, everyone can rest assured that your availability was marked by you, and
+          only you.
         </div>
         {canContinueAsSignedInUser ? (
           <Button onClick={this.handleContinueAsUser} unelevated>
@@ -57,9 +54,18 @@ class PollRespondNameForm extends Component {
           </Button>
         ) : (
           <div className={styles.authButtonContainer}>
-            <Button onClick={this.handleLogIn} outlined>
-              Log In or Sign Up
-            </Button>
+            <Link
+              to={{ pathname: '/login', state: { from: this.props.location } }}
+              className={sharedStyles.buttonLink}
+            >
+              <Button outlined>Log In</Button>
+            </Link>
+            <Link
+              to={{ pathname: '/signup', state: { from: this.props.location } }}
+              className={sharedStyles.buttonLink}
+            >
+              <Button outlined>Sign Up</Button>
+            </Link>
           </div>
         )}
       </>
@@ -76,13 +82,12 @@ class PollRespondNameForm extends Component {
 
     return (
       <form className={styles.nameForm} onSubmit={this.handleNameFormSubmit}>
-        <div className="mdc-typography--headline6">
-          Respond {canContinueAsSignedInUser ? 'as someone else' : 'with a display name'}
-        </div>
+        <div className="mdc-typography--headline6">Use a display name</div>
         <div className={classnames(styles.descText, 'mdc-typography--caption')}>
-          Quicky and easily respond to a poll. Your responses can be changed by anyone.
+          Quicky and easily indicate your availability with just a name. Do note that your responses
+          can be changed by anyone.
         </div>
-        <TextField label="Enter Your Name" className={styles.nameField} outlined>
+        <TextField label="Your Name" className={styles.nameField} outlined>
           <Input
             type="text"
             name="name"

@@ -82,6 +82,7 @@ class ShareModal extends Component {
     );
 
     const { emails } = this.state;
+    const { modalHeadline } = this.props;
     const inputEmailDiv = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
@@ -119,6 +120,7 @@ class ShareModal extends Component {
 
     return (
       <Card className={styles.container}>
+        <div className="mdc-typography--headline6">{modalHeadline}</div>
         <div className="mdc-typography--headline6">Invite respondents via...</div>
         <TabBar
           activeIndex={this.state.activeIndex}

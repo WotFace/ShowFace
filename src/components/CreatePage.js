@@ -91,7 +91,10 @@ class CreatePage extends Component {
         <Redirect
           to={{
             pathname: `/meeting/${data.createNewShow.slug}`,
-            state: { inviteImmediately: true },
+            state: {
+              inviteImmediately: true,
+              modalHeadline: 'Your meeting has been created!',
+            },
           }}
         />
       );

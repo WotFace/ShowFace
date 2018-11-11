@@ -30,6 +30,7 @@ class ShowPageComponent extends Component {
     this.state = {
       hasSetName: false,
       isInviteModalOpen: (props.location.state && props.location.state.inviteImmediately) || false,
+      modalHeadline: (props.location.state && props.location.state.modalHeadline) || null,
     };
 
     this.openModal = this.openModal.bind(this);
@@ -49,7 +50,7 @@ class ShowPageComponent extends Component {
   }
 
   closeModal() {
-    this.setState({ isInviteModalOpen: false });
+    this.setState({ isInviteModalOpen: false, modalHeadline: null });
   }
 
   copyUrlToClipboard = () => {
@@ -285,6 +286,7 @@ class ShowPageComponent extends Component {
                     .split('/')
                     .slice(0, -1)
                     .join('/')}
+                  modalHeadline={this.state.modalHeadline}
                 />
               </Modal>
             </div>

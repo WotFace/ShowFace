@@ -66,15 +66,9 @@ class ShowPageComponent extends Component {
     return true;
   }
 
-  // TODO: Check if this method is still necessary. Will the query have the updated show already?
   latestShow() {
-    const { getShowResult, upsertResponsesResult } = this.props;
-    if (upsertResponsesResult.data && upsertResponsesResult.data._upsertResponse) {
-      return upsertResponsesResult.data._upsertResponse;
-    }
-    if (getShowResult.data && getShowResult.data.show) {
-      return getShowResult.data.show;
-    }
+    const { getShowResult } = this.props;
+    if (getShowResult.data && getShowResult.data.show) return getShowResult.data.show;
     return null;
   }
 

@@ -4,7 +4,6 @@ import Button from '@material/react-button';
 import classnames from 'classnames';
 import TextField, { Input } from '@material/react-text-field';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { withAlert } from 'react-alert';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
@@ -14,7 +13,7 @@ import { ReactMultiEmail } from 'react-multi-email';
 import './MultiEmailOverride.scss';
 import styles from './ShareModal.module.scss';
 
-class ShareModal extends Component {
+export default class ShareModal extends Component {
   state = {
     activeIndex: 0,
     emails: [],
@@ -135,5 +134,3 @@ class ShareModal extends Component {
     );
   }
 }
-
-export default withAlert(ShareModal);

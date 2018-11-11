@@ -5,7 +5,6 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
@@ -520,4 +519,4 @@ function ShowPageWithQueries(props) {
   );
 }
 
-export default withRouter(withAlert(ShowPageWithQueries));
+export default withRouter(ShowPageWithQueries);

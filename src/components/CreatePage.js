@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -199,7 +198,7 @@ const CREATE_NEW_SHOW_MUTATION = gql`
   }
 `;
 
-export default withAlert((props) => (
+export default (props) => (
   <Mutation mutation={CREATE_NEW_SHOW_MUTATION}>
     {(createNewShow, result) => (
       <CreatePage
@@ -212,4 +211,4 @@ export default withAlert((props) => (
       />
     )}
   </Mutation>
-));
+);

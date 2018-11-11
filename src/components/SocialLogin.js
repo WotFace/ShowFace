@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ApolloConsumer } from 'react-apollo';
 import gql from 'graphql-tag';
-import { withAlert } from 'react-alert';
 import { facebookAuthProvider, googleAuthProvider, auth } from '../firebase';
 import { getAuthInput } from '../utils/auth';
 import Button from '@material/react-button';
@@ -9,7 +8,7 @@ import GoogleIcon from '../icons/google.svg';
 import FacebookIcon from '../icons/facebook.svg';
 import styles from './LoginPage.module.scss';
 
-class SocialLogin extends Component {
+export default class SocialLogin extends Component {
   fragments = {
     user: gql`
       fragment LoginPage on User {
@@ -101,5 +100,3 @@ class SocialLogin extends Component {
     );
   }
 }
-
-export default withAlert(SocialLogin);

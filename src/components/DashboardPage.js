@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
-import { withAlert } from 'react-alert';
 import Card from '@material/react-card';
 import classnames from 'classnames';
 import { format } from 'date-fns';
@@ -250,7 +249,7 @@ const GET_USER_SHOW_QUERY = gql`
   ${DashboardPage.fragments.userShows}
 `;
 
-export default withAlert((props) => {
+export default (props) => {
   return (
     <AuthenticatedQuery query={GET_USER_SHOW_QUERY} requiresAuth>
       {(getUserShowsResult) => (
@@ -266,4 +265,4 @@ export default withAlert((props) => {
       )}
     </AuthenticatedQuery>
   );
-});
+};

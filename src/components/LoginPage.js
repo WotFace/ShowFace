@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import gql from 'graphql-tag';
@@ -204,7 +203,7 @@ const CREATE_USER_MUTATION = gql`
   }
 `;
 
-export default withAlert((props) => (
+export default (props) => (
   <Mutation mutation={CREATE_USER_MUTATION}>
     {(createUser, result) => (
       <LoginPage
@@ -217,4 +216,4 @@ export default withAlert((props) => (
       />
     )}
   </Mutation>
-));
+);

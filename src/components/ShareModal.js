@@ -43,7 +43,7 @@ export default class ShareModal extends Component {
     const linkShareDiv = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
-          Everyone with the link can respond to this poll.
+          Anyone with this link can respond to this poll.
         </div>
 
         <div id={styles.linkShareRow}>
@@ -115,22 +115,24 @@ export default class ShareModal extends Component {
     );
 
     return (
-      <Card className={styles.container}>
-        <div className="mdc-typography--headline6">{modalHeadline}</div>
-        <div className="mdc-typography--headline6">Invite respondents via...</div>
-        <TabBar
-          activeIndex={this.state.activeIndex}
-          handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}
-        >
-          <Tab>
-            <span>Link</span>
-          </Tab>
-          <Tab>
-            <span>Email</span>
-          </Tab>
-        </TabBar>
-        {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
-      </Card>
+      <div className={styles.container}>
+        <Card className={styles.card}>
+          <div className="mdc-typography--headline6">{modalHeadline}</div>
+          <div className="mdc-typography--headline6">Invite respondents via...</div>
+          <TabBar
+            activeIndex={this.state.activeIndex}
+            handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}
+          >
+            <Tab>
+              <span>Link</span>
+            </Tab>
+            <Tab>
+              <span>Email</span>
+            </Tab>
+          </TabBar>
+          {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
+        </Card>
+      </div>
     );
   }
 }

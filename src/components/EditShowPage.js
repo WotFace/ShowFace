@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
-import { Mutation } from 'react-apollo';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
-import gql from 'graphql-tag';
 
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import TextField, { Input } from '@material/react-text-field';
 
-import { getAuthInput } from '../utils/auth';
 import { cleanName } from '../utils/string';
 import BottomAppBar from './BottomAppBar';
 import TimePicker from './TimePicker';

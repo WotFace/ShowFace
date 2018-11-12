@@ -133,8 +133,10 @@ class ShowPageComponent extends Component {
     //TODO: add rerender method
   };
 
-  updateShowSettings = (name, selectedDays, startTime, endTime, interval) => {
-    // TODO: IMPLEMENT UPDATE SETTINGS FUNCTION
+  updateShowSettings = (name, dates, startTime, endTime, interval) => {
+    const slug = this.props.match.params.showId;
+    this.props.editShowSettings(name, dates, startTime, endTime, interval, slug);
+
   };
 
   renderTabBar = (responseAllowed) => {
@@ -257,10 +259,10 @@ class ShowPageComponent extends Component {
                 : 'Contact the organizers of this meeting to allow responses.'}
             </p>
           ) : (
-            <Button onClick={this.openModal} outlined icon={<MaterialIcon icon="share" />}>
-              Invite Attendees
+              <Button onClick={this.openModal} outlined icon={<MaterialIcon icon="share" />}>
+                Invite Attendees
             </Button>
-          )}
+            )}
         </div>
         <Modal
           isOpen={this.state.isInviteModalOpen}
@@ -418,6 +420,33 @@ const DELETE_RESPONSE = gql`
   ${ShowPageComponent.fragments.respondent}
 `;
 
+
+const EDIT_SHOW_SETTINGS = gql`
+  mutation EditShowSettings(
+    $name: String!
+    $dates: [DateTime!]
+    $startTime: DateTime!
+    $endTime: DateTime!
+    $interval: Int!
+    $auth: AuthInput
+    $slug: String!
+  ) {
+    editShowSettings(
+      auth: $auth
+      where: {
+        slug: $slug
+      }
+      data: {
+        name: $name
+        dates: $dates
+        startTime: $startTime
+        endTime: $endTime
+        interval: $interval
+      }
+    )
+  }
+`;
+
 function getOptimisticResponseForShow(name, email, responses, show) {
   if (!show) return null;
   const { respondents } = show;
@@ -429,11 +458,11 @@ function getOptimisticResponseForShow(name, email, responses, show) {
     const firebaseUser = getFirebaseUserInfo();
     const user = firebaseUser
       ? {
-          __typename: 'User',
-          name: firebaseUser.displayName, // TODO: Use user's name on our server
-          uid: firebaseUser.uid,
-          email,
-        }
+        __typename: 'User',
+        name: firebaseUser.displayName, // TODO: Use user's name on our server
+        uid: firebaseUser.uid,
+        email,
+      }
       : null;
     newRespondents = [
       ...respondents,
@@ -483,48 +512,59 @@ function ShowPageWithQueries(props) {
                   {(deleteRespondents, deleteRespondentsResult) => (
                     <Mutation mutation={EDIT_SHOW_RESPONDENT_STATUS}>
                       {(editShowRespondentStatus, editShowRespondentStatusResult) => (
-                        <ShowPageComponent
-                          {...props}
-                          getShowResult={datifyShowResponse(getShowResult, 'data.show')}
-                          upsertResponses={async (slug, name, email, responses) => {
-                            // N.B. We don't pass in auth if user wants to use name instead.
-                            const auth = name ? null : await getAuthInput();
-                            upsertResponses({
-                              variables: { slug, name, email, auth, responses },
-                              optimisticResponse: getOptimisticResponseForUpsertResponses(
-                                name,
-                                email,
-                                responses,
-                                getShowResult,
-                              ),
-                            });
-                          }}
-                          upsertResponsesResult={datifyShowResponse(
-                            upsertResponsesResult,
-                            'data._upsertResponse',
+                        <Mutation mutation={EDIT_SHOW_SETTINGS}>
+                          {(editShowSettings, editShowSettingsResult) => (
+                            <ShowPageComponent
+                              {...props}
+                              getShowResult={datifyShowResponse(getShowResult, 'data.show')}
+                              upsertResponses={async (slug, name, email, responses) => {
+                                // N.B. We don't pass in auth if user wants to use name instead.
+                                const auth = name ? null : await getAuthInput();
+                                upsertResponses({
+                                  variables: { slug, name, email, auth, responses },
+                                  optimisticResponse: getOptimisticResponseForUpsertResponses(
+                                    name,
+                                    email,
+                                    responses,
+                                    getShowResult,
+                                  ),
+                                });
+                              }}
+                              upsertResponsesResult={datifyShowResponse(
+                                upsertResponsesResult,
+                                'data._upsertResponse',
+                              )}
+                              deleteResponse={async (slug, id) => {
+                                const auth = await getAuthInput();
+                                deleteResponse({
+                                  variables: { slug, id, auth },
+                                });
+                              }}
+                              deleteResponseResult={deleteResponseResult}
+                              deleteRespondents={async (slug, id) => {
+                                const auth = await getAuthInput();
+                                deleteRespondents({
+                                  variables: { slug, id, auth },
+                                });
+                              }}
+                              deleteRespondentsResult={deleteRespondentsResult}
+                              editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
+                                const auth = await getAuthInput();
+                                editShowRespondentStatus({
+                                  variables: { slug, id, role, isKeyRespondent, auth },
+                                });
+                              }}
+                              editShowRespondentStatusResult={editShowRespondentStatusResult}
+                              editShowSettings={async (name, dates, startTime, endTime, interval, slug) => {
+                                const auth = await getAuthInput();
+                                editShowSettings({
+                                  variables: { name, dates, startTime, endTime, interval, auth, slug },
+                                });
+                              }}
+                              editShowSettingsResult={editShowSettingsResult}
+                            />
                           )}
-                          deleteResponse={async (slug, id) => {
-                            const auth = await getAuthInput();
-                            deleteResponse({
-                              variables: { slug, id, auth },
-                            });
-                          }}
-                          deleteResponseResult={deleteResponseResult}
-                          deleteRespondents={async (slug, id) => {
-                            const auth = await getAuthInput();
-                            deleteRespondents({
-                              variables: { slug, id, auth },
-                            });
-                          }}
-                          deleteRespondentsResult={deleteRespondentsResult}
-                          editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
-                            const auth = await getAuthInput();
-                            editShowRespondentStatus({
-                              variables: { slug, id, role, isKeyRespondent, auth },
-                            });
-                          }}
-                          editShowRespondentStatusResult={editShowRespondentStatusResult}
-                        />
+                        </Mutation>
                       )}
                     </Mutation>
                   )}

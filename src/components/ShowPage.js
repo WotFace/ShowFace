@@ -433,9 +433,7 @@ const EDIT_SHOW_SETTINGS = gql`
   ) {
     editShowSettings(
       auth: $auth
-      where: {
-        slug: $slug
-      }
+      where: { slug: $slug }
       data: {
         name: $name
         dates: $dates
@@ -443,7 +441,9 @@ const EDIT_SHOW_SETTINGS = gql`
         endTime: $endTime
         interval: $interval
       }
-    )
+    ) {
+      slug
+    }
   }
 `;
 

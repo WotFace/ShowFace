@@ -31,7 +31,6 @@ class EditShowPage extends Component {
   handleSubmit(event) {
     const { name, selectedDays, startTime, endTime, interval } = this.state;
     this.props.updateShow(cleanName(name), selectedDays, startTime, endTime, interval);
-    event.preventDefault();
   }
 
   handleInputChange(event) {
@@ -62,12 +61,50 @@ class EditShowPage extends Component {
     this.setState({ endTime: time });
   };
 
-  render() {
-    console.log(this.props);
 
+  renderBottomBar() {
+
+    // TODO: Implement isSaving and saved for bottomappbar prompts
+    const { isSaving } = this.props;
+    const { saved } = this.state;
+    
     const { selectedDays, name } = this.state;
     const noSelectedDay = selectedDays.length === 0;
+
+    let mainText;
+
+    if (isSaving) {
+      mainText = <>Saving&hellip;</>;
+    } else if (saved) {
+      mainText = <>Updated Settings!</>;
+    }
+
+    return (
+      <BottomAppBar className={styles.bottomBar}>
+        <div className={styles.bottomBarContent}>
+          <Button
+            className={styles.submitButton}
+            onClick={this.handleSubmit}
+            disabled={
+              noSelectedDay ||
+              cleanName(name).length === 0 ||
+              this.state.startTime === null ||
+              this.state.endTime === null
+            }
+            icon={<MaterialIcon icon="arrow_forward" />}
+            raised
+          >
+            Update
+      </Button>
+          <span className={styles.mainText}>{mainText}</span>
+        </div>
+      </BottomAppBar>
+    );
+  }
+
+  render() {
     const today = new Date();
+    const { selectedDays, name } = this.state;
 
     return (
       <div id={styles.pageContainer}>
@@ -104,24 +141,7 @@ class EditShowPage extends Component {
             startTime={this.state.startTime}
             endTime={this.state.endTime}
           />
-          <BottomAppBar>
-            <div className={styles.bottomBarContent}>
-              <Button
-                className={styles.submitButton}
-                onClick={this.handleSubmit}
-                disabled={
-                  noSelectedDay ||
-                  cleanName(name).length === 0 ||
-                  this.state.startTime === null ||
-                  this.state.endTime === null
-                }
-                icon={<MaterialIcon icon="arrow_forward" />}
-                raised
-              >
-                Update
-              </Button>
-            </div>
-          </BottomAppBar>
+          {this.renderBottomBar()}
         </form>
       </div>
     );

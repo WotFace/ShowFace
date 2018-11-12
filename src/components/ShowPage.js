@@ -297,6 +297,12 @@ class ShowPageComponent extends Component {
               onUserAction={this.onUserAction}
             />
           )}
+          {lastPathComponent === 'settings' && (
+            <EditShowPage
+              show={show}
+              updateShow={this.updateShowSettings}
+            />
+          )}
         </section>
       </div>
     );

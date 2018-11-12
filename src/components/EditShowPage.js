@@ -24,7 +24,7 @@ class EditShowPage extends Component {
       selectedDays: this.props.show.dates,
       startTime: this.props.show.startTime,
       endTime: this.props.show.endTime,
-      interval: this.props.interval,
+      interval: this.props.show.interval,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -68,12 +68,9 @@ class EditShowPage extends Component {
 
   render() {
     console.log(this.props);
-    const {
-      createShowResult: { loading, data, error },
-    } = this.props;
+
     const { selectedDays, name } = this.state;
     const noSelectedDay = selectedDays.length === 0;
-
     const today = new Date();
 
     return (
@@ -134,41 +131,5 @@ class EditShowPage extends Component {
     );
   }
 }
-const CREATE_NEW_SHOW_MUTATION = gql`
-  mutation CreateNewShow(
-    $name: String!
-    $dates: [DateTime!]
-    $startTime: DateTime!
-    $endTime: DateTime!
-    $interval: Int!
-    $auth: AuthInput
-  ) {
-    createNewShow(
-      auth: $auth
-      data: {
-        name: $name
-        dates: $dates
-        startTime: $startTime
-        endTime: $endTime
-        interval: $interval
-      }
-    ) {
-      slug
-    }
-  }
-`;
 
-export default (props) => (
-  <Mutation mutation={CREATE_NEW_SHOW_MUTATION}>
-    {(createNewShow, result) => (
-      <EditShowPage
-        {...props}
-        createShow={async (name, dates, startTime, endTime, interval) => {
-          const auth = await getAuthInput();
-          createNewShow({ variables: { name, dates, startTime, endTime, interval, auth } });
-        }}
-        createShowResult={result}
-      />
-    )}
-  </Mutation>
-);
+export default EditShowPage;

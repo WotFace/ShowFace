@@ -71,8 +71,8 @@ export function partitionRespondentsByAttendance(
 }
 
 export function sortedRespondents(respondents) {
-  return _.sortBy(
-    respondents,
-    (a) => (a.user && a.user.name ? a.user.name.toLowerCase() : a.anonymousName.toLowerCase()),
-  );
+  return _.sortBy(respondents, (a) => {
+    console.log(a);
+    return a.user && a.user.name ? a.user.name.toLowerCase() : a.anonymousName.toLowerCase();
+  });
 }

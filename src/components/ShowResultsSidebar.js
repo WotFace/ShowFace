@@ -194,7 +194,13 @@ class ShowResultsSidebar extends Component {
               />
             }
           />
-          <ListItemText primaryText={respondent.role === 'admin' ? 'Revoke admin' : 'Make admin'} />
+          <ListItemText
+            primaryText={
+              respondent.role === 'admin'
+                ? 'Revoke organizer privileges'
+                : 'Grant organizer privileges'
+            }
+          />
         </ListItem>,
       );
     }
@@ -235,8 +241,8 @@ class ShowResultsSidebar extends Component {
     );
   };
 
-  renderModalContents = (action) => {
-    const { isModalOpen, selectedRespondent } = this.state;
+  renderModalContents = () => {
+    const { isModalOpen, selectedRespondent, selectedAction } = this.state;
 
     let title;
     let body;
@@ -248,7 +254,7 @@ class ShowResultsSidebar extends Component {
         : selectedRespondent.anonymousName;
     }
 
-    switch (action) {
+    switch (selectedAction) {
       case 'clear':
         title = 'Clear ' + userName + "'s response?";
         body = `Are you sure you want to clear all responses entered by ${userName}? This will not remove them from the attendee list. This action cannot be undone.`;
@@ -320,7 +326,7 @@ class ShowResultsSidebar extends Component {
 
   render() {
     const { className, partitionedRespondents, time, bestTime, interval } = this.props;
-    const { selectedResponder, isMenuOpen, selectedAction } = this.state;
+    const { selectedResponder, isMenuOpen } = this.state;
 
     const { hidden, attending, notAttending, respondersRespondentsObj } = partitionedRespondents;
 
@@ -365,7 +371,7 @@ class ShowResultsSidebar extends Component {
 
     return (
       <>
-        {this.renderModalContents(selectedAction)}
+        {this.renderModalContents()}
         <div className={className}>
           <div className={styles.sidebarContainer}>
             <section className={styles.attendees}>

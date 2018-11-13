@@ -10,6 +10,7 @@ import styles from './WelcomePage.module.scss';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+
 import slider1 from '../screen.png';
 import slider2 from '../screen2.png';
 import slider3 from '../screen3.png';

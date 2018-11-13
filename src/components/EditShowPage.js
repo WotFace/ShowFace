@@ -61,13 +61,11 @@ class EditShowPage extends Component {
     this.setState({ endTime: time });
   };
 
-
   renderBottomBar() {
-
     // TODO: Implement isSaving and saved for bottomappbar prompts
     const { isSaving } = this.props;
     const { saved } = this.state;
-    
+
     const { selectedDays, name } = this.state;
     const noSelectedDay = selectedDays.length === 0;
 
@@ -95,7 +93,7 @@ class EditShowPage extends Component {
             raised
           >
             Update
-      </Button>
+          </Button>
           <span className={styles.mainText}>{mainText}</span>
         </div>
       </BottomAppBar>

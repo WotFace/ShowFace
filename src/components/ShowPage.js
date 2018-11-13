@@ -136,7 +136,6 @@ class ShowPageComponent extends Component {
   updateShowSettings = (name, dates, startTime, endTime, interval) => {
     const slug = this.props.match.params.showId;
     this.props.editShowSettings(name, dates, startTime, endTime, interval, slug);
-
   };
 
   renderTabBar = (responseAllowed) => {
@@ -150,7 +149,8 @@ class ShowPageComponent extends Component {
       });
     }
 
-    if (responseAllowed) { // Check if settings is allowed
+    if (this.isAnonymous() || this.amIAdmin()) {
+      console.log(this.latestShow());
       links.push({
         text: 'Settings',
         icon: 'settings',
@@ -189,6 +189,14 @@ class ShowPageComponent extends Component {
     const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
 
     return currentRespondent && currentRespondent.role === 'admin';
+  };
+
+  isAnonymous = () => {
+    const show = this.latestShow();
+    const { respondents } = show;
+    // Find if any of the respondents are an admin
+    const admin = respondents.find((r) => r.role === 'admin');
+    return !admin;
   };
 
   render() {
@@ -259,10 +267,10 @@ class ShowPageComponent extends Component {
                 : 'Contact the organizers of this meeting to allow responses.'}
             </p>
           ) : (
-              <Button onClick={this.openModal} outlined icon={<MaterialIcon icon="share" />}>
-                Invite Attendees
+            <Button onClick={this.openModal} outlined icon={<MaterialIcon icon="share" />}>
+              Invite Attendees
             </Button>
-            )}
+          )}
         </div>
         <Modal
           isOpen={this.state.isInviteModalOpen}
@@ -300,10 +308,7 @@ class ShowPageComponent extends Component {
             />
           )}
           {lastPathComponent === 'settings' && (
-            <EditShowPage
-              show={show}
-              updateShow={this.updateShowSettings}
-            />
+            <EditShowPage show={show} updateShow={this.updateShowSettings} />
           )}
         </section>
       </div>
@@ -420,7 +425,6 @@ const DELETE_RESPONSE = gql`
   ${ShowPageComponent.fragments.respondent}
 `;
 
-
 const EDIT_SHOW_SETTINGS = gql`
   mutation EditShowSettings(
     $name: String!
@@ -458,11 +462,11 @@ function getOptimisticResponseForShow(name, email, responses, show) {
     const firebaseUser = getFirebaseUserInfo();
     const user = firebaseUser
       ? {
-        __typename: 'User',
-        name: firebaseUser.displayName, // TODO: Use user's name on our server
-        uid: firebaseUser.uid,
-        email,
-      }
+          __typename: 'User',
+          name: firebaseUser.displayName, // TODO: Use user's name on our server
+          uid: firebaseUser.uid,
+          email,
+        }
       : null;
     newRespondents = [
       ...respondents,
@@ -555,10 +559,25 @@ function ShowPageWithQueries(props) {
                                 });
                               }}
                               editShowRespondentStatusResult={editShowRespondentStatusResult}
-                              editShowSettings={async (name, dates, startTime, endTime, interval, slug) => {
+                              editShowSettings={async (
+                                name,
+                                dates,
+                                startTime,
+                                endTime,
+                                interval,
+                                slug,
+                              ) => {
                                 const auth = await getAuthInput();
                                 editShowSettings({
-                                  variables: { name, dates, startTime, endTime, interval, auth, slug },
+                                  variables: {
+                                    name,
+                                    dates,
+                                    startTime,
+                                    endTime,
+                                    interval,
+                                    auth,
+                                    slug,
+                                  },
                                 });
                               }}
                               editShowSettingsResult={editShowSettingsResult}

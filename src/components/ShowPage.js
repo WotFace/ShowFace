@@ -140,8 +140,8 @@ class ShowPageComponent extends Component {
 
   sendEmailInvites = (emails) => {
     const slug = this.props.match.params.showId;
-    const emailsAndRoles = emails.map((e) => ({email: e, role: 'member'}))
-    this.props.addRespondentsByEmail(slug, emailsAndRoles)
+    const emailsAndRoles = emails.map((e) => ({ email: e, role: 'member' }));
+    this.props.addRespondentsByEmail(slug, emailsAndRoles);
   };
 
   renderTabBar = (responseAllowed, adminAccess) => {
@@ -203,7 +203,6 @@ class ShowPageComponent extends Component {
     const admin = respondents.find((r) => r.role === 'admin');
     return !admin;
   };
-
 
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
@@ -465,11 +464,7 @@ const ADD_RESPONDENTS_BY_EMAIL = gql`
     $auth: AuthInput!
     $emailsAndRoles: [AddRespondentsByEmailInput!]!
   ) {
-    addRespondentsByEmail(
-      auth: $auth
-      where: { slug: $slug }
-      data: $emailsAndRoles
-    ) {
+    addRespondentsByEmail(auth: $auth, where: { slug: $slug }, data: $emailsAndRoles) {
       slug
     }
   }
@@ -568,88 +563,93 @@ function ShowPageWithQueries(props) {
                           {(editShowSettings, editShowSettingsResult) => (
                             <Mutation mutation={ADD_RESPONDENTS_BY_EMAIL}>
                               {(addRespondentsByEmail, addRespondentsByEmailResult) => (
-                            <ShowPageComponent
-                              {...props}
-                              getShowResult={datifyShowResponse(getShowResult, 'data.show')}
-                              upsertResponses={async (slug, name, email, responses) => {
-                                // N.B. We don't pass in auth if user wants to use name instead.
-                                const auth = name ? null : await getAuthInput();
-                                upsertResponses({
-                                  variables: { slug, name, email, auth, responses },
-                                  optimisticResponse: getOptimisticResponseForUpsertResponses(
-                                    name,
-                                    email,
-                                    responses,
-                                    getShowResult,
-                                  ),
-                                });
-                              }}
-                              upsertResponsesResult={datifyShowResponse(
-                                upsertResponsesResult,
-                                'data._upsertResponse',
-                              )}
-                              deleteResponse={async (slug, id) => {
-                                const auth = await getAuthInput();
-                                deleteResponse({
-                                  variables: { slug, id, auth },
-                                });
-                              }}
-                              deleteResponseResult={deleteResponseResult}
-                              deleteRespondents={async (slug, id) => {
-                                const auth = await getAuthInput();
-                                deleteRespondents({
-                                  variables: { slug, id, auth },
-                                });
-                              }}
-                              deleteRespondentsResult={deleteRespondentsResult}
-                              editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
-                                const auth = await getAuthInput();
-                                editShowRespondentStatus({
-                                  variables: { slug, id, role, isKeyRespondent, auth },
-                                });
-                              }}
-                              editShowRespondentStatusResult={editShowRespondentStatusResult}
-                              editShowSettings={async (
-                                name,
-                                dates,
-                                startTime,
-                                endTime,
-                                interval,
-                                slug,
-                              ) => {
-                                const auth = await getAuthInput();
-                                editShowSettings({
-                                  variables: {
-                                    name,
-                                    dates,
-                                    startTime,
-                                    endTime,
-                                    interval,
-                                    auth,
+                                <ShowPageComponent
+                                  {...props}
+                                  getShowResult={datifyShowResponse(getShowResult, 'data.show')}
+                                  upsertResponses={async (slug, name, email, responses) => {
+                                    // N.B. We don't pass in auth if user wants to use name instead.
+                                    const auth = name ? null : await getAuthInput();
+                                    upsertResponses({
+                                      variables: { slug, name, email, auth, responses },
+                                      optimisticResponse: getOptimisticResponseForUpsertResponses(
+                                        name,
+                                        email,
+                                        responses,
+                                        getShowResult,
+                                      ),
+                                    });
+                                  }}
+                                  upsertResponsesResult={datifyShowResponse(
+                                    upsertResponsesResult,
+                                    'data._upsertResponse',
+                                  )}
+                                  deleteResponse={async (slug, id) => {
+                                    const auth = await getAuthInput();
+                                    deleteResponse({
+                                      variables: { slug, id, auth },
+                                    });
+                                  }}
+                                  deleteResponseResult={deleteResponseResult}
+                                  deleteRespondents={async (slug, id) => {
+                                    const auth = await getAuthInput();
+                                    deleteRespondents({
+                                      variables: { slug, id, auth },
+                                    });
+                                  }}
+                                  deleteRespondentsResult={deleteRespondentsResult}
+                                  editShowRespondentStatus={async (
                                     slug,
-                                  },
-                                  optimisticResponse: getOptimisticResponseForEditShowSettings(
+                                    id,
+                                    role,
+                                    isKeyRespondent,
+                                  ) => {
+                                    const auth = await getAuthInput();
+                                    editShowRespondentStatus({
+                                      variables: { slug, id, role, isKeyRespondent, auth },
+                                    });
+                                  }}
+                                  editShowRespondentStatusResult={editShowRespondentStatusResult}
+                                  editShowSettings={async (
                                     name,
                                     dates,
                                     startTime,
                                     endTime,
                                     interval,
-                                    getShowResult,
-                                  ),
-                                });
-                              }}
-                              editShowSettingsResult={editShowSettingsResult}
-                              addRespondentsByEmail={async (slug, emailsAndRoles) => {
-                                const auth = await getAuthInput();
-                                addRespondentsByEmail({
-                                  variables: { slug, auth, emailsAndRoles },
-                                });
-                              }}
-                              addRespondentsByEmailResult={addRespondentsByEmailResult}
-                            />
+                                    slug,
+                                  ) => {
+                                    const auth = await getAuthInput();
+                                    editShowSettings({
+                                      variables: {
+                                        name,
+                                        dates,
+                                        startTime,
+                                        endTime,
+                                        interval,
+                                        auth,
+                                        slug,
+                                      },
+                                      optimisticResponse: getOptimisticResponseForEditShowSettings(
+                                        name,
+                                        dates,
+                                        startTime,
+                                        endTime,
+                                        interval,
+                                        getShowResult,
+                                      ),
+                                    });
+                                  }}
+                                  editShowSettingsResult={editShowSettingsResult}
+                                  addRespondentsByEmail={async (slug, emailsAndRoles) => {
+                                    const auth = await getAuthInput();
+                                    addRespondentsByEmail({
+                                      variables: { slug, auth, emailsAndRoles },
+                                    });
+                                  }}
+                                  addRespondentsByEmailResult={addRespondentsByEmailResult}
+                                />
+                              )}
+                            </Mutation>
                           )}
-                        </Mutation>
-                      )}
                         </Mutation>
                       )}
                     </Mutation>

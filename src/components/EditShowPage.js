@@ -21,7 +21,7 @@ class EditShowPage extends Component {
       startTime: this.props.show.startTime,
       endTime: this.props.show.endTime,
       interval: this.props.show.interval,
-      hasChanged: false
+      hasChanged: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -30,25 +30,25 @@ class EditShowPage extends Component {
   }
 
   updateBottomBar() {
-    this.setState({ saved: false })
-    this.setState({ hasChanged: true })
+    this.setState({ saved: false });
+    this.setState({ hasChanged: true });
   }
 
   handleSubmit(event) {
     const { name, selectedDays, startTime, endTime, interval } = this.state;
     this.props.updateShow(cleanName(name), selectedDays, startTime, endTime, interval);
-    this.setState({ saved: true })
-    this.setState({ hasChanged: false })
+    this.setState({ saved: true });
+    this.setState({ hasChanged: false });
     event.preventDefault();
   }
 
   handleInputChange(event) {
-    this.updateBottomBar()
+    this.updateBottomBar();
     this.setState({ [event.target.name]: event.target.value });
   }
 
   handleDayClick(day, { selected, disabled }) {
-    this.updateBottomBar()
+    this.updateBottomBar();
     const { selectedDays } = this.state;
     if (disabled) {
       return;
@@ -65,12 +65,12 @@ class EditShowPage extends Component {
   }
 
   updateStartTime = (time) => {
-    this.updateBottomBar()
+    this.updateBottomBar();
     this.setState({ startTime: time });
   };
 
   updateEndTime = (time) => {
-    this.updateBottomBar()
+    this.updateBottomBar();
     this.setState({ endTime: time });
   };
 
@@ -90,10 +90,11 @@ class EditShowPage extends Component {
             className={styles.submitButton}
             onClick={this.handleSubmit}
             disabled={
-              !hasChanged && (noSelectedDay ||
-              cleanName(name).length === 0 ||
-              this.state.startTime === null ||
-              this.state.endTime === null)
+              !hasChanged &&
+              (noSelectedDay ||
+                cleanName(name).length === 0 ||
+                this.state.startTime === null ||
+                this.state.endTime === null)
             }
             icon={<MaterialIcon icon="arrow_upward" />}
             raised

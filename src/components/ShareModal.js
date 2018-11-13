@@ -17,7 +17,7 @@ export default class ShareModal extends Component {
   state = {
     activeIndex: 0,
     emails: [],
-    sent: false
+    sent: false,
   };
 
   openWhatsApp = () => {
@@ -36,7 +36,7 @@ export default class ShareModal extends Component {
   };
 
   sendInvites = () => {
-    this.props.sendEmailInvites(this.state.emails)
+    this.props.sendEmailInvites(this.state.emails);
     this.setState({ sent: true });
     this.timeout = setTimeout(() => {
       this.setState({ sent: false });
@@ -84,7 +84,7 @@ export default class ShareModal extends Component {
 
     const { emails } = this.state;
     const { modalHeadline } = this.props;
-    const submitButtonMessage = this.state.sent ? "Sent Invites!" : "Send Invitations";
+    const submitButtonMessage = this.state.sent ? 'Sent Invites!' : 'Send Invitations';
 
     const inputEmailDiv = (
       <div className={styles.tabDiv}>
@@ -97,7 +97,7 @@ export default class ShareModal extends Component {
           emails={emails}
           onChange={(emails) => {
             this.setState({ emails });
-            this.setState({sent: false})
+            this.setState({ sent: false });
           }}
           getLabel={(email, index, removeEmail) => {
             return (
@@ -122,26 +122,33 @@ export default class ShareModal extends Component {
       </div>
     );
 
-    const emailTabContent = this.props.isAdmin ? inputEmailDiv : (
+    const emailTabContent = this.props.isAdmin ? (
+      inputEmailDiv
+    ) : (
       <div>
-        <p className={styles.messageText}>You must be the creator of the poll to invite respondents by email.</p>
+        <p className={styles.messageText}>
+          You must be the creator of the poll to invite respondents by email.
+        </p>
       </div>
     );
 
-    return <div className={styles.container}>
+    return (
+      <div className={styles.container}>
         <Card className={styles.card}>
           <div className="mdc-typography--headline6">{modalHeadline}</div>
           <div className="mdc-typography--headline6">Invite respondents via...</div>
-          <TabBar activeIndex={this.state.activeIndex} handleActiveIndexUpdate={(activeIndex) => this.setState(
-                { activeIndex },
-              )}>
+          <TabBar
+            activeIndex={this.state.activeIndex}
+            handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}
+          >
             <Tab>
               <span>Link</span>
             </Tab>
-             <Tab>Email</Tab>
+            <Tab>Email</Tab>
           </TabBar>
           {this.state.activeIndex === 0 ? linkShareContent : emailTabContent}
         </Card>
-      </div>;
+      </div>
+    );
   }
 }

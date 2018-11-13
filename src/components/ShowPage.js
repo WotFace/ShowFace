@@ -144,7 +144,7 @@ class ShowPageComponent extends Component {
     this.props.addRespondentsByEmail(slug, emailsAndRoles)
   };
 
-  renderTabBar = (responseAllowed) => {
+  renderTabBar = (responseAllowed, adminAccess) => {
     const { location, history } = this.props;
     const links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
     if (responseAllowed) {
@@ -155,8 +155,7 @@ class ShowPageComponent extends Component {
       });
     }
 
-    if (this.isAnonymous() || this.amIAdmin()) {
-      console.log(this.latestShow());
+    if (adminAccess) {
       links.push({
         text: 'Settings',
         icon: 'settings',
@@ -204,6 +203,7 @@ class ShowPageComponent extends Component {
     const admin = respondents.find((r) => r.role === 'admin');
     return !admin;
   };
+
 
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
@@ -294,7 +294,7 @@ class ShowPageComponent extends Component {
             isAdmin={adminAccess}
           />
         </Modal>
-        {this.renderTabBar(responseAllowed)}
+        {this.renderTabBar(responseAllowed, adminAccess)}
         <section id="show">
           {lastPathComponent === 'respond' && (
             <ShowRespond
@@ -485,7 +485,6 @@ function getOptimisticResponseForEditShowSettings(
 ) {
   const show = getShowResult.data && getShowResult.data.show;
   if (!show) return null;
-  const slug = show.slug;
   return {
     __typename: 'Mutation',
     editShowSettings: {

@@ -5,7 +5,6 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import IconButton from '@material/react-icon-button';
 import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -32,7 +31,7 @@ class ShowPageComponent extends Component {
     this.state = {
       pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
       hasSetName: false,
-      modalIsOpen: props.isModalOpen || false,
+      isInviteModalOpen: (props.location.state && props.location.state.inviteImmediately) || false,
     };
 
     this.openModal = this.openModal.bind(this);
@@ -48,11 +47,11 @@ class ShowPageComponent extends Component {
   }
 
   openModal() {
-    this.setState({ modalIsOpen: true });
+    this.setState({ isInviteModalOpen: true });
   }
 
   closeModal() {
-    this.setState({ modalIsOpen: false });
+    this.setState({ isInviteModalOpen: false });
   }
 
   copyUrlToClipboard = () => {
@@ -303,7 +302,7 @@ class ShowPageComponent extends Component {
             )}
             <div className={styles.copyUrlInputContainer}>
               <Modal
-                isOpen={this.state.modalIsOpen}
+                isOpen={this.state.isInviteModalOpen}
                 onAfterOpen={this.afterOpenModal}
                 onRequestClose={this.closeModal}
                 contentLabel="Share"

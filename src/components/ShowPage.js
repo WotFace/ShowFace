@@ -451,6 +451,31 @@ const EDIT_SHOW_SETTINGS = gql`
   }
 `;
 
+function getOptimisticResponseForEditShowSettings(
+  name,
+  dates,
+  startTime,
+  endTime,
+  interval,
+  getShowResult,
+) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  const slug = show.slug;
+  return {
+    __typename: 'Mutation',
+    editShowSettings: {
+      __typename: 'Show',
+      ...show,
+      name: name,
+      dates: dates,
+      startTime: startTime,
+      endTime: endTime,
+      interval: interval,
+    },
+  };
+}
+
 function getOptimisticResponseForShow(name, email, responses, show) {
   if (!show) return null;
   const { respondents } = show;
@@ -578,6 +603,14 @@ function ShowPageWithQueries(props) {
                                     auth,
                                     slug,
                                   },
+                                  optimisticResponse: getOptimisticResponseForEditShowSettings(
+                                    name,
+                                    dates,
+                                    startTime,
+                                    endTime,
+                                    interval,
+                                    getShowResult,
+                                  ),
                                 });
                               }}
                               editShowSettingsResult={editShowSettingsResult}

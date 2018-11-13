@@ -31,6 +31,7 @@ class EditShowPage extends Component {
   handleSubmit(event) {
     const { name, selectedDays, startTime, endTime, interval } = this.state;
     this.props.updateShow(cleanName(name), selectedDays, startTime, endTime, interval);
+    event.preventDefault();
   }
 
   handleInputChange(event) {

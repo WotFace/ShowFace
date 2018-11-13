@@ -1,27 +1,31 @@
+@import '../mdc';
+
+$vertical-margin: 0.7rem;
+
 .container {
   margin: auto;
   max-width: 475px;
   width: 100%;
 
   .card {
-    align-items: center;
     margin: 1em;
     padding-bottom: 1em;
     padding-top: 1em;
+    text-align: center;
   }
 }
 
-.copyUrlInput {
-  color: white;
-  height: 30px !important; // TODO: Remove important
-  width: 100%;
-  margin: 10px 10px;
+.tabDiv {
+  display: flex;
+  flex-direction: column;
+
+  $side-margin: 1em;
+  margin: 1em $side-margin 0 $side-margin;
 }
 
-.clipboardButton {
-  margin-top: 10px;
-  margin-right: 10px;
-  height: 30px !important; // TODO: Remove important
+.descText {
+  margin-bottom: $vertical-margin;
+  text-align: center;
 }
 
 .shareRow {
@@ -34,19 +38,23 @@
   }
 }
 
-.descText {
-  margin-top: 10px;
-  text-align: center;
-}
-
 #linkShareRow {
   display: flex;
   flex-direction: row;
-  margin: 0px 0px 10px 0px;
+  margin-bottom: $vertical-margin;
   width: 100%;
+
+  .copyUrlInput {
+    color: white;
+    flex-grow: 1;
+    height: $mdc-button-height;
+  }
+
+  .clipboardButton {
+    margin-left: 0.5rem;
+  }
 }
 
-.tabDiv {
-  margin: 0.5em 1em 0 1em;
-  width: 100%;
+#inviteButton {
+  margin-top: $vertical-margin;
 }

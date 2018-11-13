@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { format } from 'date-fns';
 import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
 import classnames from 'classnames';
-import Button from '@material/react-button';
 import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
+import { ConfirmationDialog, DialogButton } from './helpers/MDCDialog';
 import Divider from './Divider';
 import styles from './ShowResultsSidebar.module.scss';
-import Modal from 'react-modal';
 
-class ShowResultsSidebar extends React.Component {
+class ShowResultsSidebar extends Component {
   state = {
     isMenuOpen: false,
     isModalOpen: false,
@@ -240,7 +239,9 @@ class ShowResultsSidebar extends React.Component {
   renderModalContents = (action) => {
     const { isModalOpen, selectedRespondent } = this.state;
 
-    let message;
+    let title;
+    let body;
+    let actionButton;
     let userName;
     if (selectedRespondent) {
       userName = selectedRespondent.user
@@ -250,51 +251,47 @@ class ShowResultsSidebar extends React.Component {
 
     switch (action) {
       case 'clear':
-        message = 'Clear ' + userName + "'s response?";
+        title = 'Clear ' + userName + "'s response?";
+        body = `Are you sure you want to clear all responses entered by ${userName}? This will not remove them from the attendee list. This action cannot be undone.`;
+        actionButton = <DialogButton onClick={this.handleDeleteResponse}>OK</DialogButton>;
         break;
       case 'delete':
-        message = 'Remove ' + userName + ' permanently from the meeting?';
+        title = 'Remove ' + userName + ' permanently from the meeting?';
+        body = 'This action cannot be undone.';
+        actionButton = <DialogButton onClick={this.handleDeleteRespondents}>OK</DialogButton>;
         break;
       case 'keyRespondent':
-        message = selectedRespondent.isKeyRespondent
+        title = selectedRespondent.isKeyRespondent
           ? 'Remove ' + userName + ' as key respondent?'
           : 'Make ' + userName + ' a key respondent?';
+        body = 'Key respondents are attendees who must be present in meetings.';
+        actionButton = <DialogButton onClick={this.handleEditKeyRespondentStatus}>OK</DialogButton>;
         break;
       case 'admin':
-        message =
+        title =
           selectedRespondent.role === 'admin'
-            ? 'Remove ' + userName + "'s admin privileges?"
-            : 'Make ' + userName + ' an admin of this meeting?';
+            ? 'Remove ' + userName + "'s organizer privileges?"
+            : 'Make ' + userName + ' an organizer of this meeting?';
+        body =
+          'Organizers are able to delete responses and respondents, and change the settings on this meeting.';
+        actionButton = (
+          <DialogButton onClick={this.handleEditRespondentRoleStatus}>OK</DialogButton>
+        );
         break;
       default:
-        message = '';
         break;
     }
 
     return (
-      <Modal
+      <ConfirmationDialog
         isOpen={isModalOpen}
-        onAfterOpen={this.afterOpenModal}
-        onRequestClose={this.closeModal}
-        contentLabel="Actions"
+        title={title}
+        body={body}
+        onDialogClose={() => this.setState({ isModalOpen: false })}
       >
-        <div className={styles.modalContainer}>
-          <p>{message}</p>
-          <div className={styles.modalButtonContainer}>
-            <Button onClick={this.closeModal}>CANCEL</Button>
-            {action === 'clear' ? <Button onClick={this.handleDeleteResponse}>OK</Button> : null}
-            {action === 'admin' ? (
-              <Button onClick={this.handleEditRespondentRoleStatus}>OK</Button>
-            ) : null}
-            {action === 'delete' ? (
-              <Button onClick={this.handleDeleteRespondents}>OK</Button>
-            ) : null}
-            {action === 'keyRespondent' ? (
-              <Button onClick={this.handleEditKeyRespondentStatus}>OK</Button>
-            ) : null}
-          </div>
-        </div>
-      </Modal>
+        <DialogButton autoclose>Cancel</DialogButton>
+        {actionButton}
+      </ConfirmationDialog>
     );
   };
 
@@ -368,81 +365,89 @@ class ShowResultsSidebar extends React.Component {
     }
 
     return (
-      <div className={className}>
-        <div className={styles.sidebarContainer}>
-          <section className={styles.attendees}>
-            {header}
-            {attending.length > 0 && (
-              <section className={styles.attendeeListSection}>
-                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
-                  Available
-                </h3>
-                <List twoLine>
-                  {attending.map((responder) => {
-                    const respondent = respondersRespondentsObj[responder];
-                    return this.renderRespondent(
-                      responder,
-                      respondent,
-                      respondersRespondentsObj,
-                      false,
-                    );
-                  })}
-                </List>
-              </section>
-            )}
-            {notAttending.length > 0 && (
-              <section className={styles.attendeeListSection}>
-                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
-                  Not Available
-                </h3>
-                <List twoLine>
-                  {notAttending.map((responder) => {
-                    const respondent = respondersRespondentsObj[responder];
-                    return this.renderRespondent(
-                      responder,
-                      respondent,
-                      respondersRespondentsObj,
-                      false,
-                    );
-                  })}
-                </List>
-              </section>
-            )}
-            {hidden.length > 0 && (
-              <section className={styles.attendeeListSection}>
-                <h3 className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}>
-                  Hidden
-                </h3>
-                <List twoLine>
-                  {hidden.map((responder) => {
-                    const respondent = respondersRespondentsObj[responder];
-                    return this.renderRespondent(
-                      responder,
-                      respondent,
-                      respondersRespondentsObj,
-                      true,
-                    );
-                  })}
-                </List>
-              </section>
-            )}
-          </section>
-          <MenuSurface
-            className={styles.menuSurface}
-            open={isMenuOpen}
-            onClose={this.closeMenu}
-            anchorCorner={Corner.TOP_LEFT}
-            anchorElement={this.activeItemRef.current}
-          >
-            {this.renderMenuContents(
-              respondersRespondentsObj[selectedRespondentKey],
-              respondersRespondentsObj,
-              selectedRespondentKey,
-            )}
-          </MenuSurface>
-          {this.renderModalContents(selectedAction)}
+      <>
+        {this.renderModalContents(selectedAction)}
+        <div className={className}>
+          <div className={styles.sidebarContainer}>
+            <section className={styles.attendees}>
+              {header}
+              {attending.length > 0 && (
+                <section className={styles.attendeeListSection}>
+                  <h3
+                    className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}
+                  >
+                    Available
+                  </h3>
+                  <List twoLine>
+                    {attending.map((responder) => {
+                      const respondent = respondersRespondentsObj[responder];
+                      return this.renderRespondent(
+                        responder,
+                        respondent,
+                        respondersRespondentsObj,
+                        false,
+                      );
+                    })}
+                  </List>
+                </section>
+              )}
+              {notAttending.length > 0 && (
+                <section className={styles.attendeeListSection}>
+                  <h3
+                    className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}
+                  >
+                    Not Available
+                  </h3>
+                  <List twoLine>
+                    {notAttending.map((responder) => {
+                      const respondent = respondersRespondentsObj[responder];
+                      return this.renderRespondent(
+                        responder,
+                        respondent,
+                        respondersRespondentsObj,
+                        false,
+                      );
+                    })}
+                  </List>
+                </section>
+              )}
+              {hidden.length > 0 && (
+                <section className={styles.attendeeListSection}>
+                  <h3
+                    className={classnames('mdc-typography--headline6', styles.attendeeListHeader)}
+                  >
+                    Hidden
+                  </h3>
+                  <List twoLine>
+                    {hidden.map((responder) => {
+                      const respondent = respondersRespondentsObj[responder];
+                      return this.renderRespondent(
+                        responder,
+                        respondent,
+                        respondersRespondentsObj,
+                        true,
+                      );
+                    })}
+                  </List>
+                </section>
+              )}
+            </section>
+            <MenuSurface
+              className={styles.menuSurface}
+              open={isMenuOpen}
+              onClose={this.closeMenu}
+              anchorCorner={Corner.TOP_LEFT}
+              anchorElement={this.activeItemRef.current}
+            >
+              {this.renderMenuContents(
+                respondersRespondentsObj[selectedRespondentKey],
+                respondersRespondentsObj,
+                selectedRespondentKey,
+              )}
+            </MenuSurface>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }

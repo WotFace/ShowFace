@@ -19,4 +19,11 @@
   bottom: unset !important;
   left: 0 !important;
   transform: translateY(-50%);
+
+  // Disable click interception for this div so that the parent overlay will
+  // dismiss when clicked. Then reenable clicks for all children.
+  pointer-events: none;
+  > * {
+    pointer-events: all;
+  }
 }

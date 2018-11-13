@@ -139,6 +139,11 @@ class CreatePage extends Component {
                     disabledDays={{ before: today }}
                     selectedDays={selectedDays}
                     onDayClick={this.handleDayClick}
+                    modifiersStyles={{
+                      selected: {
+                        backgroundColor: '#193163',
+                      },
+                    }}
                   />
                 </div>
               </Card>

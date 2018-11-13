@@ -5,6 +5,7 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
+import IconButton from '@material/react-icon-button';
 import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -31,7 +32,7 @@ class ShowPageComponent extends Component {
     this.state = {
       pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
       hasSetName: false,
-      isInviteModalOpen: (props.location.state && props.location.state.inviteImmediately) || false,
+      modalIsOpen: props.isModalOpen || false,
     };
 
     this.openModal = this.openModal.bind(this);
@@ -47,11 +48,11 @@ class ShowPageComponent extends Component {
   }
 
   openModal() {
-    this.setState({ isInviteModalOpen: true });
+    this.setState({ modalIsOpen: true });
   }
 
   closeModal() {
-    this.setState({ isInviteModalOpen: false });
+    this.setState({ modalIsOpen: false });
   }
 
   copyUrlToClipboard = () => {
@@ -302,7 +303,7 @@ class ShowPageComponent extends Component {
             )}
             <div className={styles.copyUrlInputContainer}>
               <Modal
-                isOpen={this.state.isInviteModalOpen}
+                isOpen={this.state.modalIsOpen}
                 onAfterOpen={this.afterOpenModal}
                 onRequestClose={this.closeModal}
                 contentLabel="Share"
@@ -479,7 +480,7 @@ function getOptimisticResponseForShow(name, email, responses, show) {
         id: 'optimisticRespondent',
         anonymousName: name,
         user,
-        role: 'Member',
+        role: 'member',
         response: responses,
       },
     ];
@@ -507,8 +508,90 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
   };
 }
 
-function getOptimisticResponseForDeleteResponse(show) {
+function getOptimisticResponseForDeleteResponse(id, getShowResult) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
   const { respondents } = show;
+
+  const index = respondents.findIndex(function(a) {
+    return a.id === id;
+  });
+
+  let newRespondents;
+  console.log("inside optimistic delete response");
+  console.log(show);
+  console.log(id);
+  console.log(index);
+
+  if (index !== -1) {
+    newRespondents = update(respondents, {
+      [index]: {
+        response: { $set: [] },
+      },
+    });
+  } else {
+    return null;
+  }
+  return {
+    __typename: 'Mutation',
+    deleteResponse: {
+      __typename: 'Show',
+      ...show,
+      respondents: newRespondents,
+    },
+  };
+}
+
+function getOptimisticResponseForDeleteRespondents(id, getShowResult) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  const { respondents } = show;
+  const index = respondents.findIndex(function(a) {
+    return a.id === id;
+  });
+  console.log("inside optimistic delete respondents");
+  console.log(show);
+  console.log(id);
+  console.log(index);
+
+  if (index !== -1) {
+
+  } else {
+    return null;
+  }
+  return {
+    __typename: 'Mutation',
+    deleteResponse: {
+      __typename: 'Show',
+
+    },
+  }
+}
+
+function getOptimisticResponseForEditShowRespondentStatus(id, getShowResult) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  const { respondents } = show;
+  const index = respondents.findIndex(function(a) {
+    return a.id === id;
+  });
+  console.log("inside optimistic edit show respondents status");
+  console.log(show);
+  console.log(id);
+  console.log(index);
+
+  if (index !== -1) {
+
+  } else {
+    return null;
+  }
+  return {
+    __typename: 'Mutation',
+    deleteResponse: {
+      __typename: 'Show',
+
+    },
+  }
 }
 
 function ShowPageWithQueries(props) {
@@ -547,6 +630,10 @@ function ShowPageWithQueries(props) {
                             const auth = await getAuthInput();
                             deleteResponse({
                               variables: { slug, id, auth },
+                              optimisticResponse: getOptimisticResponseForDeleteResponse(
+                                id,
+                                getShowResult,
+                              ),
                             });
                           }}
                           deleteResponseResult={deleteResponseResult}
@@ -554,6 +641,10 @@ function ShowPageWithQueries(props) {
                             const auth = await getAuthInput();
                             deleteRespondents({
                               variables: { slug, id, auth },
+                              optimisticResponse: getOptimisticResponseForDeleteRespondents(
+                                id,
+                                getShowResult,
+                              ),
                             });
                           }}
                           deleteRespondentsResult={deleteRespondentsResult}
@@ -561,6 +652,12 @@ function ShowPageWithQueries(props) {
                             const auth = await getAuthInput();
                             editShowRespondentStatus({
                               variables: { slug, id, role, isKeyRespondent, auth },
+                              optimisticResponse: getOptimisticResponseForEditShowRespondentStatus(
+                                id,
+                                role,
+                                isKeyRespondent,
+                                getShowResult,
+                              ),
                             });
                           }}
                           editShowRespondentStatusResult={editShowRespondentStatusResult}

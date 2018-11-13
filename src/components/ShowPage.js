@@ -508,6 +508,10 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
   };
 }
 
+function getOptimisticResponseForDeleteResponse(show) {
+  const { respondents } = show;
+}
+
 function ShowPageWithQueries(props) {
   const slug = props.match.params.showId;
   return (

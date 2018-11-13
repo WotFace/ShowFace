@@ -3,8 +3,7 @@ import Card from '@material/react-card';
 import Button from '@material/react-button';
 import classnames from 'classnames';
 import TextField, { Input } from '@material/react-text-field';
-import copyToClipboard from '../utils/copyToClipboard';
-import { withAlert } from 'react-alert';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
@@ -14,15 +13,10 @@ import { ReactMultiEmail } from 'react-multi-email';
 import './MultiEmailOverride.scss';
 import styles from './ShareModal.module.scss';
 
-class ShareModal extends Component {
+export default class ShareModal extends Component {
   state = {
     activeIndex: 0,
     emails: [],
-  };
-
-  copyUrlToClipboard = () => {
-    copyToClipboard(this.props.link);
-    // this.props.alert.success('URL Copied To Clipboard');
   };
 
   openWhatsApp = () => {
@@ -49,16 +43,18 @@ class ShareModal extends Component {
     const linkShareDiv = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
-          Everyone with the link can respond to this poll.
+          Anyone with this link can respond to this poll.
         </div>
 
         <div id={styles.linkShareRow}>
           <TextField outlined className={styles.copyUrlInput} label="">
             <Input type="text" value={this.props.link} />
           </TextField>
-          <Button className={styles.clipboardButton} onClick={this.copyUrlToClipboard} unelevated>
-            Copy
-          </Button>
+          <CopyToClipboard text={this.props.link}>
+            <Button className={styles.clipboardButton} unelevated>
+              Copy
+            </Button>
+          </CopyToClipboard>
         </div>
 
         <div className={styles.shareRow}>
@@ -82,6 +78,7 @@ class ShareModal extends Component {
     );
 
     const { emails } = this.state;
+    const { modalHeadline } = this.props;
     const inputEmailDiv = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
@@ -118,23 +115,24 @@ class ShareModal extends Component {
     );
 
     return (
-      <Card className={styles.container}>
-        <div className="mdc-typography--headline6">Invite respondents via...</div>
-        <TabBar
-          activeIndex={this.state.activeIndex}
-          handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}
-        >
-          <Tab>
-            <span>Link</span>
-          </Tab>
-          <Tab>
-            <span>Email</span>
-          </Tab>
-        </TabBar>
-        {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
-      </Card>
+      <div className={styles.container}>
+        <Card className={styles.card}>
+          <div className="mdc-typography--headline6">{modalHeadline}</div>
+          <div className="mdc-typography--headline6">Invite respondents via...</div>
+          <TabBar
+            activeIndex={this.state.activeIndex}
+            handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}
+          >
+            <Tab>
+              <span>Link</span>
+            </Tab>
+            <Tab>
+              <span>Email</span>
+            </Tab>
+          </TabBar>
+          {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
+        </Card>
+      </div>
     );
   }
 }
-
-export default withAlert(ShareModal);

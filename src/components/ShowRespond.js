@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Button from '@material/react-button';
 import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { auth } from '../firebase';
@@ -47,8 +46,15 @@ class ShowRespond extends Component {
 
   startSavedTimer() {
     this.setState({ saved: true });
-    setTimeout(() => this.setState({ saved: false }), 2000);
+    this.savedTimer = setTimeout(this.stopSavedTimer, 2000);
   }
+
+  stopSavedTimer = () => {
+    if (!this.savedTimer) return;
+    clearTimeout(this.savedTimer);
+    this.savedTimer = null;
+    this.setState({ saved: false });
+  };
 
   shouldUseName() {
     const { name } = this.props;
@@ -92,10 +98,12 @@ class ShowRespond extends Component {
   }
 
   handleSelect = (startTimes) => {
+    this.stopSavedTimer();
     const { name } = this.props;
     this.userResponseKey() && this.props.onSelectTimes(startTimes, name);
   };
   handleDeselect = (startTimes) => {
+    this.stopSavedTimer();
     const { name } = this.props;
     this.userResponseKey() && this.props.onDeselectTimes(startTimes, name);
   };
@@ -116,29 +124,28 @@ class ShowRespond extends Component {
     this.props.onSetName(false);
   };
 
-  handleSubmit = () => {
-    // TODO: Add submitting bool
-    this.props.onSubmit();
-  };
-
   renderBottomBar() {
-    const { hasPendingSubmissions, isSaving } = this.props;
+    const { isSaving } = this.props;
     const { saved } = this.state;
 
     let mainText;
 
-    if (hasPendingSubmissions) {
+    if (isSaving) {
+      mainText = <>Saving&hellip;</>;
+    } else if (saved) {
       mainText = (
         <>
-          Responding as <strong>{this.responseName()}</strong>
+          Saved <strong>{this.responseName()}</strong>
+          &apos;s availability!
         </>
       );
-    } else if (isSaving) {
-      mainText = 'Saving...';
-    } else if (saved) {
-      mainText = 'Saved!';
     } else {
-      mainText = 'Hold and drag on the timeline to select your availability.';
+      mainText = (
+        <>
+          Hold and drag on the timeline to select <strong>{this.responseName()}</strong>
+          &apos;s availability.
+        </>
+      );
     }
 
     return (
@@ -148,22 +155,13 @@ class ShowRespond extends Component {
             <MaterialIcon icon="arrow_back" />
           </IconButton>
           <span className={styles.mainText}>{mainText}</span>
-          <Button
-            className={styles.submitButton}
-            onClick={this.handleSubmit}
-            disabled={!hasPendingSubmissions || isSaving}
-            icon={<MaterialIcon icon="send" />}
-            raised
-          >
-            Save
-          </Button>
         </div>
       </BottomAppBar>
     );
   }
 
   render() {
-    const { show, name, isSaving } = this.props;
+    const { show, name } = this.props;
     const { isAskingForName } = this.state;
     const { dates, startTime, endTime, interval } = show;
     const userResponseKey = this.userResponseKey();
@@ -190,7 +188,7 @@ class ShowRespond extends Component {
           interval={interval}
           respondents={ourRespondents}
           maxSelectable={1}
-          userResponseKey={isSaving ? null : userResponseKey}
+          userResponseKey={userResponseKey}
           onSelect={this.handleSelect}
           onDeselect={this.handleDeselect}
         />

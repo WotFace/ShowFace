@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { withRouter, Link, Prompt } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import IconButton from '@material/react-icon-button';
-import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
@@ -14,7 +12,6 @@ import update from 'immutability-helper';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
 import AuthenticatedQuery from './AuthenticatedQuery';
 import { datifyShowResponse } from '../utils/datetime';
-import copyToClipboard from '../utils/copyToClipboard';
 import Loading from './errorsLoaders/Loading';
 import Error from './errorsLoaders/Error';
 import ShowRespond from './ShowRespond';
@@ -23,16 +20,15 @@ import ShareModal from './ShareModal';
 import Modal from 'react-modal';
 import './ReactModalOverride.scss';
 
-import sharedStyles from './SharedStyles.module.scss';
 import styles from './ShowPage.module.scss';
 
 class ShowPageComponent extends Component {
   constructor(props) {
     super();
     this.state = {
-      pendingSubmission: null, // Shape: { showToSave: Show!, name: String, email: String, responses: [Date]! }
       hasSetName: false,
-      modalIsOpen: props.isModalOpen || false,
+      isInviteModalOpen: (props.location.state && props.location.state.inviteImmediately) || false,
+      modalHeadline: (props.location.state && props.location.state.modalHeadline) || null,
     };
 
     this.openModal = this.openModal.bind(this);
@@ -52,34 +48,18 @@ class ShowPageComponent extends Component {
   }
 
   closeModal() {
-    this.setState({ modalIsOpen: false });
+    this.setState({ isInviteModalOpen: false, modalHeadline: null });
   }
 
-  copyUrlToClipboard = () => {
-    copyToClipboard(window.location.href);
-    this.props.alert.show('Url copied to clipboard.', {
-      type: 'success',
-    });
-  };
-
   canSubmit(name) {
-    const show = this.latestShow(true);
+    const show = this.latestShow();
     if ((!name && !isSignedIn()) || !show) return false;
     return true;
   }
 
-  latestShow(includePending) {
-    const { getShowResult, upsertResponsesResult } = this.props;
-    const { pendingSubmission } = this.state;
-    if (includePending && pendingSubmission) {
-      return pendingSubmission.show;
-    }
-    if (upsertResponsesResult.data && upsertResponsesResult.data._upsertResponse) {
-      return upsertResponsesResult.data._upsertResponse;
-    }
-    if (getShowResult.data && getShowResult.data.show) {
-      return getShowResult.data.show;
-    }
+  latestShow() {
+    const { getShowResult } = this.props;
+    if (getShowResult.data && getShowResult.data.show) return getShowResult.data.show;
     return null;
   }
 
@@ -92,8 +72,9 @@ class ShowPageComponent extends Component {
 
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
-    const show = this.latestShow(true);
-    const { respondents } = show;
+    const show = this.latestShow();
+    const { respondents, slug } = show;
+
     // Find current respondent by anonymousName if name is supplied,
     // if not find by current user's email
     const currentRespondent = name
@@ -111,24 +92,22 @@ class ShowPageComponent extends Component {
     }
 
     const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
-    const showToSave = getOptimisticResponseForShow(name, email, newResponses, show);
-    this.setState({
-      pendingSubmission: {
-        show: showToSave,
-        name,
-        email,
-        responses: newResponses,
-      },
-    });
+    this.props.upsertResponses(slug, name, email, newResponses);
   }
+
+  handleLogIn = () => {
+    // Show log in dialog/page, and make auth page redirect back to this page
+    const { history } = this.props;
+    history.push('/login', { from: history.location });
+  };
 
   renderLoginPrompt = () => {
     return (
       <>
         <p>Log in to be part of this meeting</p>
-        <Link to="/login" className={sharedStyles.buttonLink}>
-          <Button>Log in</Button>
-        </Link>
+        <Button onClick={this.handleLogIn} outlined>
+          Log In or Sign Up
+        </Button>
       </>
     );
   };
@@ -136,15 +115,6 @@ class ShowPageComponent extends Component {
   handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
   handleDeselectTimes = (startTimes, name) =>
     this.handleSelectDeselectTimes(startTimes, name, false);
-
-  handleSubmit = () => {
-    const { pendingSubmission } = this.state;
-    if (!pendingSubmission) return;
-    const { name, email, responses, show } = pendingSubmission;
-    const { slug } = show;
-    this.props.upsertResponses(slug, name, email, responses);
-    this.setState({ pendingSubmission: null });
-  };
 
   handleDeleteRespondents = (id) => {
     const slug = this.props.match.params.showId;
@@ -164,13 +134,11 @@ class ShowPageComponent extends Component {
 
   renderTabBar = (responseAllowed) => {
     const { location, history } = this.props;
-    const { pendingSubmission } = this.state;
-    var links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
-    var responseIcon = pendingSubmission ? 'warning' : 'add';
+    const links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
     if (responseAllowed) {
       links.unshift({
         text: 'Respond',
-        icon: `${responseIcon}`,
+        icon: 'add',
         path: `${this.meetingPageBaseUrl()}/respond`,
       });
     }
@@ -200,8 +168,8 @@ class ShowPageComponent extends Component {
   amIAdmin = () => {
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
-    const latestSavedShow = this.latestShow(true);
-    const { respondents } = latestSavedShow;
+    const show = this.latestShow();
+    const { respondents } = show;
     // Find current respondent by current user's email
     const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
 
@@ -210,9 +178,8 @@ class ShowPageComponent extends Component {
 
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
-    const { hasSetName, pendingSubmission } = this.state;
+    const { hasSetName } = this.state;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
-    // TODO: Display something when saving
     const { loading: upsertResponsesLoading, error: upsertResponsesError } = upsertResponsesResult;
 
     if (getShowLoading) {
@@ -239,10 +206,9 @@ class ShowPageComponent extends Component {
       );
     }
 
-    const show = this.latestShow(true);
-    const latestSavedShow = this.latestShow(false);
+    const show = this.latestShow();
 
-    if (!latestSavedShow || !show) {
+    if (!show) {
       return (
         <Error
           title="We couldn&apos;t find this poll"
@@ -252,7 +218,7 @@ class ShowPageComponent extends Component {
     }
 
     const adminAccess = this.amIAdmin();
-    const responseAllowed = !latestSavedShow.isReadOnly || adminAccess;
+    const responseAllowed = !show.isReadOnly || adminAccess;
 
     const baseUrl = this.meetingPageBaseUrl();
     const lastPathComponent = match.params[0]; // undefined if URL is /meeting/<slug>
@@ -267,57 +233,36 @@ class ShowPageComponent extends Component {
 
     return (
       <div className={styles.container}>
-        <Prompt
-          when={!!pendingSubmission}
-          message={(location) =>
-            location.pathname.startsWith(this.meetingPageBaseUrl())
-              ? true
-              : 'You have unsaved changes. Are you sure you want to leave this page?'
-          }
-        />
-        <section className={styles.headerSection}>
-          <div className={styles.header}>
-            <div className={styles.headerWithShareBtn}>
-              <h1 className={styles.showNameHeader}>{show && show.name}</h1>
-              <Button onClick={this.openModal} className={styles.shareButton} outlined>
-                <MaterialIcon icon="share" />
-                <span className={styles.buttonContent}>INVITE</span>
-              </Button>
-            </div>
-            {latestSavedShow.isReadOnly && (
-              <>
-                <p className="mdc-typography--body1">
-                  This meeting is closed from further responses.
-                </p>
-
-                {adminAccess ? (
-                  <p className="mdc-typography--body1">
-                    You can allow others to respond again in settings tab.
-                  </p>
-                ) : (
-                  <p className="mdc-typography--body1">
-                    You can contact meeting organizers to enable response again.
-                  </p>
-                )}
-              </>
-            )}
-            <div className={styles.copyUrlInputContainer}>
-              <Modal
-                isOpen={this.state.modalIsOpen}
-                onAfterOpen={this.afterOpenModal}
-                onRequestClose={this.closeModal}
-                contentLabel="Share"
-              >
-                <ShareModal
-                  link={window.location.href
-                    .split('/')
-                    .slice(0, -1)
-                    .join('/')}
-                />
-              </Modal>
-            </div>
-          </div>
-        </section>
+        <div className={styles.header}>
+          <h1 className={styles.showNameHeader}>{show && show.name}</h1>
+          {show.isReadOnly ? (
+            <p className="mdc-typography--body1">
+              This meeting is closed from further responses.
+              <br />
+              {adminAccess
+                ? 'You can allow others to respond again in the settings tab.'
+                : 'Contact the organizers of this meeting to allow responses.'}
+            </p>
+          ) : (
+            <Button onClick={this.openModal} outlined icon={<MaterialIcon icon="share" />}>
+              Invite Attendees
+            </Button>
+          )}
+        </div>
+        <Modal
+          isOpen={this.state.isInviteModalOpen}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal}
+          contentLabel="Share"
+        >
+          <ShareModal
+            link={window.location.href
+              .split('/')
+              .slice(0, -1)
+              .join('/')}
+            modalHeadline={this.state.modalHeadline}
+          />
+        </Modal>
         {this.renderTabBar(responseAllowed)}
         <section id="show">
           {lastPathComponent === 'respond' && (
@@ -327,14 +272,12 @@ class ShowPageComponent extends Component {
               onSetName={this.handleSetName}
               onSelectTimes={this.handleSelectTimes}
               onDeselectTimes={this.handleDeselectTimes}
-              hasPendingSubmissions={!!pendingSubmission}
               isSaving={upsertResponsesLoading}
-              onSubmit={this.handleSubmit}
             />
           )}
           {lastPathComponent === 'results' && (
             <ShowResults
-              show={latestSavedShow}
+              show={show}
               onDeleteResponse={this.handleDeleteResponse}
               onDeleteRespondents={this.handleDeleteRespondents}
               onEditRespondentStatus={this.handleEditRespondentStatus}
@@ -518,10 +461,6 @@ function getOptimisticResponseForDeleteResponse(id, getShowResult) {
   });
 
   let newRespondents;
-  console.log("inside optimistic delete response");
-  console.log(show);
-  console.log(id);
-  console.log(index);
 
   if (index !== -1) {
     newRespondents = update(respondents, {
@@ -549,13 +488,13 @@ function getOptimisticResponseForDeleteRespondents(id, getShowResult) {
   const index = respondents.findIndex(function(a) {
     return a.id === id;
   });
-  console.log("inside optimistic delete respondents");
-  console.log(show);
-  console.log(id);
-  console.log(index);
+  let newRespondents;
 
   if (index !== -1) {
-
+    newRespondents = update(respondents, {
+      $splice: [[index, 1]],
+    });
+    console.log(newRespondents);
   } else {
     return null;
   }
@@ -563,25 +502,27 @@ function getOptimisticResponseForDeleteRespondents(id, getShowResult) {
     __typename: 'Mutation',
     deleteResponse: {
       __typename: 'Show',
-
+      respondents: newRespondents,
     },
-  }
+  };
 }
 
-function getOptimisticResponseForEditShowRespondentStatus(id, getShowResult) {
+function getOptimisticResponseForEditShowRespondentStatus(id, role, isKeyRespondent, getShowResult) {
   const show = getShowResult.data && getShowResult.data.show;
   if (!show) return null;
   const { respondents } = show;
   const index = respondents.findIndex(function(a) {
     return a.id === id;
   });
-  console.log("inside optimistic edit show respondents status");
-  console.log(show);
-  console.log(id);
-  console.log(index);
+  let newRespondents;
 
   if (index !== -1) {
-
+    newRespondents = update(respondents, {
+      [index]: {
+        role: { $set: role },
+        isKeyRespondent: { $set: isKeyRespondent },
+      },
+    });
   } else {
     return null;
   }
@@ -589,7 +530,7 @@ function getOptimisticResponseForEditShowRespondentStatus(id, getShowResult) {
     __typename: 'Mutation',
     deleteResponse: {
       __typename: 'Show',
-
+      respondents: newRespondents,
     },
   }
 }
@@ -611,7 +552,8 @@ function ShowPageWithQueries(props) {
                           {...props}
                           getShowResult={datifyShowResponse(getShowResult, 'data.show')}
                           upsertResponses={async (slug, name, email, responses) => {
-                            const auth = await getAuthInput();
+                            // N.B. We don't pass in auth if user wants to use name instead.
+                            const auth = name ? null : await getAuthInput();
                             upsertResponses({
                               variables: { slug, name, email, auth, responses },
                               optimisticResponse: getOptimisticResponseForUpsertResponses(
@@ -675,4 +617,4 @@ function ShowPageWithQueries(props) {
   );
 }
 
-export default withRouter(withAlert(ShowPageWithQueries));
+export default withRouter(ShowPageWithQueries);

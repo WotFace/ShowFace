@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withAlert } from 'react-alert';
 import { Mutation } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 import gql from 'graphql-tag';
@@ -23,7 +22,7 @@ class LoginPage extends Component {
   LOGIN_TAB_IDX = 0;
 
   state = {
-    selectedTab: this.props.match.params[0] === 'login' ? 0 : 1,
+    selectedTab: this.props.match.params[0].toLowerCase() === 'login' ? 0 : 1,
     nameInput: '',
     emailInput: '',
     passwordInput: '',
@@ -97,38 +96,39 @@ class LoginPage extends Component {
       let to = '/dashboard';
       // Redirect back to where we came from if location.state.from exists
       if (location.state && location.state.from) {
-        to = location.state.from.pathname;
+        to = location.state.from;
       }
       return <Redirect to={to} />;
     }
 
-    const submitButton =
-      selectedTab === this.LOGIN_TAB_IDX ? (
-        <Button
-          type="submit"
-          className={styles.submitButton}
-          icon={<MaterialIcon icon="exit_to_app" />}
-          disabled={authenticating || emailInput.length === 0 || passwordInput.length === 0}
-          raised
-        >
-          {authenticating ? 'Logging in...' : 'Log in'}
-        </Button>
-      ) : (
-        <Button
-          type="submit"
-          className={styles.submitButton}
-          icon={<MaterialIcon icon="account_circle" />}
-          disabled={
-            authenticating ||
-            nameInput.length === 0 ||
-            emailInput.length === 0 ||
-            passwordInput.length === 0
-          }
-          raised
-        >
-          {authenticating ? 'Signing up...' : 'Sign up'}
-        </Button>
-      );
+    const isLoginPage = selectedTab === this.LOGIN_TAB_IDX;
+
+    const submitButton = isLoginPage ? (
+      <Button
+        type="submit"
+        className={styles.submitButton}
+        icon={<MaterialIcon icon="exit_to_app" />}
+        disabled={authenticating || emailInput.length === 0 || passwordInput.length === 0}
+        raised
+      >
+        {authenticating ? 'Logging in...' : 'Log in'}
+      </Button>
+    ) : (
+      <Button
+        type="submit"
+        className={styles.submitButton}
+        icon={<MaterialIcon icon="account_circle" />}
+        disabled={
+          authenticating ||
+          nameInput.length === 0 ||
+          emailInput.length === 0 ||
+          passwordInput.length === 0
+        }
+        raised
+      >
+        {authenticating ? 'Signing up...' : 'Sign up'}
+      </Button>
+    );
 
     // TODO: Beautify error display
     return (
@@ -154,15 +154,15 @@ class LoginPage extends Component {
             <form className={styles.form} onSubmit={this.handleFormSubmit}>
               {!!authError && (
                 <div>
-                  Could not {selectedTab === this.LOGIN_TAB_IDX ? 'log in' : 'sign up'}.{' '}
-                  {authError.message}
+                  Could not {isLoginPage ? 'log in' : 'sign up'}. {authError.message}
                 </div>
               )}
-              {selectedTab !== this.LOGIN_TAB_IDX && (
+              {!isLoginPage && (
                 <TextField label="Name" className={styles.formInput}>
                   <Input
                     name="name"
-                    type="name"
+                    type="text"
+                    autoComplete="name"
                     value={nameInput}
                     onChange={this.handleNameInputChange}
                   />
@@ -172,6 +172,7 @@ class LoginPage extends Component {
                 <Input
                   name="email"
                   type="email"
+                  autoComplete="email"
                   value={emailInput}
                   onChange={this.handleEmailInputChange}
                 />
@@ -180,6 +181,7 @@ class LoginPage extends Component {
                 <Input
                   name="password"
                   type="password"
+                  autoComplete="current-password"
                   value={passwordInput}
                   onChange={this.handlePasswordInputChange}
                 />
@@ -201,7 +203,7 @@ const CREATE_USER_MUTATION = gql`
   }
 `;
 
-export default withAlert((props) => (
+export default (props) => (
   <Mutation mutation={CREATE_USER_MUTATION}>
     {(createUser, result) => (
       <LoginPage
@@ -214,4 +216,4 @@ export default withAlert((props) => (
       />
     )}
   </Mutation>
-));
+);

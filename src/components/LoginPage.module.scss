@@ -6,8 +6,8 @@
   margin-right: auto;
   width: 100%;
 
-  // Vertically center the login panels on shorter viewports
-  @media (min-height: 40em) {
+  // Vertically center the login panels on taller viewports
+  @media (min-height: 38em) {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -15,6 +15,8 @@
   }
 
   .innerContainer {
+    display: flex;
+    flex-direction: column;
     padding: 1em;
   }
 }
@@ -46,8 +48,10 @@
 }
 
 .contentLogo {
-  width: 19em;
-  bottom: 1em;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  object-fit: scale-down;
 }
 
 #googleButton {

@@ -1,32 +1,19 @@
-@import '../mdc-variables.scss';
-@import '../mdc';
-$menu-breakpoint: largephone;
-
 .container {
   margin-bottom: 1em;
   padding: 0 5%;
 }
 
-.headerSection {
-  .header {
-    text-align: center;
-    margin-bottom: 1em;
-  }
-}
-
-.copyUrlInputContainer {
-  margin-bottom: 5px;
+.header {
+  align-items: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-}
+  margin-bottom: 1em;
+  text-align: center;
 
-.copyUrlInput {
-  height: 30px !important;
-  width: 300px;
-}
-
-.clipboardButton {
-  height: 30px !important;
+  .showNameHeader {
+    margin: 0 0 1rem 0;
+  }
 }
 
 .tabBarContainer {
@@ -38,31 +25,5 @@ $menu-breakpoint: largephone;
   .tabBar {
     margin: 0 auto 1.8em auto;
     max-width: 30em;
-  }
-}
-
-.headerWithShareBtn {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.shareButton {
-  .buttonContent {
-    margin: 0.3em;
-    @media (max-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
-      display: none;
-    }
-  }
-}
-
-.showNameHeader {
-  margin-right: 20px;
-
-  @media (max-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
-    margin-right: 10px;
-    margin-top: 0;
-    margin-bottom: 0;
   }
 }

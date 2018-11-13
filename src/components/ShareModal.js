@@ -17,6 +17,7 @@ export default class ShareModal extends Component {
   state = {
     activeIndex: 0,
     emails: [],
+    sent: false
   };
 
   openWhatsApp = () => {
@@ -36,7 +37,11 @@ export default class ShareModal extends Component {
 
   sendInvites = () => {
     this.props.sendEmailInvites(this.state.emails)
-    this.setState({ emails: [] });
+    this.setState({ sent: true });
+    this.timeout = setTimeout(() => {
+      this.setState({ sent: false });
+      this.setState({ emails: [] });
+    }, 800);
   };
 
   render() {
@@ -79,6 +84,7 @@ export default class ShareModal extends Component {
 
     const { emails } = this.state;
     const { modalHeadline } = this.props;
+    const submitButtonMessage = this.state.sent ? "Sent Invites!" : "Send Invitations";
 
     const inputEmailDiv = (
       <div className={styles.tabDiv}>
@@ -91,6 +97,7 @@ export default class ShareModal extends Component {
           emails={emails}
           onChange={(emails) => {
             this.setState({ emails });
+            this.setState({sent: false})
           }}
           getLabel={(email, index, removeEmail) => {
             return (
@@ -110,7 +117,7 @@ export default class ShareModal extends Component {
           disabled={this.state.emails.length === 0}
           raised
         >
-          Send Invitations
+          {submitButtonMessage}
         </Button>
       </div>
     );

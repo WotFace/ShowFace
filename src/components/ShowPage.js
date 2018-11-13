@@ -399,50 +399,6 @@ const DELETE_RESPONSE = gql`
   ${ShowPageComponent.fragments.respondent}
 `;
 
-const EDIT_SHOW_SETTINGS = gql`
-  mutation EditShowSettings(
-    $slug: String!
-    $name: String
-    $isPrivate: Boolean
-    $areResponsesHidden: Boolean
-    $isReadOnly: Boolean
-    $dates: [DateTime!]
-    $startTime: DateTime
-    $endTime: DateTime
-    $interval: Int
-    $auth: AuthInput
-  ) {
-    editShowSettings(
-      auth: $auth
-      where: { slug: $slug }
-      data: {
-        name: $name
-        isPrivate: $isPrivate
-        areResponsesHidden: $areResponsesHidden
-        isReadOnly: $isReadOnly
-        dates: $dates
-        startTime: $startTime
-        endTime: $endTime
-        interval: $interval
-      }
-    ) {
-      id
-      name
-      isPrivate
-      areResponsesHidden
-      isReadOnly
-      dates
-      startTime
-      endTime
-      interval
-      respondents {
-        ...ShowPageShowRespondent
-      }
-    }
-  }
-  ${ShowPageComponent.fragments.respondent}
-`;
-
 function getOptimisticResponseForShow(name, email, responses, show) {
   if (!show) return null;
   const { respondents } = show;
@@ -592,95 +548,62 @@ function ShowPageWithQueries(props) {
                   {(deleteRespondents, deleteRespondentsResult) => (
                     <Mutation mutation={EDIT_SHOW_RESPONDENT_STATUS}>
                       {(editShowRespondentStatus, editShowRespondentStatusResult) => (
-                        <Mutation mutation={EDIT_SHOW_SETTINGS}>
-                          {(editShowSettings, editShowSettingsResult) => (
-                            <ShowPageComponent
-                              {...props}
-                              getShowResult={datifyShowResponse(getShowResult, 'data.show')}
-                              upsertResponses={async (slug, name, email, responses) => {
-                                // N.B. We don't pass in auth if user wants to use name instead.
-                                const auth = name ? null : await getAuthInput();
-                                upsertResponses({
-                                  variables: { slug, name, email, auth, responses },
-                                  optimisticResponse: getOptimisticResponseForUpsertResponses(
-                                    name,
-                                    email,
-                                    responses,
-                                    getShowResult,
-                                  ),
-                                });
-                              }}
-                              upsertResponsesResult={datifyShowResponse(
-                                upsertResponsesResult,
-                                'data._upsertResponse',
-                              )}
-                              deleteResponse={async (slug, id) => {
-                                const auth = await getAuthInput();
-                                deleteResponse({
-                                  variables: { slug, id, auth },
-                                  optimisticResponse: getOptimisticResponseForDeleteResponse(
-                                    id,
-                                    getShowResult,
-                                  ),
-                                });
-                              }}
-                              deleteResponseResult={deleteResponseResult}
-                              deleteRespondents={async (slug, id) => {
-                                const auth = await getAuthInput();
-                                deleteRespondents({
-                                  variables: { slug, id, auth },
-                                  optimisticResponse: getOptimisticResponseForDeleteRespondents(
-                                    id,
-                                    getShowResult,
-                                  ),
-                                });
-                              }}
-                              deleteRespondentsResult={deleteRespondentsResult}
-                              editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
-                                const auth = await getAuthInput();
-                                editShowRespondentStatus({
-                                  variables: { slug, id, role, isKeyRespondent, auth },
-                                  optimisticResponse: getOptimisticResponseForEditShowRespondentStatus(
-                                    id,
-                                    role,
-                                    isKeyRespondent,
-                                    getShowResult,
-                                  ),
-                                });
-                              }}
-                              editShowRespondentStatusResult={editShowRespondentStatusResult}
-                              editShowSettings={async (
-                                slug,
+                        <ShowPageComponent
+                          {...props}
+                          getShowResult={datifyShowResponse(getShowResult, 'data.show')}
+                          upsertResponses={async (slug, name, email, responses) => {
+                            // N.B. We don't pass in auth if user wants to use name instead.
+                            const auth = name ? null : await getAuthInput();
+                            upsertResponses({
+                              variables: { slug, name, email, auth, responses },
+                              optimisticResponse: getOptimisticResponseForUpsertResponses(
                                 name,
-                                isPrivate,
-                                areResponsesHidden,
-                                isReadOnly,
-                                dates,
-                                startTime,
-                                endTime,
-                                interval,
-                              ) => {
-                                const auth = await getAuthInput();
-                                editShowSettings({
-                                  variables: {
-                                    slug,
-                                    name,
-                                    isPrivate,
-                                    areResponsesHidden,
-                                    isReadOnly,
-                                    dates,
-                                    startTime,
-                                    endTime,
-                                    interval,
-                                    auth,
-                                  },
-                                  // TODO: put optimistic response here
-                                });
-                              }}
-                              editShowSettingsResult={editShowSettingsResult}
-                            />
+                                email,
+                                responses,
+                                getShowResult,
+                              ),
+                            });
+                          }}
+                          upsertResponsesResult={datifyShowResponse(
+                            upsertResponsesResult,
+                            'data._upsertResponse',
                           )}
-                        </Mutation>
+                          deleteResponse={async (slug, id) => {
+                            const auth = await getAuthInput();
+                            deleteResponse({
+                              variables: { slug, id, auth },
+                              optimisticResponse: getOptimisticResponseForDeleteResponse(
+                                id,
+                                getShowResult,
+                              ),
+                            });
+                          }}
+                          deleteResponseResult={deleteResponseResult}
+                          deleteRespondents={async (slug, id) => {
+                            const auth = await getAuthInput();
+                            deleteRespondents({
+                              variables: { slug, id, auth },
+                              optimisticResponse: getOptimisticResponseForDeleteRespondents(
+                                id,
+                                getShowResult,
+                              ),
+                            });
+                          }}
+                          deleteRespondentsResult={deleteRespondentsResult}
+                          editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
+                            const auth = await getAuthInput();
+                            editShowRespondentStatus({
+                              variables: { slug, id, role, isKeyRespondent, auth },
+                              optimisticResponse: getOptimisticResponseForEditShowRespondentStatus(
+                                id,
+                                role,
+                                isKeyRespondent,
+                                getShowResult,
+                              ),
+                            });
+                          }}
+                          editShowRespondentStatusResult={editShowRespondentStatusResult}
+                        />
                       )}
                     </Mutation>
                   )}

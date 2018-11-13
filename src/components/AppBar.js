@@ -69,6 +69,13 @@ class AppBar extends Component {
   renderDefaultSharedMenuItems() {
     return (
       <>
+        <BoomzMenuItem
+          onClick={() =>
+            window.open('http://isteps.comp.nus.edu.sg/event/13th-steps/vote', '_blank')
+          }
+        >
+          <span className="mdc-list-item__text">Vote for ShowFace at STePS!</span>
+        </BoomzMenuItem>
         {this.props.promptRefresh && (
           <BoomzMenuItem onClick={this.handleUpdateClick}>
             <span className="mdc-list-item__text">Update ShowFace!</span>

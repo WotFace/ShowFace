@@ -69,3 +69,10 @@ export function partitionRespondentsByAttendance(
   const notAttending = possiblyNotAttending;
   return { hidden, attending, possiblyNotAttending, notAttending, respondersRespondentsObj };
 }
+
+export function sortedRespondents(respondents) {
+  return _.sortBy(
+    respondents,
+    (a) => (a.user && a.user.name ? a.user.name.toLowerCase() : a.anonymousName.toLowerCase()),
+  );
+}

@@ -7,6 +7,7 @@ import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-l
 import classnames from 'classnames';
 import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
+import { sortedRespondents, respondentToEmailOrName } from '../utils/response';
 import { ConfirmationDialog, DialogButton } from './helpers/MDCDialog';
 import Divider from './Divider';
 import styles from './ShowResultsSidebar.module.scss';
@@ -16,7 +17,7 @@ class ShowResultsSidebar extends Component {
     isMenuOpen: false,
     isModalOpen: false,
     selectedAction: '',
-    selectedRespondentKey: '',
+    selectedResponder: '',
     selectedRespondent: null,
   };
 
@@ -28,19 +29,18 @@ class ShowResultsSidebar extends Component {
   openModal = () => this.setState({ isModalOpen: true });
   closeModal = () => this.setState({ isModalOpen: false });
 
-  renderRespondent = (responder, respondent, respondersRespondentsObj, isHidden) => {
+  renderRespondent = (respondent, isHidden) => {
     const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
 
     return (
       <ListItem
-        key={responder}
+        key={respondent.id}
         onClick={() => {
           if (this.state.isMenuOpen) return;
           this.setState(
             {
-              selectedRespondentKey: responder,
-              selectedRespondentId: respondersRespondentsObj[responder].id,
-              selectedRespondent: respondersRespondentsObj[responder],
+              selectedResponder: respondentToEmailOrName(respondent),
+              selectedRespondent: respondent,
             },
             // Open menu after setting the selected respondent and before
             // opening the menu so that a ref to the anchor element will be
@@ -83,7 +83,6 @@ class ShowResultsSidebar extends Component {
 
   handleDeleteResponse = () => {
     const { selectedRespondent } = this.state;
-    //TODO: add dialog box to confirm choice
     this.closeModal();
     this.props.onDeleteResponse(selectedRespondent.id);
   };
@@ -118,9 +117,9 @@ class ShowResultsSidebar extends Component {
   };
 
   handleHideUser = () => {
-    const { selectedRespondentKey } = this.state;
+    const { selectedResponder } = this.state;
     this.closeMenu();
-    this.props.onHideUnhideUser(selectedRespondentKey);
+    this.props.onHideUnhideUser(selectedResponder);
   };
 
   // handleEditResponse = () => {
@@ -138,10 +137,10 @@ class ShowResultsSidebar extends Component {
     const {
       partitionedRespondents: { hidden },
     } = this.props;
-    const { selectedRespondentKey } = this.state;
+    const { selectedResponder } = this.state;
     const currentUser = getFirebaseUserInfo();
     // TODO: make it possible to hide respondents dynamically
-    const isHidden = hidden.includes(selectedRespondentKey);
+    const isHidden = hidden.includes(selectedResponder);
     let userInMeeting = null;
     if (currentUser != null) {
       userInMeeting = _.findKey(respondersRespondentsObj, function(a) {
@@ -321,7 +320,7 @@ class ShowResultsSidebar extends Component {
 
   render() {
     const { className, partitionedRespondents, time, bestTime, interval } = this.props;
-    const { selectedRespondentKey, isMenuOpen, selectedAction } = this.state;
+    const { selectedResponder, isMenuOpen, selectedAction } = this.state;
 
     const { hidden, attending, notAttending, respondersRespondentsObj } = partitionedRespondents;
 
@@ -379,15 +378,9 @@ class ShowResultsSidebar extends Component {
                     Available
                   </h3>
                   <List twoLine>
-                    {attending.map((responder) => {
-                      const respondent = respondersRespondentsObj[responder];
-                      return this.renderRespondent(
-                        responder,
-                        respondent,
-                        respondersRespondentsObj,
-                        false,
-                      );
-                    })}
+                    {sortedRespondents(
+                      attending.map((responder) => respondersRespondentsObj[responder]),
+                    ).map((respondent) => this.renderRespondent(respondent, false))}
                   </List>
                 </section>
               )}
@@ -399,15 +392,9 @@ class ShowResultsSidebar extends Component {
                     Not Available
                   </h3>
                   <List twoLine>
-                    {notAttending.map((responder) => {
-                      const respondent = respondersRespondentsObj[responder];
-                      return this.renderRespondent(
-                        responder,
-                        respondent,
-                        respondersRespondentsObj,
-                        false,
-                      );
-                    })}
+                    {sortedRespondents(
+                      notAttending.map((responder) => respondersRespondentsObj[responder]),
+                    ).map((respondent) => this.renderRespondent(respondent, false))}
                   </List>
                 </section>
               )}
@@ -419,15 +406,9 @@ class ShowResultsSidebar extends Component {
                     Hidden
                   </h3>
                   <List twoLine>
-                    {hidden.map((responder) => {
-                      const respondent = respondersRespondentsObj[responder];
-                      return this.renderRespondent(
-                        responder,
-                        respondent,
-                        respondersRespondentsObj,
-                        true,
-                      );
-                    })}
+                    {sortedRespondents(
+                      hidden.map((responder) => respondersRespondentsObj[responder]),
+                    ).map((respondent) => this.renderRespondent(respondent, true))}
                   </List>
                 </section>
               )}
@@ -440,9 +421,9 @@ class ShowResultsSidebar extends Component {
               anchorElement={this.activeItemRef.current}
             >
               {this.renderMenuContents(
-                respondersRespondentsObj[selectedRespondentKey],
+                respondersRespondentsObj[selectedResponder],
                 respondersRespondentsObj,
-                selectedRespondentKey,
+                selectedResponder,
               )}
             </MenuSurface>
           </div>

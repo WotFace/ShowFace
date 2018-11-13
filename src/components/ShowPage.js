@@ -44,7 +44,7 @@ class ShowPageComponent extends Component {
   }
 
   openModal() {
-    this.setState({ modalIsOpen: true });
+    this.setState({ isInviteModalOpen: true });
   }
 
   closeModal() {
@@ -460,17 +460,16 @@ function getOptimisticResponseForDeleteResponse(id, getShowResult) {
     return a.id === id;
   });
 
-  let newRespondents;
-
-  if (index !== -1) {
-    newRespondents = update(respondents, {
-      [index]: {
-        response: { $set: [] },
-      },
-    });
-  } else {
+  if (index === -1) {
     return null;
   }
+
+  const newRespondents = update(respondents, {
+    [index]: {
+      response: { $set: [] },
+    },
+  });
+
   return {
     __typename: 'Mutation',
     deleteResponse: {
@@ -488,16 +487,15 @@ function getOptimisticResponseForDeleteRespondents(id, getShowResult) {
   const index = respondents.findIndex(function(a) {
     return a.id === id;
   });
-  let newRespondents;
 
-  if (index !== -1) {
-    newRespondents = update(respondents, {
-      $splice: [[index, 1]],
-    });
-    console.log(newRespondents);
-  } else {
+  if (index === -1) {
     return null;
   }
+
+  const newRespondents = update(respondents, {
+    $splice: [[index, 1]],
+  });
+
   return {
     __typename: 'Mutation',
     deleteResponse: {
@@ -507,25 +505,30 @@ function getOptimisticResponseForDeleteRespondents(id, getShowResult) {
   };
 }
 
-function getOptimisticResponseForEditShowRespondentStatus(id, role, isKeyRespondent, getShowResult) {
+function getOptimisticResponseForEditShowRespondentStatus(
+  id,
+  role,
+  isKeyRespondent,
+  getShowResult,
+) {
   const show = getShowResult.data && getShowResult.data.show;
   if (!show) return null;
   const { respondents } = show;
   const index = respondents.findIndex(function(a) {
     return a.id === id;
   });
-  let newRespondents;
 
-  if (index !== -1) {
-    newRespondents = update(respondents, {
-      [index]: {
-        role: { $set: role },
-        isKeyRespondent: { $set: isKeyRespondent },
-      },
-    });
-  } else {
+  if (index === -1) {
     return null;
   }
+
+  const newRespondents = update(respondents, {
+    [index]: {
+      role: { $set: role },
+      isKeyRespondent: { $set: isKeyRespondent },
+    },
+  });
+
   return {
     __typename: 'Mutation',
     deleteResponse: {

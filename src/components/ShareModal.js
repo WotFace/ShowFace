@@ -35,12 +35,12 @@ export default class ShareModal extends Component {
   };
 
   sendInvites = () => {
-    // TODO: Send invites to this.emails
+    this.props.sendEmailInvites(this.state.emails)
     this.setState({ emails: [] });
   };
 
   render() {
-    const linkShareDiv = (
+    const linkShareContent = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
           Anyone with this link can respond to this poll.
@@ -79,6 +79,7 @@ export default class ShareModal extends Component {
 
     const { emails } = this.state;
     const { modalHeadline } = this.props;
+
     const inputEmailDiv = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
@@ -114,25 +115,26 @@ export default class ShareModal extends Component {
       </div>
     );
 
-    return (
-      <div className={styles.container}>
+    const emailTabContent = this.props.isAdmin ? inputEmailDiv : (
+      <div>
+        <p className={styles.messageText}>You must be the creator of the poll to invite respondents by email.</p>
+      </div>
+    );
+
+    return <div className={styles.container}>
         <Card className={styles.card}>
           <div className="mdc-typography--headline6">{modalHeadline}</div>
           <div className="mdc-typography--headline6">Invite respondents via...</div>
-          <TabBar
-            activeIndex={this.state.activeIndex}
-            handleActiveIndexUpdate={(activeIndex) => this.setState({ activeIndex })}
-          >
+          <TabBar activeIndex={this.state.activeIndex} handleActiveIndexUpdate={(activeIndex) => this.setState(
+                { activeIndex },
+              )}>
             <Tab>
               <span>Link</span>
             </Tab>
-            <Tab>
-              <span>Email</span>
-            </Tab>
+             <Tab>Email</Tab>
           </TabBar>
-          {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
+          {this.state.activeIndex === 0 ? linkShareContent : emailTabContent}
         </Card>
-      </div>
-    );
+      </div>;
   }
 }

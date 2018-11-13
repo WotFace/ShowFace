@@ -138,6 +138,12 @@ class ShowPageComponent extends Component {
     this.props.editShowSettings(name, dates, startTime, endTime, interval, slug);
   };
 
+  sendEmailInvites = (emails) => {
+    const slug = this.props.match.params.showId;
+    const emailsAndRoles = emails.map((e) => ({email: e, role: 'member'}))
+    this.props.addRespondentsByEmail(slug, emailsAndRoles)
+  };
+
   renderTabBar = (responseAllowed) => {
     const { location, history } = this.props;
     const links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
@@ -284,6 +290,8 @@ class ShowPageComponent extends Component {
               .slice(0, -1)
               .join('/')}
             modalHeadline={this.state.modalHeadline}
+            sendEmailInvites={this.sendEmailInvites}
+            isAdmin={adminAccess}
           />
         </Modal>
         {this.renderTabBar(responseAllowed)}
@@ -432,7 +440,7 @@ const EDIT_SHOW_SETTINGS = gql`
     $startTime: DateTime!
     $endTime: DateTime!
     $interval: Int!
-    $auth: AuthInput
+    $auth: AuthInput!
     $slug: String!
   ) {
     editShowSettings(
@@ -445,6 +453,22 @@ const EDIT_SHOW_SETTINGS = gql`
         endTime: $endTime
         interval: $interval
       }
+    ) {
+      slug
+    }
+  }
+`;
+
+const ADD_RESPONDENTS_BY_EMAIL = gql`
+  mutation AddRespondentsByEmail(
+    $slug: String!
+    $auth: AuthInput!
+    $emailsAndRoles: [AddRespondentsByEmailInput!]!
+  ) {
+    addRespondentsByEmail(
+      auth: $auth
+      where: { slug: $slug }
+      data: $emailsAndRoles
     ) {
       slug
     }
@@ -543,6 +567,8 @@ function ShowPageWithQueries(props) {
                       {(editShowRespondentStatus, editShowRespondentStatusResult) => (
                         <Mutation mutation={EDIT_SHOW_SETTINGS}>
                           {(editShowSettings, editShowSettingsResult) => (
+                            <Mutation mutation={ADD_RESPONDENTS_BY_EMAIL}>
+                              {(addRespondentsByEmail, addRespondentsByEmailResult) => (
                             <ShowPageComponent
                               {...props}
                               getShowResult={datifyShowResponse(getShowResult, 'data.show')}
@@ -614,8 +640,17 @@ function ShowPageWithQueries(props) {
                                 });
                               }}
                               editShowSettingsResult={editShowSettingsResult}
+                              addRespondentsByEmail={async (slug, emailsAndRoles) => {
+                                const auth = await getAuthInput();
+                                addRespondentsByEmail({
+                                  variables: { slug, auth, emailsAndRoles },
+                                });
+                              }}
+                              addRespondentsByEmailResult={addRespondentsByEmailResult}
                             />
                           )}
+                        </Mutation>
+                      )}
                         </Mutation>
                       )}
                     </Mutation>

@@ -21,6 +21,7 @@ class EditShowPage extends Component {
       startTime: this.props.show.startTime,
       endTime: this.props.show.endTime,
       interval: this.props.show.interval,
+      hasChanged: false
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -28,17 +29,26 @@ class EditShowPage extends Component {
     this.handleDayClick = this.handleDayClick.bind(this);
   }
 
+  updateBottomBar() {
+    this.setState({ saved: false })
+    this.setState({ hasChanged: true })
+  }
+
   handleSubmit(event) {
     const { name, selectedDays, startTime, endTime, interval } = this.state;
     this.props.updateShow(cleanName(name), selectedDays, startTime, endTime, interval);
+    this.setState({ saved: true })
+    this.setState({ hasChanged: false })
     event.preventDefault();
   }
 
   handleInputChange(event) {
+    this.updateBottomBar()
     this.setState({ [event.target.name]: event.target.value });
   }
 
   handleDayClick(day, { selected, disabled }) {
+    this.updateBottomBar()
     const { selectedDays } = this.state;
     if (disabled) {
       return;
@@ -55,47 +65,41 @@ class EditShowPage extends Component {
   }
 
   updateStartTime = (time) => {
+    this.updateBottomBar()
     this.setState({ startTime: time });
   };
 
   updateEndTime = (time) => {
+    this.updateBottomBar()
     this.setState({ endTime: time });
   };
 
   renderBottomBar() {
     // TODO: Implement isSaving and saved for bottomappbar prompts
-    const { isSaving } = this.props;
-    const { saved } = this.state;
+    const { saved, hasChanged } = this.state;
 
     const { selectedDays, name } = this.state;
     const noSelectedDay = selectedDays.length === 0;
 
-    let mainText;
-
-    if (isSaving) {
-      mainText = <>Saving&hellip;</>;
-    } else if (saved) {
-      mainText = <>Updated Settings!</>;
-    }
-
+    let mainText = saved ? 'Updated Settings!' : '';
     return (
       <BottomAppBar className={styles.bottomBar}>
         <div className={styles.bottomBarContent}>
+          <span className={styles.mainText}>{mainText}</span>
           <Button
             className={styles.submitButton}
             onClick={this.handleSubmit}
             disabled={
-              noSelectedDay ||
+              !hasChanged && (noSelectedDay ||
               cleanName(name).length === 0 ||
               this.state.startTime === null ||
-              this.state.endTime === null
+              this.state.endTime === null)
             }
-            icon={<MaterialIcon icon="arrow_forward" />}
+            icon={<MaterialIcon icon="arrow_upward" />}
             raised
           >
             Update
           </Button>
-          <span className={styles.mainText}>{mainText}</span>
         </div>
       </BottomAppBar>
     );

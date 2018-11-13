@@ -30,11 +30,42 @@
   max-width: 40em;
 }
 
+// .bottomBarContent {
+//   display: flex;
+//   justify-content: flex-end;
+//   align-items: center;
+// }
+
+// .bottomBarContent {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+
+//   .mainText {
+//     flex-grow: 1;
+//     font-size: 0.9em;
+//     text-align: center;
+//     word-break: break-word;
+//   }
+// }
+
+.bottomBar {
+  margin-top: 1em;
+}
+
 .bottomBarContent {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: space-between;
+
+  .mainText {
+    flex-grow: 1;
+    font-size: 0.9em;
+    text-align: center;
+    word-break: break-word;
+  }
 }
+
 
 .center {
   text-align: center;

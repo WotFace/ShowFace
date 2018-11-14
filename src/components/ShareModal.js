@@ -111,7 +111,7 @@ export default class ShareModal extends Component {
           }}
         />
         <Button
-          className={styles.clipboardButton}
+          id={styles.inviteButton}
           onClick={this.sendInvites}
           icon={<MaterialIcon icon="send" />}
           disabled={this.state.emails.length === 0}

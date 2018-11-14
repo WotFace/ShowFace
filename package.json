@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material/dialog": "^0.41.0",
     "@material/menu": "^0.40.1",
     "@material/radio": "^0.40.1",
     "@material/react-button": "^0.6.1",

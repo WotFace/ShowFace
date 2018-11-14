@@ -339,8 +339,8 @@ ShowPageComponent.fragments = {
       response
     }
   `,
-  show: gql`
-    fragment ShowPageShow on Show {
+  showWithoutRespondents: gql`
+    fragment ShowWithoutRespondents on Show {
       id
       slug
       name
@@ -351,6 +351,11 @@ ShowPageComponent.fragments = {
       startTime
       endTime
       interval
+    }
+  `,
+  show: gql`
+    fragment ShowPageShow on Show {
+      ...ShowWithoutRespondents
       respondents {
         ...ShowPageShowRespondent
       }
@@ -365,6 +370,7 @@ const GET_SHOW_QUERY = gql`
     }
   }
   ${ShowPageComponent.fragments.show}
+  ${ShowPageComponent.fragments.showWithoutRespondents}
   ${ShowPageComponent.fragments.respondent}
 `;
 
@@ -385,6 +391,7 @@ const UPSERT_RESPONSES_MUTATION = gql`
     }
   }
   ${ShowPageComponent.fragments.show}
+  ${ShowPageComponent.fragments.showWithoutRespondents}
   ${ShowPageComponent.fragments.respondent}
 `;
 
@@ -441,7 +448,7 @@ const EDIT_SHOW_SETTINGS = gql`
     $startTime: DateTime!
     $endTime: DateTime!
     $interval: Int!
-    $auth: AuthInput!
+    $auth: AuthInput
     $slug: String!
   ) {
     editShowSettings(
@@ -455,9 +462,10 @@ const EDIT_SHOW_SETTINGS = gql`
         interval: $interval
       }
     ) {
-      slug
+      ...ShowWithoutRespondents
     }
   }
+  ${ShowPageComponent.fragments.showWithoutRespondents}
 `;
 
 const ADD_RESPONDENTS_BY_EMAIL = gql`

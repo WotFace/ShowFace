@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { auth } from '../firebase';
 import { getAuthInput } from '../utils/auth';
-import { Redirect } from 'react-router-dom';
 
 // Wrapper around the Query component that automatically injects an auth
 // variable if it is present. If requiresAuth is true, the component will also
@@ -10,17 +9,10 @@ import { Redirect } from 'react-router-dom';
 export default class AuthenticatedQuery extends Component {
   state = {
     auth: null,
-    authRefreshed: false,
   };
 
   refreshAuthInfo() {
-    getAuthInput().then((auth) => {
-      if (auth) {
-        this.setState({ auth, authRefreshed: true });
-      } else {
-        this.setState({ auth });
-      }
-    });
+    getAuthInput().then((auth) => this.setState({ auth }));
   }
 
   componentDidMount() {
@@ -36,18 +28,13 @@ export default class AuthenticatedQuery extends Component {
 
   render() {
     const { variables, requiresAuth } = this.props;
-    const { auth, authRefreshed } = this.state;
+    const { auth } = this.state;
 
     // Render null if we require authentication
     // TODO: Render something if not authenticated instead of just putting a
     // blank screen. Maybe have a default blank component or take in a prop for
     // this.
-    if (requiresAuth && !auth) {
-      if (authRefreshed === true) {
-        return <Redirect to="/login" />;
-      }
-      return null;
-    }
+    if (requiresAuth && !auth) return null;
 
     const mergedVars = { auth, ...variables };
     return <Query {...this.props} variables={mergedVars} />;

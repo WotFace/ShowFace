@@ -289,6 +289,7 @@ class ShowPageComponent extends Component {
             modalHeadline={this.state.modalHeadline}
             sendEmailInvites={this.sendEmailInvites}
             isAdmin={adminAccess}
+            isSignedIn={isSignedIn()}
           />
         </Modal>
         {this.renderTabBar(responseAllowed)}

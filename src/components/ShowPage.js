@@ -19,6 +19,7 @@ import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';
 import Modal from 'react-modal';
 import './ReactModalOverride.scss';
+import EditShowPage from './EditShowPage';
 
 import styles from './ShowPage.module.scss';
 
@@ -132,9 +133,24 @@ class ShowPageComponent extends Component {
     //TODO: add rerender method
   };
 
-  renderTabBar = (responseAllowed) => {
+  updateShowSettings = (name, dates, startTime, endTime, interval) => {
+    const slug = this.props.match.params.showId;
+    this.props.editShowSettings(name, dates, startTime, endTime, interval, slug);
+  };
+
+  sendEmailInvites = (emails) => {
+    const slug = this.props.match.params.showId;
+    const emailsAndRoles = emails.map((e) => ({ email: e, role: 'member' }));
+    this.props.addRespondentsByEmail(slug, emailsAndRoles);
+  };
+
+  renderTabBar(responseAllowed) {
     const { location, history } = this.props;
-    const links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
+    const links = [
+      { text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` },
+      { text: 'Settings', icon: 'settings', path: `${this.meetingPageBaseUrl()}/settings` },
+    ];
+
     if (responseAllowed) {
       links.unshift({
         text: 'Respond',
@@ -163,9 +179,19 @@ class ShowPageComponent extends Component {
         </TabBar>
       </div>
     );
-  };
+  }
 
-  amIAdmin = () => {
+  isAnonymousMeeting() {
+    const show = this.latestShow();
+    const { respondents } = show;
+    // Find if any of the respondents are an admin
+    const admin = respondents.find((r) => r.role === 'admin');
+    return !admin;
+  }
+
+  amIAdmin() {
+    if (this.isAnonymousMeeting()) return true;
+
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
     const show = this.latestShow();
@@ -174,7 +200,7 @@ class ShowPageComponent extends Component {
     const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
 
     return currentRespondent && currentRespondent.role === 'admin';
-  };
+  }
 
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;
@@ -261,6 +287,8 @@ class ShowPageComponent extends Component {
               .slice(0, -1)
               .join('/')}
             modalHeadline={this.state.modalHeadline}
+            sendEmailInvites={this.sendEmailInvites}
+            isAdmin={adminAccess}
           />
         </Modal>
         {this.renderTabBar(responseAllowed)}
@@ -284,6 +312,14 @@ class ShowPageComponent extends Component {
               onUserAction={this.onUserAction}
             />
           )}
+          {lastPathComponent === 'settings' && (
+            <EditShowPage
+              show={show}
+              updateShow={this.updateShowSettings}
+              accessAllowed={adminAccess}
+              isSignedIn={isSignedIn()}
+            />
+          )}
         </section>
       </div>
     );
@@ -304,8 +340,8 @@ ShowPageComponent.fragments = {
       response
     }
   `,
-  show: gql`
-    fragment ShowPageShow on Show {
+  showWithoutRespondents: gql`
+    fragment ShowWithoutRespondents on Show {
       id
       slug
       name
@@ -316,6 +352,11 @@ ShowPageComponent.fragments = {
       startTime
       endTime
       interval
+    }
+  `,
+  show: gql`
+    fragment ShowPageShow on Show {
+      ...ShowWithoutRespondents
       respondents {
         ...ShowPageShowRespondent
       }
@@ -330,6 +371,7 @@ const GET_SHOW_QUERY = gql`
     }
   }
   ${ShowPageComponent.fragments.show}
+  ${ShowPageComponent.fragments.showWithoutRespondents}
   ${ShowPageComponent.fragments.respondent}
 `;
 
@@ -350,6 +392,7 @@ const UPSERT_RESPONSES_MUTATION = gql`
     }
   }
   ${ShowPageComponent.fragments.show}
+  ${ShowPageComponent.fragments.showWithoutRespondents}
   ${ShowPageComponent.fragments.respondent}
 `;
 
@@ -398,6 +441,69 @@ const DELETE_RESPONSE = gql`
   }
   ${ShowPageComponent.fragments.respondent}
 `;
+
+const EDIT_SHOW_SETTINGS = gql`
+  mutation EditShowSettings(
+    $name: String!
+    $dates: [DateTime!]
+    $startTime: DateTime!
+    $endTime: DateTime!
+    $interval: Int!
+    $auth: AuthInput
+    $slug: String!
+  ) {
+    editShowSettings(
+      auth: $auth
+      where: { slug: $slug }
+      data: {
+        name: $name
+        dates: $dates
+        startTime: $startTime
+        endTime: $endTime
+        interval: $interval
+      }
+    ) {
+      ...ShowWithoutRespondents
+    }
+  }
+  ${ShowPageComponent.fragments.showWithoutRespondents}
+`;
+
+const ADD_RESPONDENTS_BY_EMAIL = gql`
+  mutation AddRespondentsByEmail(
+    $slug: String!
+    $auth: AuthInput!
+    $emailsAndRoles: [AddRespondentsByEmailInput!]!
+  ) {
+    addRespondentsByEmail(auth: $auth, where: { slug: $slug }, data: $emailsAndRoles) {
+      slug
+    }
+  }
+`;
+
+function getOptimisticResponseForEditShowSettings(
+  name,
+  dates,
+  startTime,
+  endTime,
+  interval,
+  getShowResult,
+) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  return {
+    __typename: 'Mutation',
+    editShowSettings: {
+      __typename: 'Show',
+      ...show,
+      name: name,
+      dates: dates,
+      startTime: startTime,
+      endTime: endTime,
+      interval: interval,
+    },
+  };
+}
 
 function getOptimisticResponseForShow(name, email, responses, show) {
   if (!show) return null;
@@ -464,48 +570,98 @@ function ShowPageWithQueries(props) {
                   {(deleteRespondents, deleteRespondentsResult) => (
                     <Mutation mutation={EDIT_SHOW_RESPONDENT_STATUS}>
                       {(editShowRespondentStatus, editShowRespondentStatusResult) => (
-                        <ShowPageComponent
-                          {...props}
-                          getShowResult={datifyShowResponse(getShowResult, 'data.show')}
-                          upsertResponses={async (slug, name, email, responses) => {
-                            // N.B. We don't pass in auth if user wants to use name instead.
-                            const auth = name ? null : await getAuthInput();
-                            upsertResponses({
-                              variables: { slug, name, email, auth, responses },
-                              optimisticResponse: getOptimisticResponseForUpsertResponses(
-                                name,
-                                email,
-                                responses,
-                                getShowResult,
-                              ),
-                            });
-                          }}
-                          upsertResponsesResult={datifyShowResponse(
-                            upsertResponsesResult,
-                            'data._upsertResponse',
+                        <Mutation mutation={EDIT_SHOW_SETTINGS}>
+                          {(editShowSettings, editShowSettingsResult) => (
+                            <Mutation mutation={ADD_RESPONDENTS_BY_EMAIL}>
+                              {(addRespondentsByEmail, addRespondentsByEmailResult) => (
+                                <ShowPageComponent
+                                  {...props}
+                                  getShowResult={datifyShowResponse(getShowResult, 'data.show')}
+                                  upsertResponses={async (slug, name, email, responses) => {
+                                    // N.B. We don't pass in auth if user wants to use name instead.
+                                    const auth = name ? null : await getAuthInput();
+                                    upsertResponses({
+                                      variables: { slug, name, email, auth, responses },
+                                      optimisticResponse: getOptimisticResponseForUpsertResponses(
+                                        name,
+                                        email,
+                                        responses,
+                                        getShowResult,
+                                      ),
+                                    });
+                                  }}
+                                  upsertResponsesResult={datifyShowResponse(
+                                    upsertResponsesResult,
+                                    'data._upsertResponse',
+                                  )}
+                                  deleteResponse={async (slug, id) => {
+                                    const auth = await getAuthInput();
+                                    deleteResponse({
+                                      variables: { slug, id, auth },
+                                    });
+                                  }}
+                                  deleteResponseResult={deleteResponseResult}
+                                  deleteRespondents={async (slug, id) => {
+                                    const auth = await getAuthInput();
+                                    deleteRespondents({
+                                      variables: { slug, id, auth },
+                                    });
+                                  }}
+                                  deleteRespondentsResult={deleteRespondentsResult}
+                                  editShowRespondentStatus={async (
+                                    slug,
+                                    id,
+                                    role,
+                                    isKeyRespondent,
+                                  ) => {
+                                    const auth = await getAuthInput();
+                                    editShowRespondentStatus({
+                                      variables: { slug, id, role, isKeyRespondent, auth },
+                                    });
+                                  }}
+                                  editShowRespondentStatusResult={editShowRespondentStatusResult}
+                                  editShowSettings={async (
+                                    name,
+                                    dates,
+                                    startTime,
+                                    endTime,
+                                    interval,
+                                    slug,
+                                  ) => {
+                                    const auth = await getAuthInput();
+                                    editShowSettings({
+                                      variables: {
+                                        name,
+                                        dates,
+                                        startTime,
+                                        endTime,
+                                        interval,
+                                        auth,
+                                        slug,
+                                      },
+                                      optimisticResponse: getOptimisticResponseForEditShowSettings(
+                                        name,
+                                        dates,
+                                        startTime,
+                                        endTime,
+                                        interval,
+                                        getShowResult,
+                                      ),
+                                    });
+                                  }}
+                                  editShowSettingsResult={editShowSettingsResult}
+                                  addRespondentsByEmail={async (slug, emailsAndRoles) => {
+                                    const auth = await getAuthInput();
+                                    addRespondentsByEmail({
+                                      variables: { slug, auth, emailsAndRoles },
+                                    });
+                                  }}
+                                  addRespondentsByEmailResult={addRespondentsByEmailResult}
+                                />
+                              )}
+                            </Mutation>
                           )}
-                          deleteResponse={async (slug, id) => {
-                            const auth = await getAuthInput();
-                            deleteResponse({
-                              variables: { slug, id, auth },
-                            });
-                          }}
-                          deleteResponseResult={deleteResponseResult}
-                          deleteRespondents={async (slug, id) => {
-                            const auth = await getAuthInput();
-                            deleteRespondents({
-                              variables: { slug, id, auth },
-                            });
-                          }}
-                          deleteRespondentsResult={deleteRespondentsResult}
-                          editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
-                            const auth = await getAuthInput();
-                            editShowRespondentStatus({
-                              variables: { slug, id, role, isKeyRespondent, auth },
-                            });
-                          }}
-                          editShowRespondentStatusResult={editShowRespondentStatusResult}
-                        />
+                        </Mutation>
                       )}
                     </Mutation>
                   )}

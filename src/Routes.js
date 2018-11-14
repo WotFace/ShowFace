@@ -17,7 +17,7 @@ const Routes = () => (
     <Switch>
       <Redirect exact from="/poll" to="/" />
       <Route exact path="/" component={WelcomePage} />
-      <Route exact path="/meeting/:showId/(respond|results)?" component={ShowPage} />
+      <Route exact path="/meeting/:showId/(respond|results|settings)?" component={ShowPage} />
       <Route exact path="/new" component={CreatePage} />
       <Route exact path="/(login|signup)" component={LoginPage} />
       <Route exact path="/dashboard" component={DashboardPage} />

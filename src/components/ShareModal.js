@@ -17,6 +17,7 @@ export default class ShareModal extends Component {
   state = {
     activeIndex: 0,
     emails: [],
+    sent: false,
   };
 
   openWhatsApp = () => {
@@ -35,12 +36,16 @@ export default class ShareModal extends Component {
   };
 
   sendInvites = () => {
-    // TODO: Send invites to this.emails
+    this.props.sendEmailInvites(this.state.emails);
     this.setState({ emails: [] });
+    this.setState({ sent: true });
+    this.timeout = setTimeout(() => {
+      this.setState({ sent: false });
+    }, 2000);
   };
 
   render() {
-    const linkShareDiv = (
+    const linkShareContent = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
           Anyone with this link can respond to this poll.
@@ -79,6 +84,8 @@ export default class ShareModal extends Component {
 
     const { emails } = this.state;
     const { modalHeadline } = this.props;
+    const submitButtonMessage = this.state.sent ? 'Sent Invites!' : 'Send Invitations';
+
     const inputEmailDiv = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
@@ -90,6 +97,7 @@ export default class ShareModal extends Component {
           emails={emails}
           onChange={(emails) => {
             this.setState({ emails });
+            this.setState({ sent: false });
           }}
           getLabel={(email, index, removeEmail) => {
             return (
@@ -109,8 +117,18 @@ export default class ShareModal extends Component {
           disabled={this.state.emails.length === 0}
           raised
         >
-          Send Invitations
+          {submitButtonMessage}
         </Button>
+      </div>
+    );
+
+    const emailTabContent = this.props.isAdmin ? (
+      inputEmailDiv
+    ) : (
+      <div>
+        <p className={styles.messageText}>
+          You must be the creator of the poll to invite respondents by email.
+        </p>
       </div>
     );
 
@@ -126,11 +144,9 @@ export default class ShareModal extends Component {
             <Tab>
               <span>Link</span>
             </Tab>
-            <Tab>
-              <span>Email</span>
-            </Tab>
+            <Tab>Email</Tab>
           </TabBar>
-          {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
+          {this.state.activeIndex === 0 ? linkShareContent : emailTabContent}
         </Card>
       </div>
     );

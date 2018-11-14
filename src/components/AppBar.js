@@ -41,22 +41,9 @@ class AppBar extends Component {
     auth().onAuthStateChanged(() => this.forceUpdate());
   }
 
-  // Remove after STePS
-  renderSTePSButton() {
-    return (
-      <BoomzButton
-        className={styles.barButton}
-        onClick={() => window.open('http://isteps.comp.nus.edu.sg/event/13th-steps/vote', '_blank')}
-      >
-        Vote for ShowFace at STePS!
-      </BoomzButton>
-    );
-  }
-
   renderDefaultSharedButtonSet() {
     return (
       <>
-        {this.renderSTePSButton()}
         {this.props.promptRefresh && (
           <BoomzButton className={styles.barButton} onClick={this.handleUpdateClick}>
             Update ShowFace!
@@ -69,13 +56,6 @@ class AppBar extends Component {
   renderDefaultSharedMenuItems() {
     return (
       <>
-        <BoomzMenuItem
-          onClick={() =>
-            window.open('http://isteps.comp.nus.edu.sg/event/13th-steps/vote', '_blank')
-          }
-        >
-          <span className="mdc-list-item__text">Vote for ShowFace at STePS!</span>
-        </BoomzMenuItem>
         {this.props.promptRefresh && (
           <BoomzMenuItem onClick={this.handleUpdateClick}>
             <span className="mdc-list-item__text">Update ShowFace!</span>
@@ -180,38 +160,48 @@ class AppBar extends Component {
     const MenuIconButton = this.props.promptRefresh ? BoomzIconButton : IconButton;
 
     return (
-      <div className={styles.container}>
-        <Link to={signedIn ? '/dashboard' : '/'}>
-          <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
-        </Link>
-        <div className={styles.buttonContainer}>
-          {signedIn
-            ? this.renderDefaultSignedInButtonSet()
-            : this.renderDefaultSignedOutButtonSet()}
-        </div>
-        <div
-          className={classnames(styles.menuContainer, 'mdc-menu-surface--anchor')}
-          ref={this.menuAnchorRef}
+      <>
+        <Button
+          id={styles.topBannerButton}
+          onClick={() =>
+            window.open('http://isteps.comp.nus.edu.sg/event/13th-steps/vote', '_blank')
+          }
         >
-          {/* Wrap icon button in div to fix React insertBefore crash on rerender */}
-          <div>
-            <MenuIconButton className={styles.menuButton} onClick={this.openMenu}>
-              <MaterialIcon icon="menu" />
-            </MenuIconButton>
-          </div>
-          <MenuSurface
-            className="mdc-menu"
-            open={this.state.isMenuOpen}
-            anchorCorner={Corner.TOP_LEFT}
-            onClose={this.closeMenu}
-            anchorElement={this.menuAnchorRef.current}
-          >
+          Vote for ShowFace at STePS!
+        </Button>
+        <div className={styles.container}>
+          <Link to={signedIn ? '/dashboard' : '/'}>
+            <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
+          </Link>
+          <div className={styles.buttonContainer}>
             {signedIn
-              ? this.renderDefaultSignedInMenuList()
-              : this.renderDefaultSignedOutMenuList()}
-          </MenuSurface>
+              ? this.renderDefaultSignedInButtonSet()
+              : this.renderDefaultSignedOutButtonSet()}
+          </div>
+          <div
+            className={classnames(styles.menuContainer, 'mdc-menu-surface--anchor')}
+            ref={this.menuAnchorRef}
+          >
+            {/* Wrap icon button in div to fix React insertBefore crash on rerender */}
+            <div>
+              <MenuIconButton className={styles.menuButton} onClick={this.openMenu}>
+                <MaterialIcon icon="menu" />
+              </MenuIconButton>
+            </div>
+            <MenuSurface
+              className="mdc-menu"
+              open={this.state.isMenuOpen}
+              anchorCorner={Corner.TOP_LEFT}
+              onClose={this.closeMenu}
+              anchorElement={this.menuAnchorRef.current}
+            >
+              {signedIn
+                ? this.renderDefaultSignedInMenuList()
+                : this.renderDefaultSignedOutMenuList()}
+            </MenuSurface>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }

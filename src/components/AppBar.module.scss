@@ -48,3 +48,10 @@ $menu-breakpoint: largephone;
     display: none;
   }
 }
+
+#topBannerButton {
+  @include mdc-button-filled-accessible(lighten($mdc-theme-secondary, 12%));
+  @include mdc-button-shape-radius(0);
+  width: 100%;
+  height: 3.5em;
+}

@@ -35,4 +35,13 @@
   &#toRespondCard {
     @include mdc-card-outline($the-pinkish-color, 0.2em);
   }
+
+  li.listItem {
+    height: initial;
+
+    .secondaryText {
+      white-space: initial;
+      margin-bottom: 1em !important;
+    }
+  }
 }

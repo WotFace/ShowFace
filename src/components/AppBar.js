@@ -16,6 +16,8 @@ import sharedStyles from './SharedStyles.module.scss';
 import styles from './AppBar.module.scss';
 import logo from '../logo.png';
 
+import { isBefore } from 'date-fns';
+
 class AppBar extends Component {
   state = {
     isMenuOpen: false,
@@ -159,16 +161,22 @@ class AppBar extends Component {
 
     const MenuIconButton = this.props.promptRefresh ? BoomzIconButton : IconButton;
 
+    // TODO: Remove this and top banner button after STePS
+    // TODO: Consider using this top banner button as the update button instead
+    const isSteps = isBefore(new Date(), new Date(2018, 10, 15));
+
     return (
       <>
-        <Button
-          id={styles.topBannerButton}
-          onClick={() =>
-            window.open('http://isteps.comp.nus.edu.sg/event/13th-steps/vote', '_blank')
-          }
-        >
-          Vote for ShowFace at STePS!
-        </Button>
+        {isSteps && (
+          <Button
+            id={styles.topBannerButton}
+            onClick={() =>
+              window.open('http://isteps.comp.nus.edu.sg/event/13th-steps/vote', '_blank')
+            }
+          >
+            Vote for ShowFace at STePS!
+          </Button>
+        )}
         <div className={styles.container}>
           <Link to={signedIn ? '/dashboard' : '/'}>
             <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />

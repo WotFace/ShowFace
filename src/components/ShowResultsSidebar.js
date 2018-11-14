@@ -7,7 +7,12 @@ import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-l
 import classnames from 'classnames';
 import _ from 'lodash';
 import { getFirebaseUserInfo } from '../utils/auth';
-import { sortedRespondents, respondentToEmailOrName } from '../utils/response';
+import {
+  sortedRespondents,
+  respondentToEmailOrName,
+  getRespondentName,
+  getRespondentDisplayName,
+} from '../utils/response';
 import { ConfirmationDialog, DialogButton } from './helpers/MDCDialog';
 import Divider from './Divider';
 import styles from './ShowResultsSidebar.module.scss';
@@ -30,7 +35,7 @@ class ShowResultsSidebar extends Component {
   closeModal = () => this.setState({ isModalOpen: false });
 
   renderRespondent = (respondent, isHidden) => {
-    const displayName = respondent.user ? respondent.user.name : respondent.anonymousName;
+    const displayName = getRespondentDisplayName(respondent);
 
     return (
       <ListItem
@@ -229,7 +234,7 @@ class ShowResultsSidebar extends Component {
       <div>
         <div className={styles.listItemHeader}>
           <p>
-            {respondent.user ? respondent.user.name : respondent.anonymousName} <br />
+            {getRespondentDisplayName(respondent)} <br />
             <span className={styles.listItemSubText}>
               {(respondent.user ? respondent.user.email + ' • ' : '') + respondent.role}
             </span>
@@ -243,16 +248,11 @@ class ShowResultsSidebar extends Component {
 
   renderModalContents = () => {
     const { isModalOpen, selectedRespondent, selectedAction } = this.state;
+    const userName = getRespondentDisplayName(selectedRespondent);
 
     let title;
     let body;
     let actionButton;
-    let userName;
-    if (selectedRespondent) {
-      userName = selectedRespondent.user
-        ? selectedRespondent.user.name
-        : selectedRespondent.anonymousName;
-    }
 
     switch (selectedAction) {
       case 'clear':

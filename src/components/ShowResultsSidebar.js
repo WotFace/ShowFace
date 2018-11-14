@@ -10,7 +10,6 @@ import { getFirebaseUserInfo } from '../utils/auth';
 import {
   sortedRespondents,
   respondentToEmailOrName,
-  getRespondentName,
   getRespondentDisplayName,
 } from '../utils/response';
 import { ConfirmationDialog, DialogButton } from './helpers/MDCDialog';

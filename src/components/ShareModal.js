@@ -37,11 +37,11 @@ export default class ShareModal extends Component {
 
   sendInvites = () => {
     this.props.sendEmailInvites(this.state.emails);
+    this.setState({ emails: [] });
     this.setState({ sent: true });
     this.timeout = setTimeout(() => {
       this.setState({ sent: false });
-      this.setState({ emails: [] });
-    }, 800);
+    }, 2000);
   };
 
   render() {

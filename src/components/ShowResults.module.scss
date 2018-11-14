@@ -25,21 +25,25 @@ $sidebar-hidden-breakpoint: largephone;
     position: sticky;
   }
 
-  div.bottomBar {
+  #bottomBar {
     display: none;
   }
 }
 
-.bottomBarContent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-variant-numeric: tabular-nums;
+#bottomBar {
+  margin-top: 1em;
 
-  .mainText {
-    flex: 1;
-    margin: 0 1rem;
-    text-align: center;
-    word-break: break-word;
+  .bottomBarContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+
+    .mainText {
+      flex: 1;
+      margin: 0 1rem;
+      text-align: center;
+      word-break: break-word;
+    }
   }
 }

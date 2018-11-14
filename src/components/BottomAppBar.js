@@ -32,10 +32,11 @@ class BottomAppBar extends Component {
   };
 
   render() {
-    const { children, className } = this.props;
+    const { children, className, id } = this.props;
     const { isAtBottom } = this.state;
     return (
       <div
+        id={id}
         className={classnames(
           className,
           styles.barContainer,

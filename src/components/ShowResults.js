@@ -100,7 +100,7 @@ class ShowResults extends Component {
     }
 
     return (
-      <BottomAppBar className={styles.bottomBar}>
+      <BottomAppBar id={styles.bottomBar}>
         <div className={styles.bottomBarContent}>
           <IconButton onClick={this.handleDetailToggleClick}>
             <MaterialIcon icon={isShowingDetails ? 'grid_on' : 'format_list_bulleted'} />

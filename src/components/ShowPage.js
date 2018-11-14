@@ -144,22 +144,18 @@ class ShowPageComponent extends Component {
     this.props.addRespondentsByEmail(slug, emailsAndRoles);
   };
 
-  renderTabBar(responseAllowed, adminAccess) {
+  renderTabBar(responseAllowed) {
     const { location, history } = this.props;
-    const links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
+    const links = [
+      { text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` },
+      { text: 'Settings', icon: 'settings', path: `${this.meetingPageBaseUrl()}/settings` },
+    ];
+
     if (responseAllowed) {
       links.unshift({
         text: 'Respond',
         icon: 'add',
         path: `${this.meetingPageBaseUrl()}/respond`,
-      });
-    }
-
-    if (adminAccess) {
-      links.push({
-        text: 'Settings',
-        icon: 'settings',
-        path: `${this.meetingPageBaseUrl()}/settings`,
       });
     }
 
@@ -295,7 +291,7 @@ class ShowPageComponent extends Component {
             isAdmin={adminAccess}
           />
         </Modal>
-        {this.renderTabBar(responseAllowed, adminAccess)}
+        {this.renderTabBar(responseAllowed)}
         <section id="show">
           {lastPathComponent === 'respond' && (
             <ShowRespond
@@ -317,7 +313,12 @@ class ShowPageComponent extends Component {
             />
           )}
           {lastPathComponent === 'settings' && (
-            <EditShowPage show={show} updateShow={this.updateShowSettings} />
+            <EditShowPage
+              show={show}
+              updateShow={this.updateShowSettings}
+              accessAllowed={adminAccess}
+              isSignedIn={isSignedIn()}
+            />
           )}
         </section>
       </div>

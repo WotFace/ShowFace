@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
+import { withRouter } from 'react-router-dom';
 
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
@@ -11,6 +12,7 @@ import BottomAppBar from './BottomAppBar';
 import TimePicker from './TimePicker';
 
 import styles from './EditShowPage.module.scss';
+import errorStyles from './errorsLoaders/ErrorsLoaders.module.scss';
 
 class EditShowPage extends Component {
   constructor(props) {
@@ -106,50 +108,85 @@ class EditShowPage extends Component {
     );
   }
 
+  handleLogIn = () => {
+    // Show log in dialog/page, and make auth page redirect back to this page
+    const { history } = this.props;
+    history.push('/login', { from: history.location });
+  };
+
+  renderLoginPrompt = () => {
+    return (
+      <>
+        <h2>You're not logged in!</h2>
+        <div class={styles.textWithMargin}>Please log in to make changes to this poll.</div>
+        <Button onClick={this.handleLogIn} outlined>
+          Log In or Sign Up
+        </Button>
+      </>
+    );
+  };
+
   render() {
     const today = new Date();
     const { selectedDays, name } = this.state;
 
+    const contentIfAccessDisallowed = (
+      <section className={errorStyles.container}>
+        {this.props.isSignedIn ? (
+          <>
+            <h2>You're not the admin for this poll!</h2>
+            <div>Please contact the admin of the poll if you want to make changes.</div>
+          </>
+        ) : (
+          this.renderLoginPrompt()
+        )}
+      </section>
+    );
+
+    const contentIfAccessAllowed = (
+      <form>
+        <section className={styles.formSection}>
+          <p>Change the Meeting's name</p>
+          <TextField label="Change the Meeting's name" className={styles.formInput} outlined>
+            <Input
+              type="text"
+              name="name"
+              value={name}
+              autoComplete="off"
+              onChange={this.handleInputChange}
+            />
+          </TextField>
+        </section>
+        <section className={styles.formSection}>
+          <div className={styles.noFocus}>
+            <p>Change to one or more dates for your meeting.</p>
+            <DayPicker
+              fromMonth={today}
+              numberOfMonths={2}
+              disabledDays={{ before: today }}
+              selectedDays={selectedDays}
+              onDayClick={this.handleDayClick}
+            />
+          </div>
+        </section>
+        <p className={styles.center}>Update the start and end time for each day</p>
+        <TimePicker
+          updateStartTime={this.updateStartTime}
+          updateEndTime={this.updateEndTime}
+          interval={this.state.interval}
+          startTime={this.state.startTime}
+          endTime={this.state.endTime}
+        />
+        {this.renderBottomBar()}
+      </form>
+    );
+
     return (
       <div id={styles.pageContainer}>
-        <form>
-          <section className={styles.formSection}>
-            <p>Change the Meeting's name</p>
-            <TextField label="Change the Meeting's name" className={styles.formInput} outlined>
-              <Input
-                type="text"
-                name="name"
-                value={name}
-                autoComplete="off"
-                onChange={this.handleInputChange}
-              />
-            </TextField>
-          </section>
-          <section className={styles.formSection}>
-            <div className={styles.noFocus}>
-              <p>Change to one or more dates for your meeting.</p>
-              <DayPicker
-                fromMonth={today}
-                numberOfMonths={2}
-                disabledDays={{ before: today }}
-                selectedDays={selectedDays}
-                onDayClick={this.handleDayClick}
-              />
-            </div>
-          </section>
-          <p className={styles.center}>Update the start and end time for each day</p>
-          <TimePicker
-            updateStartTime={this.updateStartTime}
-            updateEndTime={this.updateEndTime}
-            interval={this.state.interval}
-            startTime={this.state.startTime}
-            endTime={this.state.endTime}
-          />
-          {this.renderBottomBar()}
-        </form>
+        {this.props.accessAllowed ? contentIfAccessAllowed : contentIfAccessDisallowed}
       </div>
     );
   }
 }
 
-export default EditShowPage;
+export default withRouter(EditShowPage);

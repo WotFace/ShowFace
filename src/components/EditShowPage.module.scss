@@ -21,6 +21,8 @@
 }
 
 #pageContainer {
+  position: relative;
+  min-height: 30vh;
   display: flex;
   flex-direction: column;
   padding-left: 1em;
@@ -49,4 +51,8 @@
 
 .center {
   text-align: center;
+}
+
+.textWithMargin {
+  margin-bottom: 20px;
 }

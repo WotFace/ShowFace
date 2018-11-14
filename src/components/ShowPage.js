@@ -144,7 +144,7 @@ class ShowPageComponent extends Component {
     this.props.addRespondentsByEmail(slug, emailsAndRoles);
   };
 
-  renderTabBar = (responseAllowed, adminAccess) => {
+  renderTabBar(responseAllowed, adminAccess) {
     const { location, history } = this.props;
     const links = [{ text: 'Results', icon: 'list', path: `${this.meetingPageBaseUrl()}/results` }];
     if (responseAllowed) {
@@ -183,9 +183,19 @@ class ShowPageComponent extends Component {
         </TabBar>
       </div>
     );
-  };
+  }
 
-  amIAdmin = () => {
+  isAnonymousMeeting() {
+    const show = this.latestShow();
+    const { respondents } = show;
+    // Find if any of the respondents are an admin
+    const admin = respondents.find((r) => r.role === 'admin');
+    return !admin;
+  }
+
+  amIAdmin() {
+    if (this.isAnonymousMeeting()) return true;
+
     const user = getFirebaseUserInfo();
     const email = user ? user.email : null;
     const show = this.latestShow();
@@ -194,15 +204,7 @@ class ShowPageComponent extends Component {
     const currentRespondent = respondents.find((r) => (r.user ? r.user.email : false) === email);
 
     return currentRespondent && currentRespondent.role === 'admin';
-  };
-
-  isAnonymous = () => {
-    const show = this.latestShow();
-    const { respondents } = show;
-    // Find if any of the respondents are an admin
-    const admin = respondents.find((r) => r.role === 'admin');
-    return !admin;
-  };
+  }
 
   render() {
     const { match, getShowResult, upsertResponsesResult } = this.props;

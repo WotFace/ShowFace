@@ -2,7 +2,7 @@
 
 // Above this height, the page content will be positioned absolutely in the
 // center of the page.
-$position-absolute-min-height: 42rem;
+$position-absolute-min-height: 47rem;
 
 .outerContainer {
   max-width: 20em;
@@ -23,6 +23,10 @@ $position-absolute-min-height: 42rem;
     flex-direction: column;
     padding: 1em;
   }
+}
+
+.backButtonContainer {
+  margin-bottom: 1.5rem;
 }
 
 .card {

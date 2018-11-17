@@ -12,7 +12,7 @@ import styles from './LoginPage.module.scss';
 export default class SocialLogin extends Component {
   fragments = {
     user: gql`
-      fragment LoginPage on User {
+      fragment LoginPageUser on User {
         id
         uid
         email
@@ -26,7 +26,7 @@ export default class SocialLogin extends Component {
   GET_USER_QUERY = gql`
     query user($auth: AuthInput!) {
       user(auth: $auth) {
-        ...LoginPage
+        ...LoginPageUser
       }
     }
     ${this.fragments.user}
@@ -35,45 +35,57 @@ export default class SocialLogin extends Component {
   CREATE_USER_MUTATION = gql`
     mutation CreateUser($name: String!, $email: String!, $auth: AuthInput!) {
       createUser(auth: $auth, data: { name: $name, email: $email }) {
-        id
+        ...LoginPageUser
       }
     }
+    ${this.fragments.user}
   `;
 
-  socialAuth(provider, client) {
-    var authInput = {};
-    var name = '';
-    var email = '';
+  EDIT_USER_MUTATION = gql`
+    mutation EditUser($name: String!, $auth: AuthInput!) {
+      editUserSettings(auth: $auth, data: { name: $name }) {
+        ...LoginPageUser
+      }
+    }
+    ${this.fragments.user}
+  `;
 
-    auth()
-      .signInWithPopup(provider)
-      .then(async (result) => {
-        this.props.onLogInStart();
-        authInput = await getAuthInput();
-        const { data } = await client.query({
-          query: this.GET_USER_QUERY,
-          variables: { auth: authInput },
-        });
-        name = result.user.displayName;
-        email = result.user.email;
-        return data.user;
-      })
-      .then(async (result) => {
-        if (result) {
-          return;
-        }
-        const auth = authInput;
-        const { data } = await client.mutate({
-          mutation: this.CREATE_USER_MUTATION,
-          variables: { name, email, auth },
-        });
-        return data;
-      })
-      .then(() => this.props.onLoggedIn())
-      .catch((error) => {
-        console.log('Error', error);
-        this.props.onLogInError(error);
+  async logIn(provider, client) {
+    this.props.onLogInStart();
+    try {
+      const authResult = await auth().signInWithPopup(provider);
+
+      // Get existing user info
+      const authInput = await getAuthInput();
+      const { data: existingData } = await client.query({
+        query: this.GET_USER_QUERY,
+        variables: { auth: authInput },
       });
+
+      // Signup or edit existing user as necessary.
+      const existingUser = existingData.user;
+      const name = authResult.user.displayName;
+      const email = authResult.user.email;
+
+      if (!existingUser) {
+        // New users have no user record with us
+        await client.mutate({
+          mutation: this.CREATE_USER_MUTATION,
+          variables: { name, email, auth: authInput },
+        });
+      } else if (!existingUser.name) {
+        // Invited users have null names
+        await client.mutate({
+          mutation: this.EDIT_USER_MUTATION,
+          variables: { name, auth: authInput },
+        });
+      }
+
+      this.props.onLoggedIn();
+    } catch (error) {
+      console.log('Social auth error', error);
+      this.props.onLogInError(error);
+    }
   }
 
   render() {
@@ -84,14 +96,14 @@ export default class SocialLogin extends Component {
             <Button
               id={styles.googleButton}
               icon={<img src={GoogleIcon} alt="Google logo" />}
-              onClick={() => this.socialAuth(googleAuthProvider, client)}
+              onClick={() => this.logIn(googleAuthProvider, client)}
             >
               Log in with Google
             </Button>
             <Button
               id={styles.facebookButton}
               icon={<img src={FacebookIcon} alt="Facebook logo" />}
-              onClick={() => this.socialAuth(facebookAuthProvider, client)}
+              onClick={() => this.logIn(facebookAuthProvider, client)}
             >
               Log in with Facebook
             </Button>

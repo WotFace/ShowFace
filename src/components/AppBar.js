@@ -160,7 +160,11 @@ class AppBar extends Component {
             A new version of ShowFace is available. Update now!
           </BoomzButton>
         )}
-        <div className={styles.container}>
+        <div
+          className={classnames(styles.container, {
+            [styles.blacklisted]: blacklisted,
+          })}
+        >
           {content}
           {menu}
         </div>

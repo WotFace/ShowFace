@@ -8,6 +8,10 @@ $menu-breakpoint: largephone;
   justify-content: space-between;
   margin: 1.5em 5% 1em 5%;
 
+  &.blacklisted {
+    margin: 0;
+  }
+
   @media (min-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
     margin-top: 3em;
     margin-bottom: 2em;

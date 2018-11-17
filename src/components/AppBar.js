@@ -112,11 +112,46 @@ class AppBar extends Component {
     // Don't render AppBar on blacklisted pages
     const { pathBlacklist } = this.props;
     const pathname = this.props.location.pathname.toLowerCase();
-    if (pathBlacklist.includes(pathname)) return null;
-
-    // TODO: Change buttons on login/signup/dashboard pages
-
+    const blacklisted = pathBlacklist.includes(pathname);
     const signedIn = isSignedIn();
+
+    const menu = (
+      <div
+        className={classnames(styles.menuContainer, 'mdc-menu-surface--anchor')}
+        ref={this.menuAnchorRef}
+      >
+        {/* Wrap button in div to fix React insertBefore crash on rerender */}
+        <div>
+          {blacklisted || (
+            <IconButton className={styles.menuButton} onClick={this.openMenu}>
+              <MaterialIcon icon="menu" />
+            </IconButton>
+          )}
+        </div>
+        <MenuSurface
+          className="mdc-menu"
+          open={this.state.isMenuOpen}
+          anchorCorner={Corner.TOP_LEFT}
+          onClose={this.closeMenu}
+          anchorElement={this.menuAnchorRef.current}
+        >
+          {signedIn ? this.renderDefaultSignedInMenuList() : this.renderDefaultSignedOutMenuList()}
+        </MenuSurface>
+      </div>
+    );
+
+    const content = blacklisted || (
+      <>
+        <Link to={signedIn ? '/dashboard' : '/'}>
+          <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
+        </Link>
+        <div className={styles.buttonContainer}>
+          {signedIn
+            ? this.renderDefaultSignedInButtonSet()
+            : this.renderDefaultSignedOutButtonSet()}
+        </div>
+      </>
+    );
 
     return (
       <>
@@ -126,33 +161,8 @@ class AppBar extends Component {
           </BoomzButton>
         )}
         <div className={styles.container}>
-          <Link to={signedIn ? '/dashboard' : '/'}>
-            <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
-          </Link>
-          <div className={styles.buttonContainer}>
-            {signedIn
-              ? this.renderDefaultSignedInButtonSet()
-              : this.renderDefaultSignedOutButtonSet()}
-          </div>
-          <div
-            className={classnames(styles.menuContainer, 'mdc-menu-surface--anchor')}
-            ref={this.menuAnchorRef}
-          >
-            <IconButton className={styles.menuButton} onClick={this.openMenu}>
-              <MaterialIcon icon="menu" />
-            </IconButton>
-            <MenuSurface
-              className="mdc-menu"
-              open={this.state.isMenuOpen}
-              anchorCorner={Corner.TOP_LEFT}
-              onClose={this.closeMenu}
-              anchorElement={this.menuAnchorRef.current}
-            >
-              {signedIn
-                ? this.renderDefaultSignedInMenuList()
-                : this.renderDefaultSignedOutMenuList()}
-            </MenuSurface>
-          </div>
+          {content}
+          {menu}
         </div>
       </>
     );

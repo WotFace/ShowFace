@@ -1,5 +1,9 @@
 @import '../mdc';
 
+// Above this height, the page content will be positioned absolutely in the
+// center of the page.
+$position-absolute-min-height: 42rem;
+
 .outerContainer {
   max-width: 20em;
   margin-left: auto;
@@ -7,7 +11,7 @@
   width: 100%;
 
   // Vertically center the login panels on taller viewports
-  @media (min-height: 38em) {
+  @media (min-height: $position-absolute-min-height) {
     position: absolute;
     top: 50%;
     left: 50%;

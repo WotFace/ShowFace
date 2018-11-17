@@ -11,12 +11,12 @@ import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import TextField, { Input } from '@material/react-text-field';
 
-import { auth } from '../firebase';
-import { getAuthInput } from '../utils/auth';
+import { auth } from '../../firebase';
+import { getAuthInput } from '../../utils/auth';
 import SocialLogin from './SocialLogin';
 
 import styles from './LoginPage.module.scss';
-import logo from '../logo.png';
+import logo from '../../logo.png';
 
 class LoginPage extends Component {
   LOGIN_TAB_IDX = 0;

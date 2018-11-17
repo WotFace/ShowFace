@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { ApolloConsumer } from 'react-apollo';
-import gql from 'graphql-tag';
-import { facebookAuthProvider, googleAuthProvider, auth } from '../firebase';
-import { getAuthInput } from '../utils/auth';
 import Button from '@material/react-button';
-import GoogleIcon from '../icons/google.svg';
-import FacebookIcon from '../icons/facebook.svg';
+import gql from 'graphql-tag';
+import { facebookAuthProvider, googleAuthProvider, auth } from '../../firebase';
+import { getAuthInput } from '../../utils/auth';
+
+import GoogleIcon from '../../icons/google.svg';
+import FacebookIcon from '../../icons/facebook.svg';
 import styles from './LoginPage.module.scss';
 
 export default class SocialLogin extends Component {

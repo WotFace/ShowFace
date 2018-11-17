@@ -7,7 +7,7 @@ import GoogleAnalytics from './components/GoogleAnalytics';
 import ShowPage from './components/ShowPage';
 import WelcomePage from './components/WelcomePage';
 import CreatePage from './components/CreatePage';
-import LoginPage from './components/LoginPage';
+import LoginPage from './components/auth/LoginPage';
 import DashboardPage from './components/DashboardPage';
 import NotFoundPage from './components/errorsLoaders/NotFoundPage';
 

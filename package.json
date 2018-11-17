@@ -39,7 +39,7 @@
     "pepjs": "^0.4.3",
     "query-string": "^6.2.0",
     "quickselect": "^2.0.0",
-    "react": "^16.6.0",
+    "react": "^16.6.3",
     "react-apollo": "^2.2.4",
     "react-copy-to-clipboard": "^5.0.1",
     "react-day-picker": "^7.2.4",

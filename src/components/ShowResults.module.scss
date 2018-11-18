@@ -4,10 +4,7 @@ $sidebar-hidden-breakpoint: largephone;
 
 .resultsContainer {
   display: flex;
-}
-
-.timeline {
-  flex: 1;
+  justify-content: center;
 }
 
 @media (max-width: mdc-layout-grid-breakpoint-min($sidebar-hidden-breakpoint) - 1) {

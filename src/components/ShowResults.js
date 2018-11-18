@@ -164,10 +164,12 @@ class ShowResults extends Component {
 
     // TODO: Deduplicate dates, startTime, endTime between ShowResults and ShowRespond
     return (
-      <div>
+      <>
         <div className={styles.resultsContainer}>
           <Timeline
-            className={classnames(styles.timeline, isShowingDetails ? styles.hiddenOnMobile : null)}
+            className={classnames({
+              [styles.hiddenOnMobile]: isShowingDetails,
+            })}
             dates={dates}
             startTime={startTime}
             endTime={endTime}
@@ -196,7 +198,7 @@ class ShowResults extends Component {
           </div>
         </div>
         {this.renderBottomBar(partitionedRespondents, bestTime)}
-      </div>
+      </>
     );
   }
 }

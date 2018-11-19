@@ -14,7 +14,6 @@ import { BoomzButton } from './BoomzButton';
 
 import sharedStyles from './SharedStyles.module.scss';
 import styles from './AppBar.module.scss';
-import logo from '../logo.png';
 
 class AppBar extends Component {
   state = {
@@ -143,7 +142,7 @@ class AppBar extends Component {
     const content = blacklisted || (
       <>
         <Link to={signedIn ? '/dashboard' : '/'}>
-          <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
+          <img className={styles.contentLogo} alt="ShowFace Logo" src="/img/logos/sf.png" />
         </Link>
         <div className={styles.buttonContainer}>
           {signedIn

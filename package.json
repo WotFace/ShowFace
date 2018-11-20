@@ -59,10 +59,10 @@
   },
   "devDependencies": {
     "classnames": "^2.2.6",
-    "eslint-config-prettier": "^3.1.0",
+    "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-prettier": "^3.0.0",
     "node-sass": "^4.9.4",
-    "prettier": "^1.14.3",
+    "prettier": "^1.15.2",
     "source-map-explorer": "^1.6.0"
   },
   "scripts": {

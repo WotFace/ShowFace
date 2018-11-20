@@ -220,16 +220,14 @@ class ShowPageComponent extends Component {
         return (
           <Error
             title="This meeting is private"
-            message="Contact the meeting&apos;s organizers to ask for an email invite"
+            message="Contact the meeting's organizers to ask for an email invite"
           />
         );
       }
       return <Error title="That didn&#39;t work" message={getShowError.message} />;
     } else if (upsertResponsesError) {
       console.log('Show upsert responses got upsertResponsesError', upsertResponsesError);
-      return (
-        <Error title="We couldn&apos;t save your changes" message={upsertResponsesError.message} />
-      );
+      return <Error title="We couldn't save your changes" message={upsertResponsesError.message} />;
     }
 
     const show = this.latestShow();
@@ -237,7 +235,7 @@ class ShowPageComponent extends Component {
     if (!show) {
       return (
         <Error
-          title="We couldn&apos;t find this poll"
+          title="We couldn't find this poll"
           message="Check if you entered the correct link."
         />
       );

@@ -62,9 +62,11 @@
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-prettier": "^3.0.0",
     "node-sass": "^4.9.4",
-    "prettier": "^1.14.3"
+    "prettier": "^1.14.3",
+    "source-map-explorer": "^1.6.0"
   },
   "scripts": {
+    "analyze": "source-map-explorer build/static/js/main.*",
     "start": "react-scripts start && cra-append-sw --mode dev ./src/sw-append.js",
     "build": "react-scripts build && cra-append-sw ./src/sw-append.js",
     "test": "react-scripts test --env=jsdom",

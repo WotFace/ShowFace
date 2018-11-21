@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
-import QuickCreate from './QuickCreate';
 import { NavLink } from 'react-router-dom';
 import MaterialIcon from '@material/react-material-icon';
 import Button from '@material/react-button';
 import classnames from 'classnames';
 import Slider from 'react-slick';
 
+import QuickCreate from '../QuickCreate';
+
 import styles from './WelcomePage.module.scss';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import slider1 from '../screen.png';
-import slider2 from '../screen2.png';
-import slider3 from '../screen3.png';
-import slider4 from '../screen4.png';
+import slider1 from '../../screen.png';
+import slider2 from '../../screen2.png';
+import slider3 from '../../screen3.png';
+import slider4 from '../../screen4.png';
 
 class WelcomePage extends Component {
   render() {

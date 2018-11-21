@@ -6,10 +6,10 @@ import GoogleAnalytics from './components/GoogleAnalytics';
 import Loading from './components/errorsLoaders/Loading';
 
 const ShowPage = lazy(() => import('./components/ShowPage'));
-const WelcomePage = lazy(() => import('./components/WelcomePage'));
-const CreatePage = lazy(() => import('./components/CreatePage'));
+const WelcomePage = lazy(() => import('./components/welcome/WelcomePage'));
+const CreatePage = lazy(() => import('./components/create/CreatePage'));
 const LoginPage = lazy(() => import('./components/auth/LoginPage'));
-const DashboardPage = lazy(() => import('./components/DashboardPage'));
+const DashboardPage = lazy(() => import('./components/dashboard/DashboardPage'));
 const NotFoundPage = lazy(() => import('./components/errorsLoaders/NotFoundPage'));
 
 const Routes = () => (

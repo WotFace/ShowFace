@@ -6,7 +6,7 @@ import Select from '@material/react-select';
 import _ from 'lodash';
 
 import styles from './TimePicker.module.scss';
-import containerStyles from './CreatePage.module.scss';
+import containerStyles from '../create/CreatePage.module.scss'; // TODO: Refactor so that CreatePage actually handles create page layout and styles
 
 class TimePicker extends Component {
   constructor(props) {

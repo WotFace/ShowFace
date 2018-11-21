@@ -9,7 +9,7 @@ import TextField, { Input } from '@material/react-text-field';
 
 import { cleanName } from '../utils/string';
 import BottomAppBar from './BottomAppBar';
-import TimePicker from './TimePicker';
+import TimePicker from './common/TimePicker';
 
 import styles from './EditShowPage.module.scss';
 import errorStyles from './errorsLoaders/ErrorsLoaders.module.scss';

@@ -12,11 +12,11 @@ import Card from '@material/react-card';
 import MaterialIcon from '@material/react-material-icon';
 import TextField, { Input } from '@material/react-text-field';
 
-import { getAuthInput } from '../utils/auth';
-import { cleanName } from '../utils/string';
-import Loading from './errorsLoaders/Loading';
-import BottomAppBar from './BottomAppBar';
-import TimePicker from './TimePicker';
+import { getAuthInput } from '../../utils/auth';
+import { cleanName } from '../../utils/string';
+import Loading from '../errorsLoaders/Loading';
+import BottomAppBar from '../BottomAppBar';
+import TimePicker from '../common/TimePicker';
 
 import styles from './CreatePage.module.scss';
 

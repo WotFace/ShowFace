@@ -5,15 +5,16 @@ import Card from '@material/react-card';
 import classnames from 'classnames';
 import { format } from 'date-fns';
 import _ from 'lodash';
-import { getFirebaseUserInfo, isSignedIn } from '../utils/auth';
-import AuthenticatedQuery from './AuthenticatedQuery';
-import { datifyShowsResponse } from '../utils/datetime';
-import { userShowsToDict } from '../utils/userShows';
-import Loading from './errorsLoaders/Loading';
-import Error from './errorsLoaders/Error';
-import QuickCreate from './QuickCreate';
 
-import sharedStyles from '../styles/SharedStyles.module.scss';
+import { getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
+import { datifyShowsResponse } from '../../utils/datetime';
+import { userShowsToDict } from '../../utils/userShows';
+import Loading from '../errorsLoaders/Loading';
+import Error from '../errorsLoaders/Error';
+import AuthenticatedQuery from '../AuthenticatedQuery';
+import QuickCreate from '../QuickCreate';
+
+import sharedStyles from '../../styles/SharedStyles.module.scss';
 import styles from './DashboardPage.module.scss';
 
 const dateFormat = 'D MMM YYYY hh:mmA';

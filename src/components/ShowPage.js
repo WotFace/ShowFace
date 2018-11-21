@@ -581,8 +581,15 @@ function ShowPageWithQueries(props) {
                                   upsertResponses={async (slug, name, email, responses) => {
                                     // N.B. We don't pass in auth if user wants to use name instead.
                                     const auth = name ? null : await getAuthInput();
+                                    const variables = { slug, responses };
+                                    if (auth) {
+                                      variables.auth = auth;
+                                      variables.email = email;
+                                    } else {
+                                      variables.name = name;
+                                    }
                                     upsertResponses({
-                                      variables: { slug, name, email, auth, responses },
+                                      variables,
                                       optimisticResponse: getOptimisticResponseForUpsertResponses(
                                         name,
                                         email,

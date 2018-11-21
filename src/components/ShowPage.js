@@ -530,7 +530,7 @@ function getOptimisticResponseForShow(name, email, responses, show) {
         id: 'optimisticRespondent',
         anonymousName: name,
         user,
-        role: 'Member',
+        role: 'member',
         response: responses,
       },
     ];
@@ -555,6 +555,93 @@ function getOptimisticResponseForUpsertResponses(name, email, responses, getShow
   return {
     __typename: 'Mutation',
     _upsertResponse: getOptimisticResponseForShow(name, email, responses, show),
+  };
+}
+
+function getOptimisticResponseForDeleteResponse(id, getShowResult) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  const { respondents } = show;
+
+  const index = respondents.findIndex(function(a) {
+    return a.id === id;
+  });
+
+  if (index === -1) {
+    return null;
+  }
+
+  const newRespondents = update(respondents, {
+    [index]: {
+      response: { $set: [] },
+    },
+  });
+
+  return {
+    __typename: 'Mutation',
+    deleteResponse: {
+      __typename: 'Show',
+      ...show,
+      respondents: newRespondents,
+    },
+  };
+}
+
+function getOptimisticResponseForDeleteRespondents(id, getShowResult) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  const { respondents } = show;
+  const index = respondents.findIndex(function(a) {
+    return a.id === id;
+  });
+
+  if (index === -1) {
+    return null;
+  }
+
+  const newRespondents = update(respondents, {
+    $splice: [[index, 1]],
+  });
+
+  return {
+    __typename: 'Mutation',
+    deleteResponse: {
+      __typename: 'Show',
+      respondents: newRespondents,
+    },
+  };
+}
+
+function getOptimisticResponseForEditShowRespondentStatus(
+  id,
+  role,
+  isKeyRespondent,
+  getShowResult,
+) {
+  const show = getShowResult.data && getShowResult.data.show;
+  if (!show) return null;
+  const { respondents } = show;
+  const index = respondents.findIndex(function(a) {
+    return a.id === id;
+  });
+
+  if (index === -1) {
+    return null;
+  }
+
+  const newRespondents = update(respondents, {
+    [index]: {
+      role: { $set: role },
+      isKeyRespondent: { $set: isKeyRespondent },
+    },
+  });
+
+  return {
+    __typename: 'Mutation',
+    deleteResponse: {
+      __typename: 'Show',
+      respondents: newRespondents,
+    },
   };
 }
 
@@ -606,6 +693,10 @@ function ShowPageWithQueries(props) {
                                     const auth = await getAuthInput();
                                     deleteResponse({
                                       variables: { slug, id, auth },
+                                      optimisticResponse: getOptimisticResponseForDeleteResponse(
+                                        id,
+                                        getShowResult,
+                                      ),
                                     });
                                   }}
                                   deleteResponseResult={deleteResponseResult}
@@ -613,6 +704,10 @@ function ShowPageWithQueries(props) {
                                     const auth = await getAuthInput();
                                     deleteRespondents({
                                       variables: { slug, id, auth },
+                                      optimisticResponse: getOptimisticResponseForDeleteRespondents(
+                                        id,
+                                        getShowResult,
+                                      ),
                                     });
                                   }}
                                   deleteRespondentsResult={deleteRespondentsResult}
@@ -625,6 +720,12 @@ function ShowPageWithQueries(props) {
                                     const auth = await getAuthInput();
                                     editShowRespondentStatus({
                                       variables: { slug, id, role, isKeyRespondent, auth },
+                                      optimisticResponse: getOptimisticResponseForEditShowRespondentStatus(
+                                        id,
+                                        role,
+                                        isKeyRespondent,
+                                        getShowResult,
+                                      ),
                                     });
                                   }}
                                   editShowRespondentStatusResult={editShowRespondentStatusResult}

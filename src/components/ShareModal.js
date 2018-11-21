@@ -11,8 +11,8 @@ import TabBar from '@material/react-tab-bar';
 import WhatsAppIcon from '../icons/whatsapp.svg'; // https://fontawesome.com/icons/whatsapp?style=brands
 import TelegramIcon from '../icons/telegram.svg'; // https://fontawesome.com/icons/facebook-messenger?style=brands
 import { ReactMultiEmail } from 'react-multi-email';
-import './MultiEmailOverride.scss';
-import sharedStyles from './SharedStyles.module.scss';
+import '../styles/MultiEmailOverride.scss';
+import sharedStyles from '../styles/SharedStyles.module.scss';
 import styles from './ShareModal.module.scss';
 
 class ShareModal extends Component {

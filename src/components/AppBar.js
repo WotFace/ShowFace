@@ -12,7 +12,7 @@ import { isSignedIn } from '../utils/auth';
 import { auth } from '../firebase';
 import { BoomzButton } from './BoomzButton';
 
-import sharedStyles from './SharedStyles.module.scss';
+import sharedStyles from '../styles/SharedStyles.module.scss';
 import styles from './AppBar.module.scss';
 
 class AppBar extends Component {

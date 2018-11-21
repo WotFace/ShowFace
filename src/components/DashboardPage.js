@@ -13,7 +13,7 @@ import Loading from './errorsLoaders/Loading';
 import Error from './errorsLoaders/Error';
 import QuickCreate from './QuickCreate';
 
-import sharedStyles from './SharedStyles.module.scss';
+import sharedStyles from '../styles/SharedStyles.module.scss';
 import styles from './DashboardPage.module.scss';
 
 const dateFormat = 'D MMM YYYY hh:mmA';

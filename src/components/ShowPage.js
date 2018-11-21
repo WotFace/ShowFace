@@ -5,22 +5,24 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
+import Modal from 'react-modal';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
+
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
-import AuthenticatedQuery from './AuthenticatedQuery';
 import { datifyShowResponse } from '../utils/datetime';
+
 import Loading from './errorsLoaders/Loading';
 import Error from './errorsLoaders/Error';
+import AuthenticatedQuery from './AuthenticatedQuery';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';
-import Modal from 'react-modal';
-import './ReactModalOverride.scss';
 import EditShowPage from './EditShowPage';
 
+import '../styles/ReactModalOverride.scss';
 import styles from './ShowPage.module.scss';
 
 class ShowPageComponent extends Component {

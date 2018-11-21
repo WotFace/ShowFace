@@ -11,10 +11,10 @@ import styles from './WelcomePage.module.scss';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import slider1 from '../../screen.png';
-import slider2 from '../../screen2.png';
-import slider3 from '../../screen3.png';
-import slider4 from '../../screen4.png';
+import slider1 from './img/screen.png';
+import slider2 from './img/screen2.png';
+import slider3 from './img/screen3.png';
+import slider4 from './img/screen4.png';
 
 class WelcomePage extends Component {
   render() {

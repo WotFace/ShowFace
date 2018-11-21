@@ -5,8 +5,8 @@ import gql from 'graphql-tag';
 import { facebookAuthProvider, googleAuthProvider, auth } from '../../firebase';
 import { getAuthInput } from '../../utils/auth';
 
-import GoogleIcon from '../../icons/google.svg';
-import FacebookIcon from '../../icons/facebook.svg';
+import GoogleIcon from '../../img/icons/google.svg';
+import FacebookIcon from '../../img/icons/facebook.svg';
 import styles from './LoginPage.module.scss';
 
 export default class SocialLogin extends Component {

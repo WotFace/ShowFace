@@ -8,8 +8,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
-import WhatsAppIcon from '../../icons/whatsapp.svg'; // https://fontawesome.com/icons/whatsapp?style=brands
-import TelegramIcon from '../../icons/telegram.svg'; // https://fontawesome.com/icons/facebook-messenger?style=brands
+import WhatsAppIcon from '../../img/icons/whatsapp.svg'; // https://fontawesome.com/icons/whatsapp?style=brands
+import TelegramIcon from '../../img/icons/telegram.svg'; // https://fontawesome.com/icons/facebook-messenger?style=brands
 import { ReactMultiEmail } from 'react-multi-email';
 import '../../styles/MultiEmailOverride.scss';
 import sharedStyles from '../../styles/SharedStyles.module.scss';

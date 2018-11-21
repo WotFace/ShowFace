@@ -3,15 +3,15 @@ import IconButton from '@material/react-icon-button';
 import MaterialIcon from '@material/react-material-icon';
 import { format } from 'date-fns';
 import classnames from 'classnames';
-import { bestMeetings } from '../utils/bestTime';
+import { bestMeetings } from '../../utils/bestTime';
 import {
   respondentToEmailOrName,
   respondentsToDict,
   partitionRespondentsAtTime,
   partitionRespondentsByAttendance,
-} from '../utils/response';
+} from '../../utils/response';
+import BottomAppBar from '../BottomAppBar';
 import Timeline from './Timeline';
-import BottomAppBar from './BottomAppBar';
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';
 

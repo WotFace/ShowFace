@@ -4,10 +4,10 @@ import Button from '@material/react-button';
 import Card from '@material/react-card';
 import TextField, { Input } from '@material/react-text-field';
 import classnames from 'classnames';
-import { cleanName } from '../utils/string';
-import Divider from './Divider';
+import { cleanName } from '../../utils/string';
+import Divider from '../Divider';
 
-import sharedStyles from '../styles/SharedStyles.module.scss';
+import sharedStyles from '../../styles/SharedStyles.module.scss';
 import styles from './PollRespondNameForm.module.scss';
 
 class PollRespondNameForm extends Component {

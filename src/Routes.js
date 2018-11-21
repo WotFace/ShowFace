@@ -5,7 +5,7 @@ import AppBar from './components/AppBar';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import Loading from './components/errorsLoaders/Loading';
 
-const ShowPage = lazy(() => import('./components/ShowPage'));
+const ShowPage = lazy(() => import('./components/meeting/ShowPage'));
 const WelcomePage = lazy(() => import('./components/welcome/WelcomePage'));
 const CreatePage = lazy(() => import('./components/create/CreatePage'));
 const LoginPage = lazy(() => import('./components/auth/LoginPage'));

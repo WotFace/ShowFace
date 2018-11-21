@@ -6,14 +6,14 @@ import MenuSurface, { Corner } from '@material/react-menu-surface';
 import List, { ListItem, ListItemText, ListItemGraphic } from '@material/react-list';
 import classnames from 'classnames';
 import _ from 'lodash';
-import { getFirebaseUserInfo } from '../utils/auth';
+import { getFirebaseUserInfo } from '../../utils/auth';
 import {
   sortedRespondents,
   respondentToEmailOrName,
   getRespondentDisplayName,
-} from '../utils/response';
-import { ConfirmationDialog, DialogButton } from './helpers/MDCDialog';
-import Divider from './Divider';
+} from '../../utils/response';
+import { ConfirmationDialog, DialogButton } from '../helpers/MDCDialog';
+import Divider from '../Divider';
 import styles from './ShowResultsSidebar.module.scss';
 
 class ShowResultsSidebar extends Component {

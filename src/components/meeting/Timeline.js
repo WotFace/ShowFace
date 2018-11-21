@@ -3,10 +3,10 @@ import classnames from 'classnames';
 import { isWithinRange, differenceInMinutes, addMinutes, format } from 'date-fns';
 import _ from 'lodash';
 import memoize from 'memoize-one';
-import { respondentsToDict } from '../utils/response';
-import DateMap from '../utils/DateMap';
-import { disableMobileScroll, enableMobileScroll } from '../utils/scrollToggle';
-import HoldableDiv from './helpers/HoldableDiv';
+import { respondentsToDict } from '../../utils/response';
+import DateMap from '../../utils/DateMap';
+import { disableMobileScroll, enableMobileScroll } from '../../utils/scrollToggle';
+import HoldableDiv from '../helpers/HoldableDiv';
 import styles from './Timeline.module.scss';
 
 // Return start times between 2 times

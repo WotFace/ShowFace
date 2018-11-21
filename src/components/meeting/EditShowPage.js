@@ -7,12 +7,12 @@ import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import TextField, { Input } from '@material/react-text-field';
 
-import { cleanName } from '../utils/string';
-import BottomAppBar from './BottomAppBar';
-import TimePicker from './common/TimePicker';
+import { cleanName } from '../../utils/string';
+import BottomAppBar from '../BottomAppBar';
+import TimePicker from '../common/TimePicker';
 
 import styles from './EditShowPage.module.scss';
-import errorStyles from './errorsLoaders/ErrorsLoaders.module.scss';
+import errorStyles from '../errorsLoaders/ErrorsLoaders.module.scss';
 
 class EditShowPage extends Component {
   constructor(props) {

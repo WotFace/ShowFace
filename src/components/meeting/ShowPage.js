@@ -11,18 +11,18 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import update from 'immutability-helper';
 
-import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../utils/auth';
-import { datifyShowResponse } from '../utils/datetime';
+import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
+import { datifyShowResponse } from '../../utils/datetime';
 
-import Loading from './errorsLoaders/Loading';
-import Error from './errorsLoaders/Error';
-import AuthenticatedQuery from './AuthenticatedQuery';
+import Loading from '../errorsLoaders/Loading';
+import Error from '../errorsLoaders/Error';
+import AuthenticatedQuery from '../AuthenticatedQuery';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';
 import EditShowPage from './EditShowPage';
 
-import '../styles/ReactModalOverride.scss';
+import '../../styles/ReactModalOverride.scss';
 import styles from './ShowPage.module.scss';
 
 class ShowPageComponent extends Component {

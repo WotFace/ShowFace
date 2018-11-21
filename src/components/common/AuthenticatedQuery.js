@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { auth } from '../firebase';
-import { getAuthInput } from '../utils/auth';
+import { auth } from '../../firebase';
+import { getAuthInput } from '../../utils/auth';
 import { Redirect } from 'react-router-dom';
 
 // Wrapper around the Query component that automatically injects an auth

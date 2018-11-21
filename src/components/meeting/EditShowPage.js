@@ -8,11 +8,11 @@ import MaterialIcon from '@material/react-material-icon';
 import TextField, { Input } from '@material/react-text-field';
 
 import { cleanName } from '../../utils/string';
-import BottomAppBar from '../BottomAppBar';
+import BottomAppBar from '../common/BottomAppBar';
 import TimePicker from '../common/TimePicker';
 
 import styles from './EditShowPage.module.scss';
-import errorStyles from '../errorsLoaders/ErrorsLoaders.module.scss';
+import errorStyles from '../common/errors-loaders/ErrorsLoaders.module.scss';
 
 class EditShowPage extends Component {
   constructor(props) {

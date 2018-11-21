@@ -10,7 +10,7 @@ import {
   partitionRespondentsAtTime,
   partitionRespondentsByAttendance,
 } from '../../utils/response';
-import BottomAppBar from '../BottomAppBar';
+import BottomAppBar from '../common/BottomAppBar';
 import Timeline from './Timeline';
 import ShowResultsSidebar from './ShowResultsSidebar';
 import styles from './ShowResults.module.scss';

@@ -14,8 +14,8 @@ import TextField, { Input } from '@material/react-text-field';
 
 import { getAuthInput } from '../../utils/auth';
 import { cleanName } from '../../utils/string';
-import Loading from '../errorsLoaders/Loading';
-import BottomAppBar from '../BottomAppBar';
+import Loading from '../common/errors-loaders/Loading';
+import BottomAppBar from '../common/BottomAppBar';
 import TimePicker from '../common/TimePicker';
 
 import styles from './CreatePage.module.scss';

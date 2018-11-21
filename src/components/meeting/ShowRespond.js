@@ -6,7 +6,7 @@ import { auth } from '../../firebase';
 import { anonNameToId } from '../../utils/response';
 import { getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
 import { setRespondName } from '../../actions/userData';
-import BottomAppBar from '../BottomAppBar';
+import BottomAppBar from '../common/BottomAppBar';
 import Timeline from './Timeline';
 import PollRespondNameForm from './PollRespondNameForm';
 import styles from './ShowRespond.module.scss';

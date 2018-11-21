@@ -1,16 +1,16 @@
 import React, { Suspense, lazy } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import AppBar from './components/AppBar';
-import GoogleAnalytics from './components/GoogleAnalytics';
-import Loading from './components/errorsLoaders/Loading';
+import AppBar from './components/common/AppBar';
+import GoogleAnalytics from './components/common/GoogleAnalytics';
+import Loading from './components/common/errors-loaders/Loading';
 
 const ShowPage = lazy(() => import('./components/meeting/ShowPage'));
 const WelcomePage = lazy(() => import('./components/welcome/WelcomePage'));
 const CreatePage = lazy(() => import('./components/create/CreatePage'));
 const LoginPage = lazy(() => import('./components/auth/LoginPage'));
 const DashboardPage = lazy(() => import('./components/dashboard/DashboardPage'));
-const NotFoundPage = lazy(() => import('./components/errorsLoaders/NotFoundPage'));
+const NotFoundPage = lazy(() => import('./components/common/errors-loaders/NotFoundPage'));
 
 const Routes = () => (
   <>

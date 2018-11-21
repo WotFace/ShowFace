@@ -6,7 +6,7 @@ import memoize from 'memoize-one';
 import { respondentsToDict } from '../../utils/response';
 import DateMap from '../../utils/DateMap';
 import { disableMobileScroll, enableMobileScroll } from '../../utils/scrollToggle';
-import HoldableDiv from '../helpers/HoldableDiv';
+import HoldableDiv from '../common/HoldableDiv';
 import styles from './Timeline.module.scss';
 
 // Return start times between 2 times

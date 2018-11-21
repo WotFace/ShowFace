@@ -12,8 +12,8 @@ import {
   respondentToEmailOrName,
   getRespondentDisplayName,
 } from '../../utils/response';
-import { ConfirmationDialog, DialogButton } from '../helpers/MDCDialog';
-import Divider from '../Divider';
+import { ConfirmationDialog, DialogButton } from '../common/MDCDialog';
+import Divider from '../common/Divider';
 import styles from './ShowResultsSidebar.module.scss';
 
 class ShowResultsSidebar extends Component {

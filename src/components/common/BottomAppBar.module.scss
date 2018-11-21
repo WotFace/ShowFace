@@ -1,6 +1,6 @@
 @import '~@material/elevation/mdc-elevation';
 @import '~@material/card/mdc-card';
-@import '../styles/mdc-variables';
+@import '../../styles/mdc-variables';
 
 .stuck {
   @include mdc-elevation(6);

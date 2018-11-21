@@ -9,10 +9,10 @@ import _ from 'lodash';
 import { getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
 import { datifyShowsResponse } from '../../utils/datetime';
 import { userShowsToDict } from '../../utils/userShows';
-import Loading from '../errorsLoaders/Loading';
-import Error from '../errorsLoaders/Error';
-import AuthenticatedQuery from '../AuthenticatedQuery';
-import QuickCreate from '../QuickCreate';
+import Loading from '../common/errors-loaders/Loading';
+import Error from '../common/errors-loaders/Error';
+import AuthenticatedQuery from '../common/AuthenticatedQuery';
+import QuickCreate from '../common/QuickCreate';
 
 import sharedStyles from '../../styles/SharedStyles.module.scss';
 import styles from './DashboardPage.module.scss';

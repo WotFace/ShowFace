@@ -5,7 +5,7 @@ import Button from '@material/react-button';
 import classnames from 'classnames';
 import Slider from 'react-slick';
 
-import QuickCreate from '../QuickCreate';
+import QuickCreate from '../common/QuickCreate';
 
 import styles from './WelcomePage.module.scss';
 import 'slick-carousel/slick/slick.css';

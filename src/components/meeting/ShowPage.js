@@ -14,9 +14,9 @@ import update from 'immutability-helper';
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
 import { datifyShowResponse } from '../../utils/datetime';
 
-import Loading from '../errorsLoaders/Loading';
-import Error from '../errorsLoaders/Error';
-import AuthenticatedQuery from '../AuthenticatedQuery';
+import Loading from '../common/errors-loaders/Loading';
+import Error from '../common/errors-loaders/Error';
+import AuthenticatedQuery from '../common/AuthenticatedQuery';
 import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';

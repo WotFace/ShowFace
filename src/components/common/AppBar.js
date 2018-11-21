@@ -7,12 +7,12 @@ import IconButton from '@material/react-icon-button';
 import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import classnames from 'classnames';
-import { updateServiceWorker } from '../serviceWorker';
-import { isSignedIn } from '../utils/auth';
-import { auth } from '../firebase';
+import { updateServiceWorker } from '../../serviceWorker';
+import { isSignedIn } from '../../utils/auth';
+import { auth } from '../../firebase';
 import { BoomzButton } from './BoomzButton';
 
-import sharedStyles from '../styles/SharedStyles.module.scss';
+import sharedStyles from '../../styles/SharedStyles.module.scss';
 import styles from './AppBar.module.scss';
 
 class AppBar extends Component {

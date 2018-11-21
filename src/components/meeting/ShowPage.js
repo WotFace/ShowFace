@@ -8,7 +8,6 @@ import TabBar from '@material/react-tab-bar';
 import Modal from 'react-modal';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import _ from 'lodash';
 import update from 'immutability-helper';
 
 import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
@@ -21,6 +20,7 @@ import ShowRespond from './ShowRespond';
 import ShowResults from './ShowResults';
 import ShareModal from './ShareModal';
 import EditShowPage from './EditShowPage';
+import { respondentFragment, showWithoutRespondentsFragment, showFragment } from './fragments';
 
 import '../../styles/ReactModalOverride.scss';
 import styles from './ShowPage.module.scss';
@@ -54,12 +54,6 @@ class ShowPageComponent extends Component {
     this.setState({ isInviteModalOpen: false, modalHeadline: null });
   }
 
-  canSubmit(name) {
-    const show = this.latestShow();
-    if ((!name && !isSignedIn()) || !show) return false;
-    return true;
-  }
-
   latestShow() {
     const { getShowResult } = this.props;
     if (getShowResult.data && getShowResult.data.show) return getShowResult.data.show;
@@ -69,34 +63,6 @@ class ShowPageComponent extends Component {
   handleSetName = (isSet) => {
     this.setState({ hasSetName: isSet });
   };
-
-  handleSelectDeselectTimes(startTimes, name, isSelect) {
-    if (!this.canSubmit(name)) return;
-
-    const user = getFirebaseUserInfo();
-    const email = user ? user.email : null;
-    const show = this.latestShow();
-    const { respondents, slug } = show;
-
-    // Find current respondent by anonymousName if name is supplied,
-    // if not find by current user's email
-    const currentRespondent = name
-      ? respondents.find((r) => r.anonymousName === name)
-      : respondents.find((r) => (r.user ? r.user.email : false) === email);
-    const responses = currentRespondent ? currentRespondent.response : [];
-    const responsesTimestamps = responses.map((r) => new Date(r).getTime()); // Create Dates as some are strings
-    const startTimestamps = startTimes.map((r) => r.getTime());
-
-    let newResponseTimestamps;
-    if (isSelect) {
-      newResponseTimestamps = _.uniq([...responsesTimestamps, ...startTimestamps]);
-    } else {
-      newResponseTimestamps = responsesTimestamps.filter((r) => !startTimestamps.includes(r));
-    }
-
-    const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
-    this.props.upsertResponses(slug, name, email, newResponses);
-  }
 
   handleLogIn = () => {
     // Show log in dialog/page, and make auth page redirect back to this page
@@ -114,10 +80,6 @@ class ShowPageComponent extends Component {
       </>
     );
   };
-
-  handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
-  handleDeselectTimes = (startTimes, name) =>
-    this.handleSelectDeselectTimes(startTimes, name, false);
 
   handleDeleteRespondents = (id) => {
     const slug = this.props.match.params.showId;
@@ -205,10 +167,9 @@ class ShowPageComponent extends Component {
   }
 
   render() {
-    const { match, getShowResult, upsertResponsesResult } = this.props;
+    const { match, getShowResult } = this.props;
     const { hasSetName } = this.state;
     const { loading: getShowLoading, error: getShowError } = getShowResult;
-    const { loading: upsertResponsesLoading, error: upsertResponsesError } = upsertResponsesResult;
 
     if (getShowLoading) {
       return <Loading />;
@@ -227,9 +188,6 @@ class ShowPageComponent extends Component {
         );
       }
       return <Error title="That didn&#39;t work" message={getShowError.message} />;
-    } else if (upsertResponsesError) {
-      console.log('Show upsert responses got upsertResponsesError', upsertResponsesError);
-      return <Error title="We couldn't save your changes" message={upsertResponsesError.message} />;
     }
 
     const show = this.latestShow();
@@ -295,14 +253,7 @@ class ShowPageComponent extends Component {
         {this.renderTabBar(responseAllowed)}
         <section id="show">
           {lastPathComponent === 'respond' && (
-            <ShowRespond
-              show={show}
-              hasSetName={hasSetName}
-              onSetName={this.handleSetName}
-              onSelectTimes={this.handleSelectTimes}
-              onDeselectTimes={this.handleDeselectTimes}
-              isSaving={upsertResponsesLoading}
-            />
+            <ShowRespond show={show} hasSetName={hasSetName} onSetName={this.handleSetName} />
           )}
           {lastPathComponent === 'results' && (
             <ShowResults
@@ -327,74 +278,13 @@ class ShowPageComponent extends Component {
   }
 }
 
-ShowPageComponent.fragments = {
-  respondent: gql`
-    fragment ShowPageShowRespondent on Respondent {
-      id
-      anonymousName
-      user {
-        email
-        name
-        uid
-      }
-      role
-      response
-    }
-  `,
-  showWithoutRespondents: gql`
-    fragment ShowWithoutRespondents on Show {
-      id
-      slug
-      name
-      isPrivate
-      isReadOnly
-      areResponsesHidden
-      dates
-      startTime
-      endTime
-      interval
-    }
-  `,
-  show: gql`
-    fragment ShowPageShow on Show {
-      ...ShowWithoutRespondents
-      respondents {
-        ...ShowPageShowRespondent
-      }
-    }
-  `,
-};
-
 const GET_SHOW_QUERY = gql`
   query Show($slug: String!, $auth: AuthInput) {
     show(where: { slug: $slug }, auth: $auth) {
-      ...ShowPageShow
+      ...ShowFragment
     }
   }
-  ${ShowPageComponent.fragments.show}
-  ${ShowPageComponent.fragments.showWithoutRespondents}
-  ${ShowPageComponent.fragments.respondent}
-`;
-
-const UPSERT_RESPONSES_MUTATION = gql`
-  mutation UpsertResponse(
-    $slug: String!
-    $name: String
-    $email: String
-    $auth: AuthInput
-    $responses: [DateTime!]
-  ) {
-    _upsertResponse(
-      where: { slug: $slug, name: $name, email: $email }
-      data: { response: $responses }
-      auth: $auth
-    ) {
-      ...ShowPageShow
-    }
-  }
-  ${ShowPageComponent.fragments.show}
-  ${ShowPageComponent.fragments.showWithoutRespondents}
-  ${ShowPageComponent.fragments.respondent}
+  ${showFragment}
 `;
 
 const EDIT_SHOW_RESPONDENT_STATUS = gql`
@@ -412,11 +302,11 @@ const EDIT_SHOW_RESPONDENT_STATUS = gql`
     ) {
       id
       respondents {
-        ...ShowPageShowRespondent
+        ...RespondentFragment
       }
     }
   }
-  ${ShowPageComponent.fragments.respondent}
+  ${respondentFragment}
 `;
 
 const DELETE_RESPONDENTS = gql`
@@ -424,11 +314,11 @@ const DELETE_RESPONDENTS = gql`
     deleteRespondents(auth: $auth, where: { slug: $slug, id: $id }) {
       id
       respondents {
-        ...ShowPageShowRespondent
+        ...RespondentFragment
       }
     }
   }
-  ${ShowPageComponent.fragments.respondent}
+  ${respondentFragment}
 `;
 
 const DELETE_RESPONSE = gql`
@@ -436,11 +326,11 @@ const DELETE_RESPONSE = gql`
     deleteResponse(auth: $auth, where: { slug: $slug, id: $id }) {
       id
       respondents {
-        ...ShowPageShowRespondent
+        ...RespondentFragment
       }
     }
   }
-  ${ShowPageComponent.fragments.respondent}
+  ${respondentFragment}
 `;
 
 const EDIT_SHOW_SETTINGS = gql`
@@ -464,10 +354,10 @@ const EDIT_SHOW_SETTINGS = gql`
         interval: $interval
       }
     ) {
-      ...ShowWithoutRespondents
+      ...ShowWithoutRespondentsFragment
     }
   }
-  ${ShowPageComponent.fragments.showWithoutRespondents}
+  ${showWithoutRespondentsFragment}
 `;
 
 const ADD_RESPONDENTS_BY_EMAIL = gql`
@@ -503,58 +393,6 @@ function getOptimisticResponseForEditShowSettings(
       endTime: endTime,
       interval: interval,
     },
-  };
-}
-
-function getOptimisticResponseForShow(name, email, responses, show) {
-  if (!show) return null;
-  const { respondents } = show;
-  const index = name
-    ? respondents.findIndex((r) => r.anonymousName === name)
-    : respondents.findIndex((r) => (r.user ? r.user.email : false) === email);
-  let newRespondents;
-  if (index === -1) {
-    const firebaseUser = getFirebaseUserInfo();
-    const user = firebaseUser
-      ? {
-          __typename: 'User',
-          name: firebaseUser.displayName, // TODO: Use user's name on our server
-          uid: firebaseUser.uid,
-          email,
-        }
-      : null;
-    newRespondents = [
-      ...respondents,
-      {
-        __typename: 'Respondent',
-        id: 'optimisticRespondent',
-        anonymousName: name,
-        user,
-        role: 'member',
-        response: responses,
-      },
-    ];
-  } else {
-    newRespondents = update(respondents, {
-      [index]: {
-        response: { $set: responses },
-      },
-    });
-  }
-
-  return {
-    __typename: 'Show',
-    ...show,
-    respondents: newRespondents,
-  };
-}
-
-function getOptimisticResponseForUpsertResponses(name, email, responses, getShowResult) {
-  const show = getShowResult.data && getShowResult.data.show;
-  if (!show) return null;
-  return {
-    __typename: 'Mutation',
-    _upsertResponse: getOptimisticResponseForShow(name, email, responses, show),
   };
 }
 
@@ -650,125 +488,92 @@ function ShowPageWithQueries(props) {
   return (
     <AuthenticatedQuery query={GET_SHOW_QUERY} variables={{ slug }}>
       {(getShowResult) => (
-        <Mutation mutation={UPSERT_RESPONSES_MUTATION}>
-          {(upsertResponses, upsertResponsesResult) => (
-            <Mutation mutation={DELETE_RESPONSE}>
-              {(deleteResponse, deleteResponseResult) => (
-                <Mutation mutation={DELETE_RESPONDENTS}>
-                  {(deleteRespondents, deleteRespondentsResult) => (
-                    <Mutation mutation={EDIT_SHOW_RESPONDENT_STATUS}>
-                      {(editShowRespondentStatus, editShowRespondentStatusResult) => (
-                        <Mutation mutation={EDIT_SHOW_SETTINGS}>
-                          {(editShowSettings, editShowSettingsResult) => (
-                            <Mutation mutation={ADD_RESPONDENTS_BY_EMAIL}>
-                              {(addRespondentsByEmail, addRespondentsByEmailResult) => (
-                                <ShowPageComponent
-                                  {...props}
-                                  getShowResult={datifyShowResponse(getShowResult, 'data.show')}
-                                  upsertResponses={async (slug, name, email, responses) => {
-                                    // N.B. We don't pass in auth if user wants to use name instead.
-                                    const auth = name ? null : await getAuthInput();
-                                    const variables = { slug, responses };
-                                    if (auth) {
-                                      variables.auth = auth;
-                                      variables.email = email;
-                                    } else {
-                                      variables.name = name;
-                                    }
-                                    upsertResponses({
-                                      variables,
-                                      optimisticResponse: getOptimisticResponseForUpsertResponses(
-                                        name,
-                                        email,
-                                        responses,
-                                        getShowResult,
-                                      ),
-                                    });
-                                  }}
-                                  upsertResponsesResult={datifyShowResponse(
-                                    upsertResponsesResult,
-                                    'data._upsertResponse',
-                                  )}
-                                  deleteResponse={async (slug, id) => {
-                                    const auth = await getAuthInput();
-                                    deleteResponse({
-                                      variables: { slug, id, auth },
-                                      optimisticResponse: getOptimisticResponseForDeleteResponse(
-                                        id,
-                                        getShowResult,
-                                      ),
-                                    });
-                                  }}
-                                  deleteResponseResult={deleteResponseResult}
-                                  deleteRespondents={async (slug, id) => {
-                                    const auth = await getAuthInput();
-                                    deleteRespondents({
-                                      variables: { slug, id, auth },
-                                      optimisticResponse: getOptimisticResponseForDeleteRespondents(
-                                        id,
-                                        getShowResult,
-                                      ),
-                                    });
-                                  }}
-                                  deleteRespondentsResult={deleteRespondentsResult}
-                                  editShowRespondentStatus={async (
-                                    slug,
+        <Mutation mutation={DELETE_RESPONSE}>
+          {(deleteResponse, deleteResponseResult) => (
+            <Mutation mutation={DELETE_RESPONDENTS}>
+              {(deleteRespondents, deleteRespondentsResult) => (
+                <Mutation mutation={EDIT_SHOW_RESPONDENT_STATUS}>
+                  {(editShowRespondentStatus, editShowRespondentStatusResult) => (
+                    <Mutation mutation={EDIT_SHOW_SETTINGS}>
+                      {(editShowSettings, editShowSettingsResult) => (
+                        <Mutation mutation={ADD_RESPONDENTS_BY_EMAIL}>
+                          {(addRespondentsByEmail, addRespondentsByEmailResult) => (
+                            <ShowPageComponent
+                              {...props}
+                              getShowResult={datifyShowResponse(getShowResult, 'data.show')}
+                              deleteResponse={async (slug, id) => {
+                                const auth = await getAuthInput();
+                                deleteResponse({
+                                  variables: { slug, id, auth },
+                                  optimisticResponse: getOptimisticResponseForDeleteResponse(
+                                    id,
+                                    getShowResult,
+                                  ),
+                                });
+                              }}
+                              deleteResponseResult={deleteResponseResult}
+                              deleteRespondents={async (slug, id) => {
+                                const auth = await getAuthInput();
+                                deleteRespondents({
+                                  variables: { slug, id, auth },
+                                  optimisticResponse: getOptimisticResponseForDeleteRespondents(
+                                    id,
+                                    getShowResult,
+                                  ),
+                                });
+                              }}
+                              deleteRespondentsResult={deleteRespondentsResult}
+                              editShowRespondentStatus={async (slug, id, role, isKeyRespondent) => {
+                                const auth = await getAuthInput();
+                                editShowRespondentStatus({
+                                  variables: { slug, id, role, isKeyRespondent, auth },
+                                  optimisticResponse: getOptimisticResponseForEditShowRespondentStatus(
                                     id,
                                     role,
                                     isKeyRespondent,
-                                  ) => {
-                                    const auth = await getAuthInput();
-                                    editShowRespondentStatus({
-                                      variables: { slug, id, role, isKeyRespondent, auth },
-                                      optimisticResponse: getOptimisticResponseForEditShowRespondentStatus(
-                                        id,
-                                        role,
-                                        isKeyRespondent,
-                                        getShowResult,
-                                      ),
-                                    });
-                                  }}
-                                  editShowRespondentStatusResult={editShowRespondentStatusResult}
-                                  editShowSettings={async (
+                                    getShowResult,
+                                  ),
+                                });
+                              }}
+                              editShowRespondentStatusResult={editShowRespondentStatusResult}
+                              editShowSettings={async (
+                                name,
+                                dates,
+                                startTime,
+                                endTime,
+                                interval,
+                                slug,
+                              ) => {
+                                const auth = await getAuthInput();
+                                editShowSettings({
+                                  variables: {
                                     name,
                                     dates,
                                     startTime,
                                     endTime,
                                     interval,
+                                    auth,
                                     slug,
-                                  ) => {
-                                    const auth = await getAuthInput();
-                                    editShowSettings({
-                                      variables: {
-                                        name,
-                                        dates,
-                                        startTime,
-                                        endTime,
-                                        interval,
-                                        auth,
-                                        slug,
-                                      },
-                                      optimisticResponse: getOptimisticResponseForEditShowSettings(
-                                        name,
-                                        dates,
-                                        startTime,
-                                        endTime,
-                                        interval,
-                                        getShowResult,
-                                      ),
-                                    });
-                                  }}
-                                  editShowSettingsResult={editShowSettingsResult}
-                                  addRespondentsByEmail={async (slug, emailsAndRoles) => {
-                                    const auth = await getAuthInput();
-                                    addRespondentsByEmail({
-                                      variables: { slug, auth, emailsAndRoles },
-                                    });
-                                  }}
-                                  addRespondentsByEmailResult={addRespondentsByEmailResult}
-                                />
-                              )}
-                            </Mutation>
+                                  },
+                                  optimisticResponse: getOptimisticResponseForEditShowSettings(
+                                    name,
+                                    dates,
+                                    startTime,
+                                    endTime,
+                                    interval,
+                                    getShowResult,
+                                  ),
+                                });
+                              }}
+                              editShowSettingsResult={editShowSettingsResult}
+                              addRespondentsByEmail={async (slug, emailsAndRoles) => {
+                                const auth = await getAuthInput();
+                                addRespondentsByEmail({
+                                  variables: { slug, auth, emailsAndRoles },
+                                });
+                              }}
+                              addRespondentsByEmailResult={addRespondentsByEmailResult}
+                            />
                           )}
                         </Mutation>
                       )}

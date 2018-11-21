@@ -1,203 +1,136 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import IconButton from '@material/react-icon-button';
-import MaterialIcon from '@material/react-material-icon';
-import { auth } from '../../firebase';
-import { anonNameToId } from '../../utils/response';
-import { getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
+import { Mutation } from 'react-apollo';
+
+import _ from 'lodash';
+import gql from 'graphql-tag';
+import update from 'immutability-helper';
+
+import { getAuthInput, getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
+import { datifyShowResponse } from '../../utils/datetime';
 import { setRespondName } from '../../actions/userData';
-import BottomAppBar from '../common/BottomAppBar';
-import Timeline from './Timeline';
-import PollRespondNameForm from './PollRespondNameForm';
-import styles from './ShowRespond.module.scss';
 
-class ShowRespond extends Component {
-  constructor(props) {
-    super(props);
-    this.state = this.getInitState();
+import ShowRespondComponent from './ShowRespondComponent';
+import { showFragment } from './fragments';
+
+class ShowRespondContainer extends Component {
+  canSubmit(name) {
+    const { show } = this.props;
+    if ((!name && !isSignedIn()) || !show) return false;
+    return true;
   }
 
-  // Return initialized state. Does not set state as this method will be used
-  // in the constructor.
-  getInitState() {
-    return {
-      // If user is logged out, prompt user with prefilled name box, else only
-      // prompt if user presses back button in the bottom bar. Store an
-      // isAskingForName state field.
-      isAskingForName: !isSignedIn() && !this.props.hasSetName,
-    };
+  handleSelectDeselectTimes(startTimes, name, isSelect) {
+    if (!this.canSubmit(name)) return;
+
+    const user = getFirebaseUserInfo();
+    const email = user ? user.email : null;
+    const { show } = this.props;
+    const { respondents, slug } = show;
+
+    // Find current respondent by anonymousName if name is supplied,
+    // if not find by current user's email
+    const currentRespondent = name
+      ? respondents.find((r) => r.anonymousName === name)
+      : respondents.find((r) => (r.user ? r.user.email : false) === email);
+    const responses = currentRespondent ? currentRespondent.response : [];
+    const responsesTimestamps = responses.map((r) => new Date(r).getTime()); // Create Dates as some are strings
+    const startTimestamps = startTimes.map((r) => r.getTime());
+
+    let newResponseTimestamps;
+    if (isSelect) {
+      newResponseTimestamps = _.uniq([...responsesTimestamps, ...startTimestamps]);
+    } else {
+      newResponseTimestamps = responsesTimestamps.filter((r) => !startTimestamps.includes(r));
+    }
+
+    const newResponses = newResponseTimestamps.map((ts) => new Date(ts));
+    this.props.upsertResponses(slug, name, email, newResponses);
   }
 
-  componentDidMount() {
-    // Reinitialize state if auth state changes.
-    auth().onAuthStateChanged(() => {
-      this.setState(this.getInitState());
-      if (isSignedIn()) {
-        this.props.setRespondName(null);
-      }
+  handleSelectTimes = (startTimes, name) => this.handleSelectDeselectTimes(startTimes, name, true);
+  handleDeselectTimes = (startTimes, name) =>
+    this.handleSelectDeselectTimes(startTimes, name, false);
+
+  render() {
+    return (
+      <ShowRespondComponent
+        {...this.props}
+        onSelectTimes={this.handleSelectTimes}
+        onDeselectTimes={this.handleDeselectTimes}
+      />
+    );
+  }
+}
+
+const UPSERT_RESPONSES_MUTATION = gql`
+  mutation UpsertResponse(
+    $slug: String!
+    $name: String
+    $email: String
+    $auth: AuthInput
+    $responses: [DateTime!]
+  ) {
+    _upsertResponse(
+      where: { slug: $slug, name: $name, email: $email }
+      data: { response: $responses }
+      auth: $auth
+    ) {
+      ...ShowFragment
+    }
+  }
+  ${showFragment}
+`;
+
+function getOptimisticResponseForShow(name, email, responses, show) {
+  if (!show) return null;
+  const { respondents } = show;
+  const index = name
+    ? respondents.findIndex((r) => r.anonymousName === name)
+    : respondents.findIndex((r) => (r.user ? r.user.email : false) === email);
+  let newRespondents;
+  if (index === -1) {
+    const firebaseUser = getFirebaseUserInfo();
+    const user = firebaseUser
+      ? {
+          __typename: 'User',
+          name: firebaseUser.displayName, // TODO: Use user's name on our server
+          uid: firebaseUser.uid,
+          email,
+        }
+      : null;
+    newRespondents = [
+      ...respondents,
+      {
+        __typename: 'Respondent',
+        id: 'optimisticRespondent',
+        anonymousName: name,
+        user,
+        role: 'member',
+        response: responses,
+      },
+    ];
+  } else {
+    newRespondents = update(respondents, {
+      [index]: {
+        response: { $set: responses },
+      },
     });
   }
 
-  componentDidUpdate(prevProps) {
-    if (!this.state.saved && !this.props.isSaving && prevProps.isSaving) {
-      this.startSavedTimer();
-    }
-  }
-
-  startSavedTimer() {
-    this.setState({ saved: true });
-    this.savedTimer = setTimeout(this.stopSavedTimer, 2000);
-  }
-
-  stopSavedTimer = () => {
-    if (!this.savedTimer) return;
-    clearTimeout(this.savedTimer);
-    this.savedTimer = null;
-    this.setState({ saved: false });
+  return {
+    __typename: 'Show',
+    ...show,
+    respondents: newRespondents,
   };
+}
 
-  shouldUseName() {
-    const { name } = this.props;
-    return name && name.length > 0;
-  }
-
-  userResponseKey() {
-    const firebaseUser = getFirebaseUserInfo();
-    if (this.shouldUseName()) return anonNameToId(this.props.name);
-    else if (firebaseUser) return firebaseUser.email;
-    return null;
-  }
-
-  loggedInUserName() {
-    const firebaseUser = getFirebaseUserInfo();
-    if (!firebaseUser) return null;
-    // TODO: Use display name from user's User record
-    return firebaseUser.displayName || firebaseUser.email;
-  }
-
-  responseName() {
-    if (this.shouldUseName()) return this.props.name;
-    return this.loggedInUserName();
-  }
-
-  filteredRespondents() {
-    const { show } = this.props;
-    if (!show) return [];
-
-    const respondents = show.respondents || [];
-
-    if (this.shouldUseName()) {
-      const { name } = this.props;
-      return respondents.filter((r) => r.anonymousName === name);
-    }
-
-    const firebaseUser = getFirebaseUserInfo();
-    if (!firebaseUser) return [];
-
-    return respondents.filter((r) => r.user && r.user.email === firebaseUser.email);
-  }
-
-  handleSelect = (startTimes) => {
-    this.stopSavedTimer();
-    const { name } = this.props;
-    this.userResponseKey() && this.props.onSelectTimes(startTimes, name);
+function getOptimisticResponseForUpsertResponses(name, email, responses, show) {
+  if (!show) return null;
+  return {
+    __typename: 'Mutation',
+    _upsertResponse: getOptimisticResponseForShow(name, email, responses, show),
   };
-  handleDeselect = (startTimes) => {
-    this.stopSavedTimer();
-    const { name } = this.props;
-    this.userResponseKey() && this.props.onDeselectTimes(startTimes, name);
-  };
-
-  handleSetName = (name) => {
-    this.props.setRespondName(name);
-    this.setState({ isAskingForName: false });
-    this.props.onSetName(true);
-  };
-
-  handleContinueAsSignedInUser = () => {
-    this.props.setRespondName(null);
-    this.setState({ isAskingForName: false });
-  };
-
-  handleBackClick = () => {
-    this.setState({ isAskingForName: true });
-    this.props.onSetName(false);
-  };
-
-  renderBottomBar() {
-    const { isSaving } = this.props;
-    const { saved } = this.state;
-
-    let mainText;
-
-    if (isSaving) {
-      mainText = <>Saving&hellip;</>;
-    } else if (saved) {
-      mainText = (
-        <>
-          Saved <strong>{this.responseName()}</strong>
-          &apos;s availability!
-        </>
-      );
-    } else {
-      mainText = (
-        <>
-          Hold and drag on the timeline to select <strong>{this.responseName()}</strong>
-          &apos;s availability.
-        </>
-      );
-    }
-
-    return (
-      <BottomAppBar className={styles.bottomBar}>
-        <div className={styles.bottomBarContent}>
-          <IconButton onClick={this.handleBackClick}>
-            <MaterialIcon icon="arrow_back" />
-          </IconButton>
-          <span className={styles.mainText}>{mainText}</span>
-        </div>
-      </BottomAppBar>
-    );
-  }
-
-  render() {
-    const { show, name } = this.props;
-    const { isAskingForName } = this.state;
-    const { dates, startTime, endTime, interval } = show;
-    const userResponseKey = this.userResponseKey();
-    const ourRespondents = this.filteredRespondents();
-
-    if (isAskingForName) {
-      return (
-        <PollRespondNameForm
-          name={name}
-          onSetName={this.handleSetName}
-          signedInName={this.loggedInUserName()}
-          canContinueAsSignedInUser={isSignedIn()}
-          onContinueAsSignedInUser={this.handleContinueAsSignedInUser}
-        />
-      );
-    }
-
-    return (
-      <>
-        <div className={styles.respondContainer}>
-          <Timeline
-            dates={dates}
-            startTime={startTime}
-            endTime={endTime}
-            interval={interval}
-            respondents={ourRespondents}
-            maxSelectable={1}
-            userResponseKey={userResponseKey}
-            onSelect={this.handleSelect}
-            onDeselect={this.handleDeselect}
-          />
-        </div>
-        {this.renderBottomBar()}
-      </>
-    );
-  }
 }
 
 function mapStateToProps(state) {
@@ -209,4 +142,33 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   { setRespondName },
-)(ShowRespond);
+)((props) => (
+  <Mutation mutation={UPSERT_RESPONSES_MUTATION}>
+    {(upsertResponses, upsertResponsesResult) => (
+      <ShowRespondContainer
+        {...props}
+        upsertResponses={async (slug, name, email, responses) => {
+          // N.B. We don't pass in auth if user wants to use name instead.
+          const auth = name ? null : await getAuthInput();
+          const variables = { slug, responses };
+          if (auth) {
+            variables.auth = auth;
+            variables.email = email;
+          } else {
+            variables.name = name;
+          }
+          upsertResponses({
+            variables,
+            optimisticResponse: getOptimisticResponseForUpsertResponses(
+              name,
+              email,
+              responses,
+              props.show,
+            ),
+          });
+        }}
+        upsertResponsesResult={datifyShowResponse(upsertResponsesResult, 'data._upsertResponse')}
+      />
+    )}
+  </Mutation>
+));

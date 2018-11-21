@@ -1,13 +1,10 @@
-@import '../mdc';
+@import '../styles/mdc';
 
 $sidebar-hidden-breakpoint: largephone;
 
 .resultsContainer {
   display: flex;
-}
-
-.timeline {
-  flex: 1;
+  justify-content: center;
 }
 
 @media (max-width: mdc-layout-grid-breakpoint-min($sidebar-hidden-breakpoint) - 1) {
@@ -25,21 +22,25 @@ $sidebar-hidden-breakpoint: largephone;
     position: sticky;
   }
 
-  div.bottomBar {
+  #bottomBar {
     display: none;
   }
 }
 
-.bottomBarContent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-variant-numeric: tabular-nums;
+#bottomBar {
+  margin-top: 1em;
 
-  .mainText {
-    flex: 1;
-    margin: 0 1rem;
-    text-align: center;
-    word-break: break-word;
+  .bottomBarContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+
+    .mainText {
+      flex: 1;
+      margin: 0 1rem;
+      text-align: center;
+      word-break: break-word;
+    }
   }
 }

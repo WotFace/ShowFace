@@ -181,17 +181,19 @@ class ShowRespond extends Component {
 
     return (
       <>
-        <Timeline
-          dates={dates}
-          startTime={startTime}
-          endTime={endTime}
-          interval={interval}
-          respondents={ourRespondents}
-          maxSelectable={1}
-          userResponseKey={userResponseKey}
-          onSelect={this.handleSelect}
-          onDeselect={this.handleDeselect}
-        />
+        <div className={styles.respondContainer}>
+          <Timeline
+            dates={dates}
+            startTime={startTime}
+            endTime={endTime}
+            interval={interval}
+            respondents={ourRespondents}
+            maxSelectable={1}
+            userResponseKey={userResponseKey}
+            onSelect={this.handleSelect}
+            onDeselect={this.handleDeselect}
+          />
+        </div>
         {this.renderBottomBar()}
       </>
     );

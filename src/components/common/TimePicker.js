@@ -6,7 +6,7 @@ import Select from '@material/react-select';
 import _ from 'lodash';
 
 import styles from './TimePicker.module.scss';
-import containerStyles from './CreatePage.module.scss';
+import containerStyles from '../create/CreatePage.module.scss'; // TODO: Refactor so that CreatePage actually handles create page layout and styles
 
 class TimePicker extends Component {
   constructor(props) {
@@ -164,107 +164,126 @@ class TimePicker extends Component {
       this.getEndMins().map((min) => ({ value: min, label: min })),
     );
 
+    const wrapper = (children) => {
+      if (this.props.card) {
+        return <Card>{children}</Card>;
+      } else {
+        return <div>{children}</div>;
+      }
+    };
+
+    let intervalDiv;
+    if (this.props.withInterval) {
+      intervalDiv = (
+        <section className={containerStyles.formSection}>
+          {wrapper(
+            <div>
+              <div className={styles.cardTitle}>Select Time Interval</div>
+              <div className={styles.radioRow}>
+                <div className={styles.radioGroup}>
+                  <div className="mdc-radio" onChange={() => this.setInterval(15)}>
+                    <input
+                      className="mdc-radio__native-control"
+                      type="radio"
+                      name="radios"
+                      id="radio-1"
+                      readOnly
+                      checked={this.state.interval === 15}
+                    />
+                    <div className="mdc-radio__background">
+                      <div className="mdc-radio__outer-circle" />
+                      <div className="mdc-radio__inner-circle" />
+                    </div>
+                  </div>
+                  <label>15 mins</label>
+                </div>
+
+                <div className={styles.radioGroup}>
+                  <div className="mdc-radio" onChange={() => this.setInterval(30)}>
+                    <input
+                      className="mdc-radio__native-control"
+                      type="radio"
+                      name="radios"
+                      id="radio-2"
+                      readOnly
+                      checked={this.state.interval === 30}
+                    />
+                    <div className="mdc-radio__background">
+                      <div className="mdc-radio__outer-circle" />
+                      <div className="mdc-radio__inner-circle" />
+                    </div>
+                  </div>
+                  <label>30 mins</label>
+                </div>
+              </div>
+            </div>,
+          )}
+        </section>
+      );
+    }
+
     return (
       <div>
+        {intervalDiv}
         <section className={containerStyles.formSection}>
-          <Card>
-            <div className={styles.cardTitle}>Select Time Interval</div>
-            <div className={styles.radioRow}>
-              <div className={styles.radioGroup}>
-                <div className="mdc-radio" onChange={() => this.setInterval(15)}>
-                  <input
-                    className="mdc-radio__native-control"
-                    type="radio"
-                    name="radios"
-                    id="radio-1"
-                    readOnly
-                    checked={this.state.interval === 15}
-                  />
-                  <div className="mdc-radio__background">
-                    <div className="mdc-radio__outer-circle" />
-                    <div className="mdc-radio__inner-circle" />
+          {wrapper(
+            <div className={styles.timePickerContainer}>
+              <div className={styles.timePickerRow}>
+                <div>Select Start time</div>
+                <div className={styles.timePickerSelectContainer}>
+                  <div>
+                    <Select
+                      outlined
+                      className={styles.timeSelect}
+                      value={this.state.startHour}
+                      label=""
+                      onChange={this.setStartHour}
+                      options={startHourOptions}
+                    />
+                    hours
+                  </div>
+                  <div>
+                    <Select
+                      outlined
+                      className={styles.timeSelect}
+                      value={this.state.startMin}
+                      label=""
+                      onChange={this.setStartMin}
+                      options={startMinOptions}
+                    />
+                    mins &nbsp;
                   </div>
                 </div>
-                <label>15 mins</label>
               </div>
-
-              <div className={styles.radioGroup}>
-                <div className="mdc-radio" onChange={() => this.setInterval(30)}>
-                  <input
-                    className="mdc-radio__native-control"
-                    type="radio"
-                    name="radios"
-                    id="radio-2"
-                    readOnly
-                    checked={this.state.interval === 30}
-                  />
-                  <div className="mdc-radio__background">
-                    <div className="mdc-radio__outer-circle" />
-                    <div className="mdc-radio__inner-circle" />
+              <div className={styles.timePickerRow}>
+                <div>Select End time</div>
+                <div className={styles.timePickerSelectContainer}>
+                  <div>
+                    <Select
+                      outlined
+                      className={styles.timeSelect}
+                      value={this.state.endHour}
+                      label=""
+                      onChange={this.setEndHour}
+                      options={endHourOptions}
+                    />
+                    hours
+                  </div>
+                  <div>
+                    <Select
+                      outlined
+                      className={styles.timeSelect}
+                      value={this.state.endMin}
+                      label=""
+                      onChange={this.setEndMin}
+                      options={endMinOptions}
+                    />
+                    mins &nbsp;
                   </div>
                 </div>
-                <label>30 mins</label>
               </div>
-            </div>
-          </Card>
-        </section>
-        <section className={containerStyles.formSection}>
-          <Card className={styles.timePickerContainer}>
-            <div className={styles.timePickerRow}>
-              <div>Select Start time</div>
-              <div className={styles.timePickerSelectContainer}>
-                <div>
-                  <Select
-                    outlined
-                    className={styles.timeSelect}
-                    value={this.state.startHour}
-                    label=""
-                    onChange={this.setStartHour}
-                    options={startHourOptions}
-                  />
-                  hours
-                </div>
-                <div>
-                  <Select
-                    outlined
-                    className={styles.timeSelect}
-                    value={this.state.startMin}
-                    label=""
-                    onChange={this.setStartMin}
-                    options={startMinOptions}
-                  />
-                  mins &nbsp;
-                </div>
-              </div>
-            </div>
-            <div className={styles.timePickerRow}>
-              <div>Select End time</div>
-              <div className={styles.timePickerSelectContainer}>
-                <div>
-                  <Select
-                    outlined
-                    className={styles.timeSelect}
-                    value={this.state.endHour}
-                    label=""
-                    onChange={this.setEndHour}
-                    options={endHourOptions}
-                  />
-                  hours
-                </div>
-                <div>
-                  <Select
-                    outlined
-                    className={styles.timeSelect}
-                    value={this.state.endMin}
-                    label=""
-                    onChange={this.setEndMin}
-                    options={endMinOptions}
-                  />
-                  mins &nbsp;
-                </div>
-              </div>
-            </div>
-          </Card>
+            </div>,
+          )}
         </section>
       </div>
     );

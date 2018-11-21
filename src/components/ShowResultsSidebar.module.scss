@@ -1,5 +1,4 @@
-@import '../mdc-variables';
-@import '../mdc';
+@import '../styles/mdc';
 
 $sidebar-hidden-breakpoint: largephone;
 
@@ -74,13 +73,5 @@ $sidebar-hidden-breakpoint: largephone;
     .hoveringTextContainer {
       flex: 1;
     }
-  }
-}
-
-.modalContainer {
-  background-color: #f7f6f4;
-  padding: 12px 24px;
-  .modalButtonContainer {
-    float: right;
   }
 }

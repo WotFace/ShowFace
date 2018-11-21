@@ -1,6 +1,6 @@
 @import '~@material/elevation/mdc-elevation';
 @import '~@material/card/mdc-card';
-@import '../mdc-variables';
+@import '../styles/mdc-variables';
 
 .stuck {
   @include mdc-elevation(6);
@@ -12,7 +12,7 @@
   position: sticky;
   bottom: 0;
   transition: box-shadow 0.17s;
-  z-index: 10;
+  z-index: 5;
 }
 
 .bar {

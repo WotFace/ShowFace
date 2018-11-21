@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter, Link } from 'react-router-dom';
 import Card from '@material/react-card';
 import Button from '@material/react-button';
 import classnames from 'classnames';
@@ -10,13 +11,15 @@ import TabBar from '@material/react-tab-bar';
 import WhatsAppIcon from '../icons/whatsapp.svg'; // https://fontawesome.com/icons/whatsapp?style=brands
 import TelegramIcon from '../icons/telegram.svg'; // https://fontawesome.com/icons/facebook-messenger?style=brands
 import { ReactMultiEmail } from 'react-multi-email';
-import './MultiEmailOverride.scss';
+import '../styles/MultiEmailOverride.scss';
+import sharedStyles from '../styles/SharedStyles.module.scss';
 import styles from './ShareModal.module.scss';
 
-export default class ShareModal extends Component {
+class ShareModal extends Component {
   state = {
     activeIndex: 0,
     emails: [],
+    sent: false,
   };
 
   openWhatsApp = () => {
@@ -35,12 +38,16 @@ export default class ShareModal extends Component {
   };
 
   sendInvites = () => {
-    // TODO: Send invites to this.emails
+    this.props.sendEmailInvites(this.state.emails);
     this.setState({ emails: [] });
+    this.setState({ sent: true });
+    this.timeout = setTimeout(() => {
+      this.setState({ sent: false });
+    }, 2000);
   };
 
   render() {
-    const linkShareDiv = (
+    const linkShareContent = (
       <div className={styles.tabDiv}>
         <div className={classnames(styles.descText, 'mdc-typography--body2')}>
           Anyone with this link can respond to this poll.
@@ -78,41 +85,67 @@ export default class ShareModal extends Component {
     );
 
     const { emails } = this.state;
-    const { modalHeadline } = this.props;
-    const inputEmailDiv = (
-      <div className={styles.tabDiv}>
-        <div className={classnames(styles.descText, 'mdc-typography--body2')}>
-          Email your respondents with a link to this poll.
-        </div>
+    const { modalHeadline, isAdmin, isSignedIn } = this.props;
+    const submitButtonMessage = this.state.sent ? 'Sent Invites!' : 'Send Invitations';
 
-        <ReactMultiEmail
-          placeholder="Enter email addresses"
-          emails={emails}
-          onChange={(emails) => {
-            this.setState({ emails });
-          }}
-          getLabel={(email, index, removeEmail) => {
-            return (
-              <div data-tag key={index}>
-                {email}
-                <span data-tag-handle onClick={() => removeEmail(index)}>
-                  ×
-                </span>
-              </div>
-            );
-          }}
-        />
-        <Button
-          className={styles.clipboardButton}
-          onClick={this.sendInvites}
-          icon={<MaterialIcon icon="send" />}
-          disabled={this.state.emails.length === 0}
-          raised
-        >
-          Send Invitations
-        </Button>
-      </div>
-    );
+    let emailTabContent;
+    if (!isSignedIn) {
+      emailTabContent = (
+        <div>
+          <p className={styles.messageText}>You must be signed in to invite others by email.</p>
+          <Link
+            to={{ pathname: '/login', state: { from: this.props.location } }}
+            className={sharedStyles.buttonLink}
+          >
+            <Button outlined>Log In / Sign Up</Button>
+          </Link>
+        </div>
+      );
+    } else if (isAdmin) {
+      emailTabContent = (
+        <div className={styles.tabDiv}>
+          <div className={classnames(styles.descText, 'mdc-typography--body2')}>
+            Email your respondents with a link to this poll.
+          </div>
+
+          <ReactMultiEmail
+            placeholder="Enter email addresses"
+            emails={emails}
+            onChange={(emails) => {
+              this.setState({ emails });
+              this.setState({ sent: false });
+            }}
+            getLabel={(email, index, removeEmail) => {
+              return (
+                <div data-tag key={index}>
+                  {email}
+                  <span data-tag-handle onClick={() => removeEmail(index)}>
+                    ×
+                  </span>
+                </div>
+              );
+            }}
+          />
+          <Button
+            id={styles.inviteButton}
+            onClick={this.sendInvites}
+            icon={<MaterialIcon icon="send" />}
+            disabled={this.state.emails.length === 0}
+            raised
+          >
+            {submitButtonMessage}
+          </Button>
+        </div>
+      );
+    } else {
+      emailTabContent = (
+        <div>
+          <p className={styles.messageText}>
+            You must be the creator of the poll to invite respondents by email.
+          </p>
+        </div>
+      );
+    }
 
     return (
       <div className={styles.container}>
@@ -126,13 +159,13 @@ export default class ShareModal extends Component {
             <Tab>
               <span>Link</span>
             </Tab>
-            <Tab>
-              <span>Email</span>
-            </Tab>
+            <Tab>Email</Tab>
           </TabBar>
-          {this.state.activeIndex === 0 ? linkShareDiv : inputEmailDiv}
+          {this.state.activeIndex === 0 ? linkShareContent : emailTabContent}
         </Card>
       </div>
     );
   }
 }
+
+export default withRouter(ShareModal);

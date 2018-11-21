@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import gql from 'graphql-tag';
 import classnames from 'classnames';
 
-import Button from '@material/react-button';
 import Card from '@material/react-card';
+import Button from '@material/react-button';
 import MaterialIcon from '@material/react-material-icon';
 import Tab from '@material/react-tab';
 import TabBar from '@material/react-tab-bar';
 import TextField, { Input } from '@material/react-text-field';
 
-import { auth } from '../firebase';
-import { getAuthInput } from '../utils/auth';
+import { auth } from '../../firebase';
+import { getAuthInput } from '../../utils/auth';
 import SocialLogin from './SocialLogin';
 
 import styles from './LoginPage.module.scss';
-import logo from '../logo.png';
 
 class LoginPage extends Component {
   LOGIN_TAB_IDX = 0;
@@ -58,6 +57,8 @@ class LoginPage extends Component {
         this.setState({ authenticating: false, authenticated: false, authError: error });
       });
   }
+
+  handleBackButtonClick = () => this.props.history.goBack();
 
   handleFormSubmit = (e) => {
     e.preventDefault();
@@ -134,7 +135,16 @@ class LoginPage extends Component {
     return (
       <div className={styles.outerContainer}>
         <div className={styles.innerContainer}>
-          <img className={styles.contentLogo} alt="ShowFace Logo" src={logo} />
+          <div className={styles.backButtonContainer}>
+            <Button
+              icon={<MaterialIcon icon="arrow_back" />}
+              disabled={authenticating}
+              onClick={this.handleBackButtonClick}
+            >
+              Back
+            </Button>
+          </div>
+          <img className={styles.contentLogo} alt="ShowFace Logo" src="/img/logos/sf.png" />
           <Card className={classnames(styles.card, styles.socialCard)}>
             <SocialLogin
               onLogInStart={this.handleSocialLogInStart}
@@ -203,7 +213,7 @@ const CREATE_USER_MUTATION = gql`
   }
 `;
 
-export default (props) => (
+export default withRouter((props) => (
   <Mutation mutation={CREATE_USER_MUTATION}>
     {(createUser, result) => (
       <LoginPage
@@ -216,4 +226,4 @@ export default (props) => (
       />
     )}
   </Mutation>
-);
+));

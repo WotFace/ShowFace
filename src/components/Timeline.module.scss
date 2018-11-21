@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Mono:500');
-@import '../mdc-variables.scss';
+@import '../styles/mdc-variables';
 
 $empty-cell-color: white;
 
@@ -9,7 +9,6 @@ $empty-cell-color: white;
 
 .timeline {
   display: inline-grid;
-  min-width: 100%;
 }
 
 .cornerHeaderCell {

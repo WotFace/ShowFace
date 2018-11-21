@@ -100,7 +100,7 @@ class ShowResults extends Component {
     }
 
     return (
-      <BottomAppBar className={styles.bottomBar}>
+      <BottomAppBar id={styles.bottomBar}>
         <div className={styles.bottomBarContent}>
           <IconButton onClick={this.handleDetailToggleClick}>
             <MaterialIcon icon={isShowingDetails ? 'grid_on' : 'format_list_bulleted'} />
@@ -164,10 +164,12 @@ class ShowResults extends Component {
 
     // TODO: Deduplicate dates, startTime, endTime between ShowResults and ShowRespond
     return (
-      <div>
+      <>
         <div className={styles.resultsContainer}>
           <Timeline
-            className={classnames(styles.timeline, isShowingDetails ? styles.hiddenOnMobile : null)}
+            className={classnames({
+              [styles.hiddenOnMobile]: isShowingDetails,
+            })}
             dates={dates}
             startTime={startTime}
             endTime={endTime}
@@ -196,7 +198,7 @@ class ShowResults extends Component {
           </div>
         </div>
         {this.renderBottomBar(partitionedRespondents, bestTime)}
-      </div>
+      </>
     );
   }
 }

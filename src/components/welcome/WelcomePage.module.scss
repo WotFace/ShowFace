@@ -1,4 +1,4 @@
-@import '../mdc-variables';
+@import '../../styles/mdc-variables';
 
 #halfPage {
   display: flex;
@@ -60,7 +60,6 @@
 
 @mixin backgroundMute {
   background-size: cover;
-  margin: -1px;
 }
 
 .background {
@@ -68,12 +67,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: url('../background.svg') no-repeat;
+  background: url('../../background.svg') no-repeat;
   @include backgroundScreens;
 }
 
 .descriptionContainer {
-  background: url('../background-3.svg') no-repeat;
+  background: url('../../background-3.svg') no-repeat;
   @include backgroundMute;
 
   padding: 100px 10% 50px 10%;
@@ -114,7 +113,6 @@
 
 .slider {
   width: 100%;
-  display: flex;
   justify-content: center;
 }
 
@@ -200,7 +198,7 @@
 
 .footerContainer {
   @include backgroundMute;
-  background: url('../background-2.svg') no-repeat;
+  background: url('../../background-2.svg') no-repeat;
 
   padding: 150px 10% 50px 10%;
   display: flex;

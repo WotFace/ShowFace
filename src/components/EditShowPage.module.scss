@@ -1,0 +1,58 @@
+.formSection {
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.formInput {
+  margin: 1em auto;
+  width: 17em;
+}
+
+.noFocus {
+  *:focus {
+    outline-width: 0;
+  }
+}
+
+#header {
+  text-align: center;
+  margin-bottom: 10px;
+  margin: 20px;
+}
+
+#pageContainer {
+  position: relative;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 40em;
+}
+
+.bottomBar {
+  margin-top: 1em;
+}
+
+.bottomBarContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .mainText {
+    flex-grow: 1;
+    font-size: 0.9em;
+    text-align: center;
+    word-break: break-word;
+  }
+}
+
+.center {
+  text-align: center;
+}
+
+.textWithMargin {
+  margin-bottom: 20px;
+}

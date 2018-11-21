@@ -1,17 +1,20 @@
-@import '../mdc';
+@import '../../styles/mdc';
 
 .header {
   text-align: center;
-  margin-bottom: 10px;
-  margin: 20px;
+  margin: 0 0 0.3em 0;
+  word-break: break-word;
 }
 
 .pageContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 1.4em;
+
+  @media (max-width: mdc-layout-grid-breakpoint-max(phone)) {
+    margin: 0;
+  }
 }
 
 .card {
@@ -32,5 +35,14 @@
 
   &#toRespondCard {
     @include mdc-card-outline($the-pinkish-color, 0.2em);
+  }
+
+  li.listItem {
+    height: initial;
+
+    .secondaryText {
+      white-space: initial;
+      margin-bottom: 1em !important;
+    }
   }
 }

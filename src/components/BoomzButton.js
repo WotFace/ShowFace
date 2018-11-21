@@ -14,7 +14,7 @@ function BoomzComponent({ component: Component, className, boomzClassName, ...ot
 }
 
 export function BoomzButton(props) {
-  return <BoomzComponent component={Button} boomzClassName={styles.button} outlined {...props} />;
+  return <BoomzComponent component={Button} boomzClassName={styles.button} {...props} />;
 }
 
 export function BoomzMenuItem(props) {

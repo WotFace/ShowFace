@@ -5,15 +5,16 @@ import Card from '@material/react-card';
 import classnames from 'classnames';
 import { format } from 'date-fns';
 import _ from 'lodash';
-import { getFirebaseUserInfo, isSignedIn } from '../utils/auth';
-import AuthenticatedQuery from './AuthenticatedQuery';
-import { datifyShowsResponse } from '../utils/datetime';
-import { userShowsToDict } from '../utils/userShows';
-import Loading from './errorsLoaders/Loading';
-import Error from './errorsLoaders/Error';
-import QuickCreate from './QuickCreate';
 
-import sharedStyles from './SharedStyles.module.scss';
+import { getFirebaseUserInfo, isSignedIn } from '../../utils/auth';
+import { datifyShowsResponse } from '../../utils/datetime';
+import { userShowsToDict } from '../../utils/userShows';
+import Loading from '../errorsLoaders/Loading';
+import Error from '../errorsLoaders/Error';
+import AuthenticatedQuery from '../AuthenticatedQuery';
+import QuickCreate from '../QuickCreate';
+
+import sharedStyles from '../../styles/SharedStyles.module.scss';
 import styles from './DashboardPage.module.scss';
 
 const dateFormat = 'D MMM YYYY hh:mmA';
@@ -46,11 +47,11 @@ class DashboardPage extends Component {
     const totalNumRespondents = respondents.length;
     const numRespondents = respondents.filter((r) => r.response.length !== 0).length;
     return (
-      <li className="mdc-list-item">
+      <li className={classnames(styles.listItem, 'mdc-list-item')}>
         <span className="mdc-list-item__text">
           <span className="mdc-list-item__primary-text">{name}</span>
-          <span className="mdc-list-item__secondary-text">
-            Created {format(createdAt, dateFormat)} and updated {format(updatedAt, dateFormat)}.{' '}
+          <span className={classnames(styles.secondaryText, 'mdc-list-item__secondary-text')}>
+            Created {format(createdAt, dateFormat)}. Updated {format(updatedAt, dateFormat)}.<br />
             {numRespondents}/{totalNumRespondents} responded.
           </span>
         </span>

@@ -1,4 +1,4 @@
-@import '../mdc';
+@import '../styles/mdc';
 
 $menu-breakpoint: largephone;
 
@@ -8,18 +8,13 @@ $menu-breakpoint: largephone;
   justify-content: space-between;
   margin: 1.5em 5% 1em 5%;
 
-  @media (min-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
-    margin-top: 3em;
-    margin-bottom: 2em;
+  &.blacklisted {
+    margin: 0;
   }
 }
 
 .contentLogo {
   width: 150px;
-
-  @media (min-width: mdc-layout-grid-breakpoint-min($menu-breakpoint)) {
-    width: 195px;
-  }
 }
 
 .menuContainer {
@@ -47,4 +42,11 @@ $menu-breakpoint: largephone;
   @media (max-width: mdc-layout-grid-breakpoint-min($menu-breakpoint) - 1) {
     display: none;
   }
+}
+
+#topBannerButton {
+  @include mdc-button-filled-accessible(lighten($mdc-theme-secondary, 12%));
+  @include mdc-button-shape-radius(0);
+  width: 100%;
+  height: 3.5em;
 }

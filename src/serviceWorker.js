@@ -14,8 +14,16 @@
 // https://github.com/nusmodifications/nusmods/blob/bd2b9d632c0476b1065c4a86e40f0616892dddf2/www/src/js/bootstrapping/service-worker.js
 
 let currentRegistration;
-export function getRegistration() {
+function getRegistration() {
   return currentRegistration;
+}
+
+// Source: https://github.com/nusmodifications/nusmods/pull/1047/files#diff-9d6bd6e0b057775fc0d2e9603db2b5f5R33
+export function updateServiceWorker() {
+  const registration = getRegistration();
+  // Ensure registration.waiting is available before calling postMessage()
+  if (!registration || !registration.waiting) return;
+  registration.waiting.postMessage('skipWaiting');
 }
 
 const isLocalhost = Boolean(

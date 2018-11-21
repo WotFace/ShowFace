@@ -12,11 +12,11 @@ import Card from '@material/react-card';
 import MaterialIcon from '@material/react-material-icon';
 import TextField, { Input } from '@material/react-text-field';
 
-import { getAuthInput } from '../utils/auth';
-import { cleanName } from '../utils/string';
-import Loading from './errorsLoaders/Loading';
-import BottomAppBar from './BottomAppBar';
-import TimePicker from './TimePicker';
+import { getAuthInput } from '../../utils/auth';
+import { cleanName } from '../../utils/string';
+import Loading from '../errorsLoaders/Loading';
+import BottomAppBar from '../BottomAppBar';
+import TimePicker from '../common/TimePicker';
 
 import styles from './CreatePage.module.scss';
 
@@ -139,6 +139,11 @@ class CreatePage extends Component {
                     disabledDays={{ before: today }}
                     selectedDays={selectedDays}
                     onDayClick={this.handleDayClick}
+                    modifiersStyles={{
+                      selected: {
+                        backgroundColor: '#193163',
+                      },
+                    }}
                   />
                 </div>
               </Card>
@@ -148,6 +153,8 @@ class CreatePage extends Component {
               updateEndTime={this.updateEndTime}
               updateInterval={this.updateInterval}
               interval={this.state.interval}
+              withInterval
+              card
             />
             <BottomAppBar>
               <div className={styles.bottomBarContent}>

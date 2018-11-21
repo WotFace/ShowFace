@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import { cleanName } from '../utils/string';
 import Divider from './Divider';
 
-import sharedStyles from './SharedStyles.module.scss';
+import sharedStyles from '../styles/SharedStyles.module.scss';
 import styles from './PollRespondNameForm.module.scss';
 
 class PollRespondNameForm extends Component {

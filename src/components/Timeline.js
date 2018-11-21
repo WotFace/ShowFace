@@ -340,7 +340,9 @@ class Timeline extends Component {
       >
         <div
           className={styles.timeline}
-          style={{ gridTemplateColumns: `auto repeat(${sortedDates.length}, 1fr)` }}
+          style={{
+            gridTemplateColumns: `auto repeat(${sortedDates.length}, minmax(4em, 7em))`,
+          }}
           onPointerLeave={this.handlePointerEnd}
         >
           <span className={classnames(styles.timelineLabel, styles.cornerHeaderCell)} />

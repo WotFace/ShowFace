@@ -175,6 +175,7 @@ class LoginPage extends Component {
                     autoComplete="name"
                     value={nameInput}
                     onChange={this.handleNameInputChange}
+                    maxLength="50"
                   />
                 </TextField>
               )}

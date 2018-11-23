@@ -11,11 +11,15 @@ import containerStyles from '../create/CreatePage.module.scss'; // TODO: Refacto
 class TimePicker extends Component {
   constructor(props) {
     super(props);
+
+    const {startTime, endTime} = this.props
+
+
     this.state = {
-      startHour: (this.props.startTime && this.props.startTime.getHours()) || 9,
-      startMin: (this.props.startTime && this.props.startTime.getMinutes()) || 0,
-      endHour: (this.props.endTime && this.props.endTime.getHours()) || 17,
-      endMin: (this.props.endTime && this.props.endTime.getMinutes()) || 0,
+      startHour: startTime ? startTime.getHours() : 9,
+      startMin: startTime ? startTime.getMinutes() : 0,
+      endHour: endTime ? endTime.getHours() : 17,
+      endMin: endTime ? endTime.getHours() : 0,
       interval: this.props.interval || 15,
     };
 

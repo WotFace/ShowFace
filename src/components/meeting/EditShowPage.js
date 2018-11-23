@@ -92,7 +92,7 @@ class EditShowPage extends Component {
             className={styles.submitButton}
             onClick={this.handleSubmit}
             disabled={
-              !hasChanged &&
+              !hasChanged ||
               (noSelectedDay ||
                 cleanName(name).length === 0 ||
                 this.state.startTime === null ||
@@ -154,6 +154,7 @@ class EditShowPage extends Component {
               value={name}
               autoComplete="off"
               onChange={this.handleInputChange}
+              maxLength="80"
             />
           </TextField>
         </section>

@@ -42,6 +42,7 @@ class QuickCreate extends Component {
             value={name}
             autoComplete="off"
             onChange={this.handleInputChange}
+            maxLength="80"
           />
         </div>
         <Button type="submit" id={styles.createPollButton} raised>

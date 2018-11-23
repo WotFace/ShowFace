@@ -88,7 +88,6 @@ class TimePicker extends Component {
     if (value === 24) {
       this.setState({ endMin: 0 });
     }
-
     this.props.updateEndTime(this.endTime());
   };
 

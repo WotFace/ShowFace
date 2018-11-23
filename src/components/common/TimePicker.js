@@ -27,14 +27,19 @@ class TimePicker extends Component {
   }
 
   resetEndTime = () => {
-    this.setState({ endHour: 'Unselected' });
-    this.setState({ endMin: 'Unselected' });
+    var { startHour, endHour } = this.state;
+    if (startHour > endHour && startHour <= 22) {
+      endHour = startHour + 1;
+    } else if (startHour > endHour && startHour === 23) {
+      endHour = startHour;
+    }
+    this.setState({ endHour: endHour });
+    this.setState({ endMin: 0 });
     this.props.updateEndTime(this.endTime());
   };
 
   resetStartTime = () => {
-    this.setState({ startHour: 'Unselected' });
-    this.setState({ startMin: 'Unselected' });
+    this.setState({ startMin: 0 });
     this.props.updateStartTime(this.startTime());
   };
 
@@ -48,9 +53,6 @@ class TimePicker extends Component {
   };
 
   dateForTime = (hour, min) => {
-    if (hour === 'Unselected' || min === 'Unselected') {
-      return null;
-    }
     var startOfDay = startOfToday();
     startOfDay.setHours(hour);
     startOfDay.setMinutes(min);
@@ -66,30 +68,20 @@ class TimePicker extends Component {
   };
 
   setStartHour = (event) => {
-    var value = event.target.value;
-    if (event.target.value !== 'Unselected') {
-      value = parseInt(event.target.value);
-    }
+    const value = parseInt(event.target.value);
     this.setState({ startHour: value });
     this.props.updateStartTime(this.startTime());
     this.resetEndTime();
   };
 
   setStartMin = (event) => {
-    var value = event.target.value;
-    if (event.target.value !== 'Unselected') {
-      value = parseInt(event.target.value);
-    }
+    const value = parseInt(event.target.value);
     this.setState({ startMin: value });
     this.props.updateStartTime(this.startTime());
-    this.resetEndTime();
   };
 
   setEndHour = (event) => {
-    var value = event.target.value;
-    if (event.target.value !== 'Unselected') {
-      value = parseInt(event.target.value);
-    }
+    const value = parseInt(event.target.value);
     this.setState({ endHour: value });
 
     // Special case for last hour
@@ -97,19 +89,11 @@ class TimePicker extends Component {
       this.setState({ endMin: 0 });
     }
 
-    // Special case when start time is already set and end time is being set to something
-    // before the start time
-    if (value === this.state.startHour) {
-      this.setState({ endMin: 'Unselected' });
-    }
     this.props.updateEndTime(this.endTime());
   };
 
   setEndMin = (event) => {
-    var value = event.target.value;
-    if (event.target.value !== 'Unselected') {
-      value = parseInt(event.target.value);
-    }
+    const value = parseInt(event.target.value);
     this.setState({ endMin: value });
     this.props.updateEndTime(this.endTime());
   };
@@ -147,25 +131,13 @@ class TimePicker extends Component {
   };
 
   render() {
-    const unselectedOption = {
-      label: '-',
-      value: 'Unselected',
-      disabled: true,
-      hidden: true,
-    };
-
-    const startHourOptions = [unselectedOption].concat(
-      this.getstartHours().map((hour) => ({ value: hour, label: hour })),
-    );
-    const startMinOptions = [unselectedOption].concat(
-      this.getstartMins().map((min) => ({ value: min, label: min })),
-    );
-    const endHourOptions = [unselectedOption].concat(
-      _.range(this.state.startHour, 25).map((hour) => ({ value: hour, label: hour })),
-    );
-    const endMinOptions = [unselectedOption].concat(
-      this.getEndMins().map((min) => ({ value: min, label: min })),
-    );
+    const startHourOptions = this.getstartHours().map((hour) => ({ value: hour, label: hour }));
+    const startMinOptions = this.getstartMins().map((min) => ({ value: min, label: min }));
+    const endHourOptions = _.range(this.state.startHour, 25).map((hour) => ({
+      value: hour,
+      label: hour,
+    }));
+    const endMinOptions = this.getEndMins().map((min) => ({ value: min, label: min }));
 
     const wrapper = (children) => {
       if (this.props.card) {

@@ -34,7 +34,7 @@ class TimePicker extends Component {
       endHour = startHour;
     }
     this.setState({ endHour: endHour });
-    this.setState({ endMin: 0 });
+    this.setState({ endMin: this.getEndMins()[0] });
     this.props.updateEndTime(this.endTime());
   };
 
@@ -132,7 +132,7 @@ class TimePicker extends Component {
   render() {
     const startHourOptions = this.getstartHours().map((hour) => ({ value: hour, label: hour }));
     const startMinOptions = this.getstartMins().map((min) => ({ value: min, label: min }));
-    const endHourOptions = _.range(this.state.startHour + 1, 25).map((hour) => ({
+    const endHourOptions = _.range(this.state.startHour, 25).map((hour) => ({
       value: hour,
       label: hour,
     }));

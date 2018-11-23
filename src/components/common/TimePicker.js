@@ -14,7 +14,6 @@ class TimePicker extends Component {
 
     const {startTime, endTime} = this.props
 
-
     this.state = {
       startHour: startTime ? startTime.getHours() : 9,
       startMin: startTime ? startTime.getMinutes() : 0,

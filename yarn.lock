@@ -8365,6 +8365,10 @@ react-scripts@^2.1.1:
   optionalDependencies:
     fsevents "1.2.4"
 
+react-scroll-sync@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/react-scroll-sync/-/react-scroll-sync-0.7.0.tgz#935387b2b877dcc7032ad9410155b0b7d7951048"
+
 react-slick@^0.23.2:
   version "0.23.2"
   resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.23.2.tgz#8d8bdbc77a6678e8ad36f50c32578c7c0f1c54f6"

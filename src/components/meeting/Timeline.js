@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
+import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import classnames from 'classnames';
 import { isWithinRange, differenceInMinutes, addMinutes, format } from 'date-fns';
 import _ from 'lodash';
 import memoize from 'memoize-one';
+
 import { respondentsToDict } from '../../utils/response';
 import DateMap from '../../utils/DateMap';
 import { disableMobileScroll, enableMobileScroll } from '../../utils/scrollToggle';
 import HoldableDiv from '../common/HoldableDiv';
+
 import styles from './Timeline.module.scss';
 
 // Return start times between 2 times
@@ -45,7 +48,7 @@ function moveDateTimeToDate(date, dateTime) {
 }
 
 const Tick = React.memo(({ startTime, hideByDefault }) => {
-  const tickText = !hideByDefault ? format(startTime, 'h:mma') : null;
+  const tickText = !hideByDefault ? format(startTime, 'h:mmA') : null;
   return (
     <div className={classnames(styles.tick, styles.timelineLabel)}>
       <div className={styles.tickContent}>{tickText}</div>
@@ -81,13 +84,15 @@ class TimeBox extends Component {
     return Math.floor(100 - (65 / maxSelectable) * count);
   }
 
-  handlePointerEvent = (callbackFn) => (e) => callbackFn(this.props.startTimeWithDate, e);
+  handlePointerEvent = (callbackFn) => (e) =>
+    callbackFn && callbackFn(this.props.startTimeWithDate, e);
   handleLongPress = this.handlePointerEvent(this.props.onLongPress);
   handlePointerDown = this.handlePointerEvent(this.props.onPointerDown);
   handlePointerMove = this.handlePointerEvent(this.props.onPointerMove);
   handlePointerUp = this.handlePointerEvent(this.props.onPointerUp);
   handlePointerEnter = this.handlePointerEvent(this.props.onPointerEnter);
   handlePointerCancel = this.handlePointerEvent(this.props.onPointerCancel);
+  handleClick = this.handlePointerEvent(this.props.onClick);
 
   // On some browsers, the component will automatically capture the pointer,
   // but we need the pointer events to be sent to the component that's under
@@ -123,6 +128,7 @@ class TimeBox extends Component {
         onPointerLeave={this.handlePointerLeave}
         onPointerCancel={this.handlePointerCancel}
         onGotPointerCapture={this.onGotPointerCapture}
+        onClick={this.handleClick}
       />
     );
   }
@@ -319,6 +325,7 @@ class Timeline extends Component {
                 onPointerEnter={this.handlePointerEnter}
                 onPointerCancel={this.handlePointerEnd}
                 onLongPress={this.handleLongPress}
+                onClick={this.props.onClick}
               />
             );
           })}
@@ -332,24 +339,47 @@ class Timeline extends Component {
     // support the touch-action CSS attribute.
     const touchAction = dragState === DragStateEnum.none ? 'auto' : 'none';
 
+    const fillerRow = _.times(sortedDates.length + 1, (k) => (
+      <div key={k} className={styles.filler} />
+    ));
+
     return (
-      <div
-        touch-action={touchAction}
-        id="timeline"
-        className={classnames(className, styles.timelineWrapper)}
-      >
-        <div
-          className={styles.timeline}
-          style={{
-            gridTemplateColumns: `auto repeat(${sortedDates.length}, minmax(4em, 7em))`,
-          }}
-          onPointerLeave={this.handlePointerEnd}
-        >
-          <span className={classnames(styles.timelineLabel, styles.cornerHeaderCell)} />
-          {headerCells}
-          {rows}
+      <ScrollSync vertical={false}>
+        <div id={styles.timelineOuterWrapper} className={className}>
+          <ScrollSyncPane>
+            <div className={classnames(styles.timelineWrapper, styles.timelineHeaderWrapper)}>
+              <div
+                className={styles.timeline}
+                style={{
+                  gridTemplateColumns: `4em repeat(${sortedDates.length}, minmax(4em, 7em))`,
+                }}
+                onPointerLeave={this.handlePointerEnd}
+              >
+                <span className={classnames(styles.timelineLabel, styles.cornerHeaderCell)} />
+                {headerCells}
+              </div>
+            </div>
+          </ScrollSyncPane>
+          <ScrollSyncPane>
+            <div
+              touch-action={touchAction}
+              id="timeline"
+              className={classnames(styles.timelineWrapper)}
+            >
+              <div
+                className={styles.timeline}
+                style={{
+                  gridTemplateColumns: `4em repeat(${sortedDates.length}, minmax(4em, 7em))`,
+                }}
+                onPointerLeave={this.handlePointerEnd}
+              >
+                {fillerRow}
+                {rows}
+              </div>
+            </div>
+          </ScrollSyncPane>
         </div>
-      </div>
+      </ScrollSync>
     );
   }
 }

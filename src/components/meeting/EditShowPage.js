@@ -154,6 +154,7 @@ class EditShowPage extends Component {
               value={name}
               autoComplete="off"
               onChange={this.handleInputChange}
+              maxLength="80"
             />
           </TextField>
         </section>

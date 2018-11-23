@@ -12,10 +12,10 @@ class TimePicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      startHour: 9,
-      startMin: 0,
-      endHour: 17,
-      endMin: 0,
+      startHour: (this.props.startTime && this.props.startTime.getHours()) || 9,
+      startMin: (this.props.startTime && this.props.startTime.getMinutes()) || 0,
+      endHour: (this.props.endTime && this.props.endTime.getHours()) || 17,
+      endMin: (this.props.endTime && this.props.endTime.getMinutes()) || 0,
       interval: this.props.interval || 15,
     };
 

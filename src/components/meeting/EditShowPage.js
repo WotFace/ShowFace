@@ -128,7 +128,7 @@ class EditShowPage extends Component {
 
   render() {
     const today = new Date();
-    const { selectedDays, name } = this.state;
+    const { selectedDays, name, startTime, endTime, interval } = this.state;
 
     const contentIfAccessDisallowed = (
       <section className={errorStyles.container}>
@@ -173,9 +173,9 @@ class EditShowPage extends Component {
         <TimePicker
           updateStartTime={this.updateStartTime}
           updateEndTime={this.updateEndTime}
-          interval={this.state.interval}
-          startTime={this.state.startTime}
-          endTime={this.state.endTime}
+          interval={interval}
+          startTime={startTime}
+          endTime={endTime}
         />
         {this.renderBottomBar()}
       </form>

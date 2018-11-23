@@ -10,6 +10,7 @@ import BottomAppBar from '../common/BottomAppBar';
 import Timeline from './Timeline';
 import PollRespondNameForm from './PollRespondNameForm';
 
+import sharedStyles from '../../styles/SharedStyles.module.scss';
 import styles from './ShowRespond.module.scss';
 
 export default class ShowRespondComponent extends Component {
@@ -148,7 +149,10 @@ export default class ShowRespondComponent extends Component {
     } else {
       mainText = (
         <>
-          Hold and drag on the timeline to select <strong>{this.responseName()}</strong>
+          Hold and drag on the timeline to select{' '}
+          <span className={sharedStyles.link} onClick={this.handleBackClick} title="Change name">
+            <strong>{this.responseName()}</strong>
+          </span>
           &apos;s availability.
         </>
       );

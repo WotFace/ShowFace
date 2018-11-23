@@ -94,6 +94,7 @@ class PollRespondNameForm extends Component {
             value={name}
             onChange={this.handleNameChange}
             autoComplete="off"
+            maxLength="50"
           />
         </TextField>
         <Button

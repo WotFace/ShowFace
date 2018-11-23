@@ -72,7 +72,7 @@
     "build": "react-scripts build && cra-append-sw ./src/sw-append.js",
     "test": "react-scripts test --env=jsdom",
     "lint": "eslint src",
-    "prettify": "prettier --write src/*.js src/**/*.js"
+    "prettify": "prettier --write $(find src -type f -name '*.js')"
   },
   "browserslist": [
     ">0.2%",

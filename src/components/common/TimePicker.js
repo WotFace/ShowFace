@@ -12,7 +12,7 @@ class TimePicker extends Component {
   constructor(props) {
     super(props);
 
-    const {startTime, endTime} = this.props
+    const { startTime, endTime } = this.props;
 
     this.state = {
       startHour: startTime ? startTime.getHours() : 9,

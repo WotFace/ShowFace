@@ -13,14 +13,14 @@ $filler-height: 0.4rem;
     display: flex;
     overflow-x: auto;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
     &.timelineHeaderWrapper {
       position: sticky;
       top: 3rem - $filler-height;
       z-index: 1;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 }

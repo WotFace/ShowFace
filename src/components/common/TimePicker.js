@@ -18,7 +18,7 @@ class TimePicker extends Component {
       startHour: startTime ? startTime.getHours() : 9,
       startMin: startTime ? startTime.getMinutes() : 0,
       endHour: endTime ? endTime.getHours() : 17,
-      endMin: endTime ? endTime.getHours() : 0,
+      endMin: endTime ? endTime.getMinutes() : 0,
       interval: this.props.interval || 15,
     };
 

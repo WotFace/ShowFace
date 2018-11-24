@@ -135,10 +135,6 @@ class TimePicker extends Component {
   getEndMins = () => {
     const { startHour, startMin, endHour, interval } = this.state;
 
-    console.log(startHour);
-    console.log(endHour);
-    console.log(startMin);
-
     if (endHour === 24) {
       return [0];
     }
@@ -162,11 +158,6 @@ class TimePicker extends Component {
     const startMinOptions = this.getstartMins().map((min) => ({ value: min, label: min }));
     const endHourOptions = this.getEndHour().map((hour) => ({ value: hour, label: hour }));
     const endMinOptions = this.getEndMins().map((min) => ({ value: min, label: min }));
-
-    console.log(startHourOptions);
-    console.log(startMinOptions);
-    console.log(endHourOptions);
-    console.log(endMinOptions);
 
     const wrapper = (children) => {
       if (this.props.card) {

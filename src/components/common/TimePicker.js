@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { startOfToday } from 'date-fns';
+import { startOfToday, differenceInDays } from 'date-fns';
 
 import Card from '@material/react-card';
 import Select from '@material/react-select';
@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import styles from './TimePicker.module.scss';
 import containerStyles from '../create/CreatePage.module.scss'; // TODO: Refactor so that CreatePage actually handles create page layout and styles
+import { variablesInOperation } from 'apollo-utilities';
 
 class TimePicker extends Component {
   constructor(props) {
@@ -14,10 +15,20 @@ class TimePicker extends Component {
 
     const { startTime, endTime } = this.props;
 
+    var endHour = 17;
+
+    if (endTime && startTime) {
+      if (differenceInDays(endTime, startTime) == 1) {
+        endHour = 24;
+      } else {
+        endTime.getHours();
+      }
+    }
+
     this.state = {
       startHour: startTime ? startTime.getHours() : 9,
       startMin: startTime ? startTime.getMinutes() : 0,
-      endHour: endTime ? endTime.getHours() : 17,
+      endHour: endHour,
       endMin: endTime ? endTime.getMinutes() : 0,
       interval: this.props.interval || 15,
     };

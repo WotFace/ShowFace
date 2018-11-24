@@ -27,14 +27,11 @@ class TimePicker extends Component {
   }
 
   resetEndTime = () => {
-    var { startHour, endHour } = this.state;
-    if (startHour > endHour && startHour <= 22) {
+    var { startHour, endHour, endMin } = this.state;
+    if (startHour >= endHour && startHour <= 22) {
       endHour = startHour + 1;
-    } else if (startHour > endHour && startHour === 23) {
-      endHour = startHour;
     }
     this.setState({ endHour: endHour });
-    this.setState({ endMin: this.getEndMins()[0] });
     this.props.updateEndTime(this.endTime());
   };
 
@@ -111,7 +108,8 @@ class TimePicker extends Component {
   };
 
   getstartMins() {
-    return _.range(0, 60, this.state.interval);
+    const interval = this.state.interval;
+    return _.range(0, 60, interval);
   }
 
   getEndHour() {
@@ -124,27 +122,23 @@ class TimePicker extends Component {
   }
 
   getEndMins = () => {
-    const startHour = this.state.startHour;
-    const endHour = this.state.endHour;
+    const { startHour, startMin, endHour, interval } = this.state;
 
     if (endHour === 24) {
       return [0];
     }
 
-    if (startHour !== endHour) {
+    if (startHour < endHour) {
       return this.getstartMins();
     } else {
-      return _.range(this.state.startMin + this.state.interval, 60, this.state.interval);
+      return _.range(startMin + interval, 60, interval);
     }
   };
 
   render() {
     const startHourOptions = this.getstartHours().map((hour) => ({ value: hour, label: hour }));
     const startMinOptions = this.getstartMins().map((min) => ({ value: min, label: min }));
-    const endHourOptions = this.getEndHour().map((hour) => ({
-      value: hour,
-      label: hour,
-    }));
+    const endHourOptions = this.getEndHour().map((hour) => ({ value: hour, label: hour }));
     const endMinOptions = this.getEndMins().map((min) => ({ value: min, label: min }));
 
     const wrapper = (children) => {

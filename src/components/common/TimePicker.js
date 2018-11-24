@@ -87,6 +87,16 @@ class TimePicker extends Component {
       this.setState({ endMin: 0 });
     }
     this.props.updateEndTime(this.endTime());
+    this.resetEndMinToMinimum();
+  };
+
+  resetEndMinToMinimum = () => {
+    const options = this.getEndMins();
+    const endMinSelected = this.state.endMin;
+    if (!options.includes(endMinSelected)) {
+      this.setState({ endMin: options[0] });
+      this.props.updateEndTime(this.endTime());
+    }
   };
 
   setEndMin = (event) => {

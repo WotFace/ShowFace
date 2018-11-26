@@ -18,7 +18,7 @@ class TimePicker extends Component {
     var endHour = 17;
 
     if (endTime && startTime) {
-      if (differenceInDays(endTime, startTime) == 1) {
+      if (endTime.getDate() !== startTime.getDate()) {
         endHour = 24;
       } else {
         endHour = endTime.getHours();

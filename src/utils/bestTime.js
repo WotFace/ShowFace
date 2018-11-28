@@ -167,6 +167,9 @@ export function bestMeetings(entries, numResponders, interval) {
     if (t.length === 0) return false;
 
     const attendeeSets = t.map(([a, b]) => b);
+    // Reject if a best time somehow bridges the negative int max gap.
+    // TODO: Figure out why it passed bestRanges in the first place
+    if (attendeeSets.includes(Number.MIN_SAFE_INTEGER)) return false;
 
     const attendeeUnion = attendeeSets.reduce(union, new Set());
     const attendeeIntersection = attendeeSets.reduce(intersection, new Set(attendeeSets[0]));

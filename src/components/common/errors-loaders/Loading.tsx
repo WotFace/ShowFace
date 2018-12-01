@@ -2,7 +2,11 @@ import React from 'react';
 import ReactLoading from 'react-loading';
 import styles from './ErrorsLoaders.module.scss';
 
-export default function Loading({ text }) {
+interface Props {
+  text?: string;
+}
+
+export default function Loading({ text }: Props) {
   return (
     <section className={styles.container}>
       <h2>{text || 'Loading'}</h2>

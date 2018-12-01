@@ -6,11 +6,13 @@ interface Props {
   text?: string;
 }
 
-export default function Loading({ text }: Props) {
+const Loading: React.FunctionComponent<Props> = ({ text }) => {
   return (
     <section className={styles.container}>
       <h2>{text || 'Loading'}</h2>
       <ReactLoading type="bubbles" color="#111" />
     </section>
   );
-}
+};
+
+export default Loading;

@@ -12,7 +12,7 @@ const LoginPage = lazy(() => import('./components/auth/LoginPage'));
 const DashboardPage = lazy(() => import('./components/dashboard/DashboardPage'));
 const NotFoundPage = lazy(() => import('./components/common/errors-loaders/NotFoundPage'));
 
-const Routes = () => (
+const Routes: React.FunctionComponent = () => (
   <>
     <AppBar pathBlacklist={['/login', '/signup']} />
     <Suspense fallback={<Loading />}>
